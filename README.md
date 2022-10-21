@@ -7,6 +7,5 @@ The application itself only relies on the Python 3.x standard library for now.
 Certain internal development utilities may however require to install `libclang` for Python:
 
 ```
-sudo python3 install python3-pip
-sudo pip3 install --upgrade clang
+sudo apt install python3-clang-12
 ```

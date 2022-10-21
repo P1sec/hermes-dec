@@ -105,7 +105,7 @@ def get_opcodes_enum(bytecode_version : int):
         ('EndMarkedSubexpression', MIN_BC_VERSION),
         ('BackRef', MIN_BC_VERSION),
         ('WordBoundary', MIN_BC_VERSION),
-        ('Lookaround', MIN_BC_VERSION), # Previously Lookahead
+        ('Lookaround' if bytecode_version >= 67 else 'Lookahead', MIN_BC_VERSION), # Lookahead before version 0.3.0, one less field
         ('BeginLoop' if bytecode_version >= 79 else 'BeginLoopPre79', MIN_BC_VERSION),
         ('EndLoop', MIN_BC_VERSION),
         ('BeginSimpleLoop', MIN_BC_VERSION),
@@ -212,6 +212,13 @@ class BracketRange32(LittleEndianStructure):
         ('end', c_uint32)
     ]
 
+class BracketRange16(LittleEndianStructure):
+    _pack_ = True
+    _fields_ = [
+        ('start', c_uint16),
+        ('end', c_uint16)
+    ]
+
 class BracketInsn(LittleEndianStructure):
     _pack_ = True
     _fields_ = [
@@ -221,7 +228,7 @@ class BracketInsn(LittleEndianStructure):
         ('negativeCharClasses', c_uint8, 3)
     ]
     
-    brackets : List[BracketRange32]
+    brackets : List[Union[BracketRange32, BracketRange16]]
 
 class U16BracketInsn(LittleEndianStructure):
     _pack_ = True
@@ -273,6 +280,16 @@ class LookaroundInsn(LittleEndianStructure):
     _fields_ = [
         ('invert', c_bool),
         ('forwards', c_bool),
+        ('constraints', c_uint8), # hermes::regex::MatchConstraintSet
+        ('mexpBegin', c_uint16),
+        ('mexpEnd', c_uint16),
+        ('continuation', c_uint32) # hermes::regex::JumpTarget32
+    ]
+
+class LookaheadInsn(LittleEndianStructure):
+    _pack_ = True
+    _fields_ = [
+        ('invert', c_bool),
         ('constraints', c_uint8), # hermes::regex::MatchConstraintSet
         ('mexpBegin', c_uint16),
         ('mexpEnd', c_uint16),
@@ -407,7 +424,12 @@ def parse_regex(bytecode_version : int, input_bytes : BytesIO) -> ParsedRegex:
             op_structure.brackets = []
             
             for count in range(op_structure.rangeCount):
-                bracket = BracketRange32()
+                # BracketRange16 was changed to BracketRange32 in version 0.3.0 -
+                # https://github.com/facebook/hermes/commit/28436fbfe9f4ac6a064dd22bd46122117d1080b7
+                if bytecode_version >= 65:
+                    bracket = BracketRange32()
+                else:
+                    bracket = BracketRange16()
                 input_bytes.readinto(bracket)
                 op_structure.brackets.append(bracket)
         
@@ -449,6 +471,7 @@ def decompile_regex(regex : ParsedRegex):
     output : str = ''
     
     pending_1width_instructions : List[Width1LoopInsn] = []
+    pending_lookaround_instructions : List[Union[LookaroundInst, LookaheadInst]] = []
     pending_beginloop_instructions : List[Union[BeginLoopInst, BeginLoopPre78Inst]] = []
     
     for instruction in regex.instructions:
@@ -458,14 +481,26 @@ def decompile_regex(regex : ParsedRegex):
         elif isinstance(instruction, EndMarkedSubexpressionInsn):
             output += ')'
         elif (isinstance(instruction, BeginLoopInsn) or
-            isinstance(instruction, BeginLoopPre79Insn)):
+            isinstance(instruction, BeginLoopPre79Insn) or
+            isinstance(instruction, BeginSimpleLoopInsn)):
             output += '(?:'
             pending_beginloop_instructions.append(instruction)
         elif isinstance(instruction, Width1LoopInsn):
             pending_1width_instructions.append(instruction)
             continue
+        elif (isinstance(instruction, LookaroundInsn) or
+            isinstance(instruction, LookaheadInsn)):
+            output += '(?'
+            if not getattr(instruction, 'forwards', True):
+                output += '<'
+            output += '!' if instruction.invert else '='
+            pending_lookaround_instructions.append(instruction)
         elif isinstance(instruction, BracketInsn):
-            output += '['
+            display_brackets = (instruction.brackets or instruction.negate or (
+                bin(instruction.positiveCharClasses).count('1') +
+                bin(instruction.negativeCharClasses).count('1') > 1))
+            if display_brackets:
+                output += '['
             if instruction.negate:
                 output += '^'
             for bracket in instruction.brackets:
@@ -486,7 +521,15 @@ def decompile_regex(regex : ParsedRegex):
                 if instruction.negativeCharClasses & flag:
                     output += char.upper()
                     
-            output += ']'
+            if display_brackets:
+                output += ']'
+        elif isinstance(instruction, WordBoundaryInsn):
+            if instruction.invert:
+                output += r'\B'
+            else:
+                output += r'\b'
+        elif isinstance(instruction, BackRefInsn):
+            output += '\\%d' % instruction.mexp
         elif (isinstance(instruction, MatchAnyInsn) or
             isinstance(instruction, MatchAnyButNewlineInsn) or
             isinstance(instruction, U16MatchAnyInsn) or
@@ -497,7 +540,11 @@ def decompile_regex(regex : ParsedRegex):
         elif isinstance(instruction, RightAnchorInsn):
             output += '$'
         elif isinstance(instruction, GoalInsn):
-            pass # End of RegExp
+            if pending_lookaround_instructions:
+                output += ')'
+                pending_lookaround_instructions.pop()
+            else:
+                pass # End of RegExp
         elif (isinstance(instruction, MatchChar8Insn) or
             isinstance(instruction, MatchChar16Insn) or
             isinstance(instruction, U16MatchChar32Insn) or
@@ -505,11 +552,17 @@ def decompile_regex(regex : ParsedRegex):
             isinstance(instruction, MatchCharICase16Insn) or
             isinstance(instruction, U16MatchCharICase32Insn)):
             output += escape(chr(instruction.c))
-        elif isinstance(instruction, EndLoopInsn):
+        elif (isinstance(instruction, EndLoopInsn) or
+            isinstance(instruction, EndSimpleLoopInsn)):
             output += ')'
             begin_loop_instruction = pending_beginloop_instructions.pop()
-            output += loop_ending_to_string(begin_loop_instruction)
+            if isinstance(begin_loop_instruction, BeginSimpleLoopInsn):
+                output += '*'
+            else:
+                output += loop_ending_to_string(begin_loop_instruction)
         elif isinstance(instruction, AlternationInsn):
+            pass
+        elif isinstance(instruction, Jump32Insn):
             output += '|'
         elif (isinstance(instruction, MatchNChar8Insn) or
             isinstance(instruction, MatchNCharICase8Insn)):
@@ -546,7 +599,7 @@ def decompile_regex(regex : ParsedRegex):
     # when a BeginMarkedSubexpression appears within
     # a BeginLoop instruction:
     output = sub(r'(?<!\\)\(\?:\(' + # Match for "(?:(" not preceded with a "\"
-        r'([^)]*?' + # Capture the in-between in "\1"
+        r'([^()]*?' + # Capture the in-between in "\1"
         r'[^\\])\)\)', # Match for "))" not preceded with a "\"
         r'(\1)' # Replace "(?:(" SOMETHING "))" with "(" SOMETHING ")"
         , output)

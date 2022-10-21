@@ -41,13 +41,15 @@ def find_typerefs(node, indent = 0, struct : Optional[OpcodeStructure] = None, f
     # exit()
     # help(node.type.get_declaration())
     # exit()
+    """
     print('%sFound `%s` (%s) [line=%s, col=%s] %s' % (
         ' ' * (indent * 2),
         node.spelling, node.kind, node.location.line, node.location.column, (node.type.spelling, node.type.get_canonical().spelling, node.type.get_declaration().underlying_typedef_type.spelling if node.type.get_declaration().kind.is_declaration() else None))) # (node.storage_class, node.type, node.type.spelling, node.translation_unit, node.referenced, node.raw_comment)))
+    """
     
     if node.kind == CursorKind.CXX_BASE_SPECIFIER:
         visiting_baseclass = True
-    elif node.kind == CursorKind.STRUCT_DECL and ((node.spelling.endswith('Insn') and node.spelling != 'Insn') or 'BracketRange32' in node.spelling):
+    elif node.kind == CursorKind.STRUCT_DECL and ((node.spelling.endswith('Insn') and node.spelling != 'Insn') or 'BracketRange' in node.spelling):
         struct = OpcodeStructure(node.spelling, [])
         opcode_name_to_structure[node.spelling] = struct
     elif struct and node.kind == CursorKind.FIELD_DECL:
