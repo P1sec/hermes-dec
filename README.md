@@ -4,9 +4,9 @@ This is a work-in-progress decoder/disassembler/decompiler for the .HBC (Hermes 
 
 The Hermes VM for React Native was announced by Facebook on the [12 July 2019](https://engineering.fb.com/2019/07/12/android/hermes/). The initial release of Hermes was version 0.1.0 ([bytecode version 59](https://github.com/facebook/hermes/blob/v0.1.0/include/hermes/BCGen/HBC/BytecodeFileFormat.h#L32)), Github tags 0.0.1 to 0.0.3 correspond to pre-public release.
 
-However, Hermes is the default compilation target for React Native on Android only since [React Native 0.70 (released on 5 September 2022)](https://reactnative.dev/blog/2022/09/05/version-070#hermes-as-default-engine), as explained [here](https://reactnative.dev/blog/2022/07/08/hermes-as-the-default).
+However, Hermes is the default compilation target for React Native on Android only since [React Native 0.70](https://reactnative.dev/blog/2022/09/05/version-070#hermes-as-default-engine) (released on 5 September 2022), as explained [here](https://reactnative.dev/blog/2022/07/08/hermes-as-the-default).
 
-Before that, and since React Native 0.60.2, the Hermes VM was an [opt-in feature](https://reactnative.dev/docs/hermes#enabling-hermes). Hermes for iOS is supported since [version 0.64 of React Native (release on the 12 March 2021)](https://reactnative.dev/blog/2021/03/12/version-0.64).
+Before that, and since React Native 0.60.2, the Hermes VM was an [opt-in feature](https://reactnative.dev/docs/hermes#enabling-hermes). Hermes for iOS is supported since [version 0.64 of React Native](https://reactnative.dev/blog/2021/03/12/version-0.64) (released on the 12 March 2021).
 
 **React Native is used by a wide variety of significant mobile applications**, as exposed on the [React Native showcase page](https://reactnative.dev/showcase).
 
