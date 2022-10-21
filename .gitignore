@@ -1,0 +1,10 @@
+# The following is related to Python or miscellaneous
+*.pyc
+__pycache__/
+config.py
+build/
+.~lock.*
+*.glade#
+*~
+*.swp
+.vscode

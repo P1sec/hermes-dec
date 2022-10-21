@@ -1,0 +1,107 @@
+
+
+"""
+    For reference, the bytecode header structure is:
+    
+struct BytecodeFileHeader {
+  uint64_t magic;
+  uint32_t version;
+  uint8_t sourceHash[SHA1_NUM_BYTES];
+  uint32_t fileLength; // Until the end of the BytecodeFileFooter.
+  uint32_t globalCodeIndex;
+  uint32_t functionCount;
+  uint32_t stringKindCount; // Number of string kind entries.
+  uint32_t identifierCount; // Number of strings which are identifiers.
+  uint32_t stringCount; // Number of strings in the string table.
+  uint32_t overflowStringCount; // Number of strings in the overflow table.
+  uint32_t stringStorageSize; // Bytes in the blob of string contents.
+  uint32_t bigIntCount; // Added in version 0.12.0 - Bytecode version 87 // number of bigints in the bigint table.
+  uint32_t bigIntStorageSize; // Added in version 0.12.0 - Bytecode version 87 // Bytes in the bigint table.
+  uint32_t regExpCount;
+  uint32_t regExpStorageSize;
+  uint32_t arrayBufferSize;
+  uint32_t objKeyBufferSize;
+  uint32_t objValueBufferSize;
+  uint32_t segmentID; // Was called "cjsModuleOffset" before version 0.8.0 - Bytecode version 78 // The ID of this segment.
+  uint32_t cjsModuleCount; // Number of modules.
+  uint32_t functionSourceCount; // Added in version 0.8.0 - Bytecode version 84 // Number of function sources preserved.
+  uint32_t debugInfoOffset;
+  BytecodeOptions options;
+
+union BytecodeOptions {
+  struct {
+    bool staticBuiltins : 1;
+    bool cjsModulesStaticallyResolved : 1;
+    bool hasAsync : 1;
+  };
+  uint8_t _flags;
+
+  BytecodeOptions() : _flags(0) {}
+};
+
+// See BytecodeFileFormatTest for details about bit field layouts
+static_assert(
+    sizeof(BytecodeOptions) == 1,
+    "BytecodeOptions should take up 1 byte total");
+"""
+
+"""
+    https://github.com/facebook/hermes/blob/v0.12.0/include/hermes/BCGen/HBC/BytecodeFileFormat.h#L36
+    
+    /// Alignment of data structures of in file.
+    static constexpr size_t BYTECODE_ALIGNMENT = alignof(uint32_t);
+"""
+
+"""
+    File reading routine:
+    https://github.com/facebook/hermes/blob/v0.12.0/lib/BCGen/HBC/BytecodeDataProvider.cpp#L224
+
+      f.header = castData<BytecodeFileHeader>(buf);
+  BytecodeFileFieldsPopulator populator{*this, buffer.data(), buffer.end()};
+  visitBytecodeSegmentsInOrder(populator);
+"""
+
+"""
+    https://github.com/facebook/hermes/blob/v0.12.0/lib/BCGen/HBC/BytecodeDataProvider.cpp#L146
+
+/// Cast the pointer at \p buf to type T, increment \p buf by
+/// the size of T.
+template <typename T>
+const T *castData(const uint8_t *&buf) {
+  auto ret = alignCheckCast<T>(buf);
+  buf += sizeof(T);
+  return ret;
+}
+"""
+
+"""getIdentifierHashes
+    https://github.com/facebook/hermes/blob/v0.12.0/include/hermes/BCGen/HBC/BytecodeFileFormat.h#L404
+
+  visitor.visitFunctionHeaders();
+  visitor.visitStringKinds();
+  visitor.visitIdentifierHashes();
+  visitor.visitSmallStringTable();
+  visitor.visitOverflowStringTable();
+  visitor.visitStringStorage();
+  visitor.visitArrayBuffer();
+  visitor.visitObjectKeyBuffer();
+  visitor.visitObjectValueBuffer();
+  visitor.visitBigIntTable();
+  visitor.visitBigIntStorage();
+  visitor.visitRegExpTable();
+  visitor.visitRegExpStorage();
+  visitor.visitCJSModuleTable();
+  visitor.visitFunctionSourceTable();
+"""
+
+"""
+    https://github.com/facebook/hermes/blob/v0.12.0/lib/BCGen/HBC/BytecodeDisassembler.cpp#L1245
+
+  disassembleBytecodeFileHeader(OS);
+  disassembleStringStorage(OS);
+  disassembleArrayBuffer(OS);
+  disassembleObjectBuffer(OS);
+  disassembleBigIntStorage(OS);
+  disassembleCJSModuleTable(OS);
+  disassembleFunctionSourceTable(OS);
+"""
