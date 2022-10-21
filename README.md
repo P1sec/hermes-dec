@@ -1,4 +1,4 @@
-This is a work-in-progress decoder/disassembler/decompiler for the .HBC (Hermes JavaScript bytecode) files, the Hermes VM being a C++-written JavaScript virtual machine used with various React Native-based applications, processing JavaScript file serialized in a binary format.
+This is a work-in-progress decoder/disassembler/decompiler for the .HBC (Hermes JavaScript bytecode) files, the Hermes VM being a C++-written JavaScript virtual machine used in various React Native-based applications, processing JavaScript files serialized in a binary format.
 
 ## Dependencies
 
