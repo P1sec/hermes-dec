@@ -8,6 +8,7 @@ from hashlib import sha1
 
 # The following imports are made from the current directory:
 from serialized_literal_parser import unpack_slp_array, SLPArray, SLPTag, TagType
+from regexp_bytecode_parser import decompile_regex, parse_regex
 from pretty_print import pretty_print_structure
 
 """
@@ -605,7 +606,7 @@ class HBCParser:
         
         self.read_function_sources() # Defines self.function_sources
         
-        pass # WIP ..
+        pass # WIP .. Read the bytecode here?
 
 if __name__ == '__main__':
     
@@ -686,8 +687,9 @@ if __name__ == '__main__':
         print()
         for regexp_count, regexp in enumerate(hbc_reader.regexp_table):
             hbc_reader.regexp_storage.seek(regexp.offset)
-            print('=> Regexp #%d: %s' % (regexp_count,
-                hbc_reader.regexp_storage.read(regexp.length)))
+            regexp_data = hbc_reader.regexp_storage.read(regexp.length)
+            print('=> Regexp #%d: %s' % (regexp_count, regexp_data.hex()))
+            print('  => Decompiled: ', decompile_regex(parse_regex(84, BytesIO(regexp_data))))
         
         print()
         for cjs_module_count, cjs_module in enumerate(hbc_reader.cjs_modules):

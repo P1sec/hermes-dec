@@ -119,8 +119,6 @@ def get_opcodes_enum(bytecode_version : int):
         in opcode_name_and_min_version
         if bytecode_version >= min_version
     ], start = 0)
-    
-    # WIP..
         
     return Opcodes
 
@@ -368,25 +366,21 @@ class ParsedRegex:
 # https://262.ecma-international.org/5.1/#sec-15.10.1
 
 REGULAR_ESCAPE_MAP = {
-    # Removed: '&~# ', added: '/' and everything
-    # non-printable ASCII, compared to Python regular expressions
+    # Removed: '&~# ' and non-printable + '\\' ranges which
+    # will be escaped by the unicode_escape codec, added: '/
     char: '\\' + chr(char)
-        if char > 0x20
-        else repr(chr(char))
-    for char in b'()[]{}?*+|^$/\\.' + bytes(char for char in range(0x20))
+    for char in b'()[]{}?*+|^$/.'
 }
 RANGE_ESCAPE_MAP = {
     char: '\\' + chr(char)
-        if char > 0x20
-        else repr(chr(char))
-    for char in b'[]-\\' + bytes(char for char in range(0x20))
+    for char in b'[]-'
 }
 
 def escape(string : str):
-    return string.translate(REGULAR_ESCAPE_MAP)
+    return string.encode('unicode_escape').decode('ascii').translate(REGULAR_ESCAPE_MAP)
 
 def escape_range(string : str):
-    return string.translate(RANGE_ESCAPE_MAP)
+    return string.encode('unicode_escape').decode('ascii').translate(RANGE_ESCAPE_MAP)
 
 def parse_regex(bytecode_version : int, input_bytes : BytesIO) -> ParsedRegex:
     
@@ -438,8 +432,6 @@ def parse_regex(bytecode_version : int, input_bytes : BytesIO) -> ParsedRegex:
 
         output.instructions.append(op_structure)
         
-        
-        # WIP read the actual structure here ..
     
     return output
 
@@ -470,11 +462,21 @@ def decompile_regex(regex : ParsedRegex):
     
     output : str = ''
     
+    secondary_branch_to_alternation_pos : Dict[int, int] = {}
+    alternation_pos_to_jump_target : Dict[int, int] = {}
+    
     pending_1width_instructions : List[Width1LoopInsn] = []
     pending_lookaround_instructions : List[Union[LookaroundInst, LookaheadInst]] = []
     pending_beginloop_instructions : List[Union[BeginLoopInst, BeginLoopPre78Inst]] = []
     
     for instruction in regex.instructions:
+        
+        while instruction.original_pos in alternation_pos_to_jump_target.values():
+            output += ')' # Close alternations
+            alternation_pos = next((key for key, value in
+                alternation_pos_to_jump_target.items()
+                if value == instruction.original_pos), None)
+            del alternation_pos_to_jump_target[alternation_pos]
         
         if isinstance(instruction, BeginMarkedSubexpressionInsn):
             output += '('
@@ -499,6 +501,12 @@ def decompile_regex(regex : ParsedRegex):
             display_brackets = (instruction.brackets or instruction.negate or (
                 bin(instruction.positiveCharClasses).count('1') +
                 bin(instruction.negativeCharClasses).count('1') > 1))
+            display_brackets = display_brackets and not (instruction.brackets and
+                not instruction.positiveCharClasses and
+                not instruction.negativeCharClasses and
+                not instruction.negate and
+                len(instruction.brackets) == 1 and
+                instruction.brackets[0].start == instruction.brackets[0].end)
             if display_brackets:
                 output += '['
             if instruction.negate:
@@ -509,7 +517,7 @@ def decompile_regex(regex : ParsedRegex):
                 elif bracket.start + 1 == bracket.end:
                     output += escape_range(chr(bracket.start) + chr(bracket.end))
                 else:
-                    output += escape_range(chr(bracket.start)) + '-' + escape(chr(bracket.end))
+                    output += escape_range(chr(bracket.start)) + '-' + escape_range(chr(bracket.end))
             for flag, char in [
                 (CharacterClass.Digits, r'\d'),
                 (CharacterClass.Spaces, r'\s'),
@@ -561,14 +569,18 @@ def decompile_regex(regex : ParsedRegex):
             else:
                 output += loop_ending_to_string(begin_loop_instruction)
         elif isinstance(instruction, AlternationInsn):
-            pass
+            if instruction.original_pos not in secondary_branch_to_alternation_pos:
+                output += '(?:'
+                secondary_branch_to_alternation_pos[instruction.secondaryBranch] = instruction.original_pos
+            else:
+                secondary_branch_to_alternation_pos[instruction.secondaryBranch] = secondary_branch_to_alternation_pos[instruction.original_pos] # Chained alternation
         elif isinstance(instruction, Jump32Insn):
             output += '|'
+            alternation_pos_to_jump_target[secondary_branch_to_alternation_pos[instruction.original_pos + 5]] = instruction.target
         elif (isinstance(instruction, MatchNChar8Insn) or
             isinstance(instruction, MatchNCharICase8Insn)):
             output += escape(instruction.chars.decode('utf-8'))
-        # WIP.. It's almost implemented
-        # TODO: Lookaround, loop, backref, jump, word boundary.. . SVG RegexP Usage...
+        # To check again maybe later: Lookaround, loop, backref, jump, word boundary.. . SVG RegexP Usage...
         # Check code conformance and v0.0.1-more recent code conformance...
         # Test CASE;
         #=
@@ -580,7 +592,7 @@ def decompile_regex(regex : ParsedRegex):
             
             output += loop_ending_to_string(instruction)
     
-    output = '/%s/' % output.replace('/', '\\/')
+    output = '/%s/' % output
     for flag, char in [
         (SyntaxFlags.ICASE, 'i'),
         (SyntaxFlags.GLOBAL, 'g'),
@@ -598,13 +610,11 @@ def decompile_regex(regex : ParsedRegex):
     # For readibility, avoid nesting (?:) and ()
     # when a BeginMarkedSubexpression appears within
     # a BeginLoop instruction:
-    output = sub(r'(?<!\\)\(\?:\(' + # Match for "(?:(" not preceded with a "\"
+    output = sub(r'(?<!\\)(?:\(\?:\(|\(\(\?:)' + # Match for "(?:(" or "((?:" not preceded with a "\"
         r'([^()]*?' + # Capture the in-between in "\1"
-        r'[^\\])\)\)', # Match for "))" not preceded with a "\"
-        r'(\1)' # Replace "(?:(" SOMETHING "))" with "(" SOMETHING ")"
+        r'[^\\)])\)\)', # Match for "))" not preceded with a "\"
+        r'(\1)' # Replace "(?:(" or "((?:" SOMETHING "))" with "(" SOMETHING ")"
         , output)
-    
-    # WIP ..
     
     return output
     
@@ -629,6 +639,8 @@ def format_struct_to_single_line(struct : object) -> str:
             elif 'charclasses' in field[0].lower():
                 output += ' {%s=%r}' % (field[0],
                     CharacterClass(getattr(struct, field[0])))
+            elif field[0] == 'c':
+                output += ' {c=%s}' % repr(chr(struct.c))
             else:
                 output += ' {%s=%s}' % (field[0], 
                     getattr(struct, field[0]))
@@ -639,8 +651,6 @@ def format_struct_to_single_line(struct : object) -> str:
     
     if getattr(struct, 'chars', None):
         output += ' {Chars: %r}' % struct.chars
-    
-    # WIP ..
     
     return output + '\n'
 
@@ -655,8 +665,6 @@ def disasm_regex(regex : ParsedRegex) -> str:
         
         output += format_struct_to_single_line(instruction)
     
-    # WIP ..
-    
     return output
 
     
@@ -665,7 +673,15 @@ if __name__ == '__main__':
     SAMPLE_REGEXES : List[str] = [
         b"\x02\x00\x01\x00\x03\x04\x13\x00\x00\x11\x10\x00\x00\x00\x00A\x00\x00\x00A\x00\x00\x00C\x00\x00\x00C\x00\x00\x00H\x00\x00\x00H\x00\x00\x00L\x00\x00\x00M\x00\x00\x00Q\x00\x00\x00Q\x00\x00\x00S\x00\x00\x00T\x00\x00\x00V\x00\x00\x00V\x00\x00\x00Z\x00\x00\x00Z\x00\x00\x00a\x00\x00\x00a\x00\x00\x00c\x00\x00\x00c\x00\x00\x00h\x00\x00\x00h\x00\x00\x00l\x00\x00\x00m\x00\x00\x00q\x00\x00\x00q\x00\x00\x00s\x00\x00\x00t\x00\x00\x00v\x00\x00\x00v\x00\x00\x00z\x00\x00\x00z\x00\x00\x00\x14\x00\x00\x13\x01\x00\x1c\x00\x00\x00\x00\x00\x00\x00\x00\xff\xff\xff\xff\x01'\x01\x00\x00\x11\x10\x00\x00\x00\x01A\x00\x00\x00A\x00\x00\x00C\x00\x00\x00C\x00\x00\x00H\x00\x00\x00H\x00\x00\x00L\x00\x00\x00M\x00\x00\x00Q\x00\x00\x00Q\x00\x00\x00S\x00\x00\x00T\x00\x00\x00V\x00\x00\x00V\x00\x00\x00Z\x00\x00\x00Z\x00\x00\x00a\x00\x00\x00a\x00\x00\x00c\x00\x00\x00c\x00\x00\x00h\x00\x00\x00h\x00\x00\x00l\x00\x00\x00m\x00\x00\x00q\x00\x00\x00q\x00\x00\x00s\x00\x00\x00t\x00\x00\x00v\x00\x00\x00v\x00\x00\x00z\x00\x00\x00z\x00\x00\x00\x14\x01\x00\x00",
         b'\x00\x00\x07\x00\x03\x04\x1c\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x14\x00\x00\x00\x0c-\x1c\x01\x00\x00\x00\x00\x00\x00\x00\xff\xff\xff\xff\x014\x00\x00\x00\x11\x01\x00\x00\x00\x000\x00\x00\x009\x00\x00\x00\x1c\x02\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01H\x00\x00\x00\x0c.\x1c\x03\x00\x00\x00\x01\x00\x00\x00\xff\xff\xff\xff\x01h\x00\x00\x00\x11\x01\x00\x00\x00\x000\x00\x00\x009\x00\x00\x00\x18\x06\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01\x04\xc6\x00\x00\x00\x0cE\x1c\x04\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\xa9\x00\x00\x00\x11\x02\x00\x00\x00\x00+\x00\x00\x00+\x00\x00\x00-\x00\x00\x00-\x00\x00\x00\x1c\x05\x00\x00\x00\x01\x00\x00\x00\xff\xff\xff\xff\x01\xc1\x00\x00\x00\x11\x00\x00\x00\x00\x02\x19h\x00\x00\x00\x00',
-        b'\x02\x00\x02\x00\x00\x00\x18\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x01\x00\x01\x04(\x00\x00\x00\x13\x00\x00\n\x04new_\x14\x00\x00\x19\x00\x00\x00\x00\x13\x01\x00\x1c\x01\x00\x00\x00\x00\x00\x00\x00\xff\xff\xff\xff\x01>\x00\x00\x00\x05\x14\x01\x00\x00'
+        b'\x02\x00\x02\x00\x00\x00\x18\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x01\x00\x01\x04(\x00\x00\x00\x13\x00\x00\n\x04new_\x14\x00\x00\x19\x00\x00\x00\x00\x13\x01\x00\x1c\x01\x00\x00\x00\x00\x00\x00\x00\xff\xff\xff\xff\x01>\x00\x00\x00\x05\x14\x01\x00\x00',
+        
+        bytes.fromhex('0d00180000020118020000000000000001000000000001000104cb0000001701010400000000810000001c0000000001000000ffffffff014c0000001102000000013a0000003a0000004000000040000000073a1c0100000000000000ffffffff017e0000001103000000012f0000002f0000003a0000003a00000040000000400000000740001300000f9600000004040a046874747010be0000000fa900000004040a05687474707310be0000000fb900000004040777077310be0000000a037773731400000a033a2f2f1901000000130100180700000000000000010000000200050001048801000018060000000000000001000000020005000100810100001302001303001c0300000000000000ffffffff012a0100001102000000013a0000003a00000040000000400000001403001805000000000000000100000004000500010479010000073a1304001c0400000000000000ffffffff01710100001102000000013a0000003a0000004000000040000000140400192d01000014020019e5000000074019ce0000001305000f05020000040018090000000200000007000000060006000104d80100001c08000000000000000400000001d101000011020000000030000000390000006100000066000000073a19920100001c0a0000000000000004000000010002000011020000000030000000390000006100000066000000103d0200001c0b00000000000000ffffffff013d02000011040000000123000000230000002f0000002f0000003a0000003a0000003f0000003f000000140500180d00000000000000010000000600070001047c020000073a1306001c0c00000000000000ffffffff017402000011000000000214060019400200001401001307001308001812000000000000000100000009000a00010470030000130900072f1a045403000011020000000123000000230000003f0000003f000000170101040a000a004f0300001c0e00000000000000ffffffff01f902000011030000000123000000230000002f0000002f0000003f0000003f000000072e1c0f00000001000000ffffffff012b03000011030000000123000000230000002e0000002f0000003f0000003f0000000f4d030000040011020000000023000000230000003f0000003f000000104e03000002001ba10200001c1100000000000000010000000168030000072f1409001985020000130a001c1300000000000000ffffffff01a303000011030000000123000000230000002f0000002f0000003f0000003f000000140a00140800181500000000000000010000000b000c000104ed030000073f130b001c1400000000000000ffffffff01e50300001101000000012300000023000000140b0019a9030000181700000000000000010000000c000d000104240400000723130c001c1600000000000000ffffffff011c04000005140c0019ed03000014070000'),
+        bytes.fromhex('04000b000106011c0000000000000000ffffffff01190000001100000000040b034154201300001c0100000000000000ffffffff0034000000051400001c020000000000000001000000014b0000000c200c281301000f6400000004040c460c490c4c0c45106c0100000f8c00000004040c480c540c540c501c03000000000000000100000001870000000c53106c0100000fa000000004040c420c4c0c4f0c42106c0100000fcc00000004040c430c480c520c4f0c4d0c450c2d0c450c580c540c450c4e0c530c490c4f0c4e106c0100000fe400000004040c4e0c410c540c490c560c45106c0100000ff800000004040c450c560c410c4c106c0100000f1201000004040c570c450c420c500c410c430c4b106c0100000f3401000004040c3c0c410c4e0c4f0c4e0c590c4d0c4f0c550c530c3e106c0100000f4201000004040c2f106c0100000f680100000404110200000000410000005a000000610000007a0000000c3a0c5c106c0100000c5c0c5c1c0400000000000000ffffffff007f0100000514010018060000000000000001000000020003000104be0100000c3a1302001c0500000001000000ffffffff01b6010000110000000002140200198201000018080000000000000001000000030004000104fa0100000c3a1303001c0700000001000000ffffffff01f201000011000000000214030019be0100001c090000000000000001000000010e0200000c291c0a00000000000000ffffffff01260200001100000000040200'),
+        bytes.fromhex('0100020002040f1c00000004040a0e6861734f776e50726f706572747910870000000f5c00000004041300000a0866756e6374696f6e1400001c0000000000000000ffffffff004600000005170001040100010057000000075c07280010870000000a0520666f72201c0100000001000000ffffffff007600000005170001040100010087000000075c075d0000'),
+        bytes.fromhex('0000000002041106000000002400000024000000280000002b0000002e0000002e0000003f0000003f0000005b0000005e0000007b0000007d00000000'),
+        bytes.fromhex('010002000006011300000f2a00000004040a04687474701c000000000000000001000000012500000007731042000000077707731c010000000000000001000000014200000007731400000a033a2f2f00'),
+        bytes.fromhex('0000010000041c0000000001000000ffffffff01200000001101000000003d0000003d0000000200'),
+        bytes.fromhex('0000000002040f0f0000000604010722101200000007220200')
             # WIP .. . )
     ]
     
@@ -677,4 +693,4 @@ if __name__ == '__main__':
         print()
         print() # WIP .. .
     
-    # WIP .. 
+    # WIP .. Extra unit tests?
