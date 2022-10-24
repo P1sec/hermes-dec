@@ -9,9 +9,9 @@ class OperandType:
     name : str
     c_type : _SimpleCData
     
-    def __init__(self, c_type : str):
+    def __init__(self, name : str, c_type : str):
         
-        self.name = self.__class__.__name__
+        self.name = name
         self.c_type = {
             'int8_t': c_int8,
             'int32_t': c_int32,
@@ -38,19 +38,19 @@ class Instruction:
     structure : LittleEndianStructure
     has_ret_target : bool
     
-    def __init__(self, opcode : int, args : List[OperandType], module_ref : 'module'):
+    def __init__(self, name : str, opcode : int, args : List[OperandType], module_ref : 'module'):
     
-        self.name = self.__class__.__name__
+        self.name = name
         self.opcode = opcode
         self.operands = [Operand(arg, None) for arg in args]
         self.has_ret_target = False
         
-        module_ref._instructions.append(self)
+        module_ref['_instructions'].append(self)
     
         self.structure = type(name, (LittleEndianStructure, ), dict(
             _pack_ = True,
-            _fields_ = {
+            _fields_ = [
                 ('arg%d' % (pos + 1), operand.c_type)
                 for pos, operand in enumerate(args)
-            }
+            ]
         ))

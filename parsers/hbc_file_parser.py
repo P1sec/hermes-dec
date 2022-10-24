@@ -8,6 +8,7 @@ from hashlib import sha1
 
 # The following imports are made from the current directory:
 from serialized_literal_parser import unpack_slp_array, SLPArray, SLPTag, TagType
+from hbc_bytecode_parser import parse_hbc_bytecode, ParsedInstruction
 from regexp_bytecode_parser import decompile_regex, parse_regex
 from pretty_print import pretty_print_structure
 
@@ -67,6 +68,7 @@ class HBCParser:
     
     header : object
     function_headers : List[object]
+    function_ops : List[List[ParsedInstruction]]
     string_kinds : List[StringKind]
     identifier_hashes : List[int]
     
@@ -136,9 +138,9 @@ class HBCParser:
             ('debugInfoOffset', c_uint32),
             
             # Options (TODO: Are we decoding it correctly, in the right order?):
-            ('hasAsync', c_uint8, 1),
-            ('cjsModulesStaticallyResolved', c_uint8, 1),
             ('staticBuiltins', c_uint8, 1)
+            ('cjsModulesStaticallyResolved', c_uint8, 1),
+            ('hasAsync', c_uint8, 1),
         ]
         
         # After these fields, padding bytes should align
@@ -203,11 +205,11 @@ class HBCParser:
                 ('highestWriteCacheIndex', c_uint8),
                 
                 # Flags
-                ('overflowed', c_uint8, 1),
-                ('hasDebugInfo', c_uint8, 1),
-                ('hasExceptionHandler', c_uint8, 1),
-                ('strictMode', c_uint8, 1),
                 ('prohibitInvoke', c_uint8, 2), # See enum: ProhibitInvoke
+                ('strictMode', c_uint8, 1),
+                ('hasExceptionHandler', c_uint8, 1),
+                ('hasDebugInfo', c_uint8, 1),
+                ('overflowed', c_uint8, 1),
                 ('unused', c_uint8, 2),
             ]
         
@@ -237,11 +239,11 @@ class HBCParser:
                 ('highestWriteCacheIndex', c_uint8),
                 
                 # Flags
-                ('overflowed', c_uint8, 1),
-                ('hasDebugInfo', c_uint8, 1),
-                ('hasExceptionHandler', c_uint8, 1),
-                ('strictMode', c_uint8, 1),
                 ('prohibitInvoke', c_uint8, 2), # See enum: ProhibitInvoke
+                ('strictMode', c_uint8, 1),
+                ('hasExceptionHandler', c_uint8, 1),
+                ('hasDebugInfo', c_uint8, 1),
+                ('overflowed', c_uint8, 1),
                 ('unused', c_uint8, 2),
             ]
         
@@ -400,9 +402,10 @@ class HBCParser:
         
         self.header = header_reader
     
-    def read_function_headers(self):
+    def read_functions(self):
         
         self.function_headers = []
+        self.function_ops = []
         
         self.align_over_padding()
         
@@ -417,11 +420,11 @@ class HBCParser:
             
             if function_header.overflowed:
                 
+                new_offset = (function_header.infoOffset << 16) | function_header.offset
                 function_header = reader_large()
                 
                 before_pos = self.file_buffer.tell()
-                self.file_buffer.seek((function_header.infoOffset << 16) |
-                    function_header.offset)
+                self.file_buffer.seek(new_offset)
                 
                 self.file_buffer.readinto(function_header)
                 
@@ -429,6 +432,24 @@ class HBCParser:
             
             
             self.function_headers.append(function_header)
+            
+            # Disassemble the function bytecode instructions
+            # after having read the small/large function
+            # headers:
+            
+            print()
+            print('DEBUG: Reading function code at %08x (%d bytes)' % (
+                function_header.offset,
+                function_header.bytecodeSizeInBytes
+            ))
+            
+            before_pos = self.file_buffer.tell()
+            self.file_buffer.seek(function_header.offset)
+            data = self.file_buffer.read(function_header.bytecodeSizeInBytes)
+            function_ops = parse_hbc_bytecode(BytesIO(data), self.header.version)
+            self.file_buffer.seek(before_pos)
+            
+            self.function_ops.append(function_ops)
     
     def read_string_kinds(self):
         
@@ -583,7 +604,7 @@ class HBCParser:
         
         self.read_header_from_buffer() # Defines self.header
         
-        self.read_function_headers() # Defines self.function_headers
+        self.read_functions() # Defines self.function_headers
         
         self.read_string_kinds() # Defines self.string_kinds
         
