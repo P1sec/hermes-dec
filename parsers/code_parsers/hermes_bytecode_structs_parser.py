@@ -46,42 +46,75 @@ _instructions : List[Instruction] = []
 
     with open(INPUT_FILE_NAME) as fd:
         
-        for line in fd:
+        input_source = fd.read()
+    
+    # Backport OPERAND_FUNCTION_ID declarations added with
+    # version 0.12.0 (https://github.com/facebook/hermes/commit/c20d7d8)
+    # in order to improve disassembly output readability if needed.
+    
+    if 'OPERAND_FUNCTION_ID(CallDirect, 3)' not in input_source:
+        input_source += '''
+OPERAND_FUNCTION_ID(CallDirect, 3)
+OPERAND_FUNCTION_ID(CreateClosure, 3)
+OPERAND_FUNCTION_ID(CreateClosureLongIndex, 3)
+'''
+
+        if 'CreateGeneratorClosure' in input_source:
+            input_source += '''
+OPERAND_FUNCTION_ID(CreateGeneratorClosure, 3)
+OPERAND_FUNCTION_ID(CreateGeneratorClosureLongIndex, 3)
+'''
+
+        if 'CreateGenerator' in input_source:
+            input_source += '''
+OPERAND_FUNCTION_ID(CreateGenerator, 3)
+OPERAND_FUNCTION_ID(CreateGeneratorLongIndex, 3)
+'''
+
+        if 'CreateAsyncClosure' in input_source:
+            input_source += '''
+OPERAND_FUNCTION_ID(CreateAsyncClosure, 3)
+OPERAND_FUNCTION_ID(CreateAsyncClosureLongIndex, 3)
+'''
+        
+    lines = input_source.splitlines()
+    
+    for line in lines:
+        
+        line = match('^((?:DEFINE|OPERAND)[^(]+?)\((.+?)\)', line)
+        
+        if line:
+            directive, args = line.groups()
+            args = args.split(', ')
             
-            line = match('^((?:DEFINE|OPERAND)[^(]+?)\((.+?)\)', line)
+            # print('=>', directive, args)
             
-            if line:
-                directive, args = line.groups()
-                args = args.split(', ')
-                
-                # print('=>', directive, args)
-                
-                if directive.startswith('DEFINE_OPERAND_TYPE'):
-                    out_source = out_source[:-1] # No endline before that for readibility
-                    out_source += f'{args[0]} = OperandType(\'{args[0]}\', \'{args[1]}\')\n\n'
-                elif directive.startswith('DEFINE_OPCODE'):
-                    out_source += f'{args[0]} = Instruction(\'{args[0]}\', {opcode_count}, [{", ".join(args[1:])}], globals())\n\n'
-                    opcode_count += 1
-                elif directive.startswith('DEFINE_JUMP'):
-                    args += {
-                        'DEFINE_JUMP_1': ['Addr8'],
-                        'DEFINE_JUMP_2': ['Addr8', 'Reg8'],
-                        'DEFINE_JUMP_3': ['Addr8', 'Reg8', 'Reg8']
-                    }[directive]
-                    out_source += f'{args[0]} = Instruction(\'{args[0]}\', {opcode_count}, [{", ".join(args[1:])}], globals())\n'
-                    out_source += f'{args[0]}Long = Instruction(\'{args[0]}Long\', {opcode_count + 1}, [{", ".join(["Addr32"] + args[2:])}], globals())\n\n'
-                    opcode_count += 2
-                elif directive.startswith('DEFINE_RET_TARGET'):
-                    out_source = out_source.strip()
-                    out_source += f'\n{args[0]}.has_ret_target = True\n\n'
-                elif directive.startswith('OPERAND_'):
-                    operand_meaning = {
-                        'OPERAND_BIGINT_ID': 'OperandMeaning.bigint_id',
-                        'OPERAND_FUNCTION_ID': 'OperandMeaning.function_id',
-                        'OPERAND_STRING_ID': 'OperandMeaning.string_id'
-                    }[directive]
-                    # out_source = out_source.strip()
-                    out_source += f'{args[0]}.operands[{(int(args[1]) - 1)}].operand_meaning = {operand_meaning}\n\n'
+            if directive.startswith('DEFINE_OPERAND_TYPE'):
+                out_source = out_source[:-1] # No endline before that for readibility
+                out_source += f'{args[0]} = OperandType(\'{args[0]}\', \'{args[1]}\')\n\n'
+            elif directive.startswith('DEFINE_OPCODE'):
+                out_source += f'{args[0]} = Instruction(\'{args[0]}\', {opcode_count}, [{", ".join(args[1:])}], globals())\n\n'
+                opcode_count += 1
+            elif directive.startswith('DEFINE_JUMP'):
+                args += {
+                    'DEFINE_JUMP_1': ['Addr8'],
+                    'DEFINE_JUMP_2': ['Addr8', 'Reg8'],
+                    'DEFINE_JUMP_3': ['Addr8', 'Reg8', 'Reg8']
+                }[directive]
+                out_source += f'{args[0]} = Instruction(\'{args[0]}\', {opcode_count}, [{", ".join(args[1:])}], globals())\n'
+                out_source += f'{args[0]}Long = Instruction(\'{args[0]}Long\', {opcode_count + 1}, [{", ".join(["Addr32"] + args[2:])}], globals())\n\n'
+                opcode_count += 2
+            elif directive.startswith('DEFINE_RET_TARGET'):
+                out_source = out_source.strip()
+                out_source += f'\n{args[0]}.has_ret_target = True\n\n'
+            elif directive.startswith('OPERAND_'):
+                operand_meaning = {
+                    'OPERAND_BIGINT_ID': 'OperandMeaning.bigint_id',
+                    'OPERAND_FUNCTION_ID': 'OperandMeaning.function_id',
+                    'OPERAND_STRING_ID': 'OperandMeaning.string_id'
+                }[directive]
+                # out_source = out_source.strip()
+                out_source += f'{args[0]}.operands[{(int(args[1]) - 1)}].operand_meaning = {operand_meaning}\n\n'
 
     out_source += '''_opcode_to_instruction : Dict[int, Instruction] = {v.opcode: v for v in _instructions}
 _name_to_instruction : Dict[str, Instruction] = {v.name: v for v in _instructions}

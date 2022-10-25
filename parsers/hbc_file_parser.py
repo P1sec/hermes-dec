@@ -60,7 +60,7 @@ class StringKind(IntEnum):
     Identifier = 1
     Predefined = 2 # Unused since version 0.3.0 - merged with Identifier
 
-class HBCParser:
+class HBCReader:
     
     # The following structure will be derived from the CTypesReader
     # class which is dynamically constructured below, with fields
@@ -138,7 +138,7 @@ class HBCParser:
             ('debugInfoOffset', c_uint32),
             
             # Options (TODO: Are we decoding it correctly, in the right order?):
-            ('staticBuiltins', c_uint8, 1)
+            ('staticBuiltins', c_uint8, 1),
             ('cjsModulesStaticallyResolved', c_uint8, 1),
             ('hasAsync', c_uint8, 1),
         ]
@@ -437,16 +437,16 @@ class HBCParser:
             # after having read the small/large function
             # headers:
             
-            print()
-            print('DEBUG: Reading function code at %08x (%d bytes)' % (
-                function_header.offset,
-                function_header.bytecodeSizeInBytes
-            ))
+            # print()
+            # print('DEBUG: Reading function code at %08x (%d bytes)' % (
+            #     function_header.offset,
+            #     function_header.bytecodeSizeInBytes
+            # ))
             
             before_pos = self.file_buffer.tell()
             self.file_buffer.seek(function_header.offset)
             data = self.file_buffer.read(function_header.bytecodeSizeInBytes)
-            function_ops = parse_hbc_bytecode(BytesIO(data), self.header.version)
+            function_ops = parse_hbc_bytecode(BytesIO(data), self.header.version, self)
             self.file_buffer.seek(before_pos)
             
             self.function_ops.append(function_ops)
@@ -633,7 +633,7 @@ if __name__ == '__main__':
     
     with open('/home/marin/atypikoo_apk/assets/index.android.bundle', 'rb') as file_descriptor:
 
-        hbc_reader = HBCParser()
+        hbc_reader = HBCReader()
 
         hbc_reader.read_whole_file(file_descriptor)
 

@@ -422,6 +422,24 @@ JStrictEqualLong = Instruction('JStrictEqualLong', 182, [Addr32, Reg8, Reg8], gl
 JStrictNotEqual = Instruction('JStrictNotEqual', 183, [Addr8, Reg8, Reg8], globals())
 JStrictNotEqualLong = Instruction('JStrictNotEqualLong', 184, [Addr32, Reg8, Reg8], globals())
 
+CallDirect.operands[2].operand_meaning = OperandMeaning.function_id
+
+CreateClosure.operands[2].operand_meaning = OperandMeaning.function_id
+
+CreateClosureLongIndex.operands[2].operand_meaning = OperandMeaning.function_id
+
+CreateGeneratorClosure.operands[2].operand_meaning = OperandMeaning.function_id
+
+CreateGeneratorClosureLongIndex.operands[2].operand_meaning = OperandMeaning.function_id
+
+CreateGenerator.operands[2].operand_meaning = OperandMeaning.function_id
+
+CreateGeneratorLongIndex.operands[2].operand_meaning = OperandMeaning.function_id
+
+CreateAsyncClosure.operands[2].operand_meaning = OperandMeaning.function_id
+
+CreateAsyncClosureLongIndex.operands[2].operand_meaning = OperandMeaning.function_id
+
 _opcode_to_instruction : Dict[int, Instruction] = {v.opcode: v for v in _instructions}
 _name_to_instruction : Dict[str, Instruction] = {v.name: v for v in _instructions}
 

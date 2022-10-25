@@ -5,15 +5,17 @@ from io import BytesIO
 
 # Imports relative to the current directory:
 from hbc_opcodes import hbc51, hbc59, hbc60, hbc62, hbc71, hbc74, hbc76, hbc83, hbc84, hbc89
+from hbc_opcodes.def_classes import OperandMeaning, Instruction
 
 class ParsedInstruction:
-    inst : 'Instruction'
+    inst : Instruction
     arg1 : object
     arg2 : object
     arg3 : object
     arg4 : object
     arg5 : object
     arg6 : object
+    hbc_reader : 'HBCReader'
     
     def __repr__(self):
         operands = [
@@ -26,9 +28,28 @@ class ParsedInstruction:
             for index in range(len(self.inst.operands))
         ]
         
-        return f'<{self.inst.name}>: <{", ".join(operands)}>'
+        comment = ''
+        for operand_index, operand in enumerate(self.inst.operands):
+            if operand.operand_meaning:
+                operand_value = getattr(self, 'arg%d' % (operand_index + 1))
+                if operand.operand_meaning == OperandMeaning.string_id:
+                    comment += '  # String: %r (%s)' % (
+                        self.hbc_reader.strings[operand_value],
+                        self.hbc_reader.string_kinds[operand_value].name
+                    )
+                    # WIP ..
+                elif operand.operand_meaning == OperandMeaning.function_id:
+                    function_header = self.hbc_reader.function_headers[operand_value]
+                    comment += '  # Function: [#%d %s of %d bytes]: %d params @ offset 0x%08x' % (
+                        operand_value,
+                        self.hbc_reader.strings[function_header.functionName],
+                        function_header.bytecodeSizeInBytes,
+                        function_header.paramCount,
+                        function_header.offset)
+        
+        return f'<{self.inst.name}>: <{", ".join(operands)}>{comment}'
 
-def parse_hbc_bytecode(buf : BytesIO, bytecode_version : int) -> List['Instruction']:
+def parse_hbc_bytecode(buf : BytesIO, bytecode_version : int, hbc_reader: 'HBCReader') -> List[Instruction]:
     
     output_instructions : List['Instruction'] = []
     
@@ -65,6 +86,7 @@ def parse_hbc_bytecode(buf : BytesIO, bytecode_version : int) -> List['Instructi
         
         result = ParsedInstruction()
         result.inst = inst
+        result.hbc_reader = hbc_reader
         
         for operand in ('arg1', 'arg2', 'arg3', 'arg4', 'arg5', 'arg6'):
             if hasattr(structure, operand):
