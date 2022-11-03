@@ -3,6 +3,7 @@
 from ctypes import LittleEndianStructure, c_uint8, c_uint16, c_uint32, c_uint64, c_int8, c_int16, c_int32, c_int64
 from typing import Sequence, Union, Dict, List, Set
 from io import BytesIO, BufferedReader
+from os.path import dirname, realpath
 from enum import IntEnum, IntFlag
 from hashlib import sha1
 
@@ -11,6 +12,10 @@ from serialized_literal_parser import unpack_slp_array, SLPArray, SLPTag, TagTyp
 from hbc_bytecode_parser import parse_hbc_bytecode, ParsedInstruction
 from regexp_bytecode_parser import decompile_regex, parse_regex
 from pretty_print import pretty_print_structure
+
+ROOT_DIR = dirname(realpath(__file__))
+TESTS_DIR = realpath(ROOT_DIR + '/tests')
+ASSETS_DIR = realpath(TESTS_DIR + '/assets')
 
 """
 
@@ -514,8 +519,11 @@ class HBCReader:
             length = info.length
             offset = info.offset
             
+            if is_utf_16:
+                length *= 2
             self.string_storage.seek(offset)
-            string = self.string_storage.read(length * 2 if is_utf_16 else length)
+            string = self.string_storage.read(length)
+            assert len(string) == length
             if is_utf_16:
                 string = string.decode('utf-16')
             
@@ -631,7 +639,7 @@ class HBCReader:
 
 if __name__ == '__main__':
     
-    with open('/home/marin/atypikoo_apk/assets/index.android.bundle', 'rb') as file_descriptor:
+    with open(ASSETS_DIR + '/index.android.bundle', 'rb') as file_descriptor:
 
         hbc_reader = HBCReader()
 

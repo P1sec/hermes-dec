@@ -15,11 +15,13 @@ class ParsedInstruction:
     arg4 : object
     arg5 : object
     arg6 : object
+    original_pos : int
     hbc_reader : 'HBCReader'
     
     def __repr__(self):
         operands = [
             '%s: %s' % (
+                
                 (self.inst.operands[index].operand_meaning.name
                 if self.inst.operands[index].operand_meaning
                 else self.inst.operands[index].operand_type.name),
@@ -46,8 +48,11 @@ class ParsedInstruction:
                         function_header.bytecodeSizeInBytes,
                         function_header.paramCount,
                         function_header.offset)
+            elif operand.operand_type.name in ('Addr8', 'Addr32'):
+                operand_value = getattr(self, 'arg%d' % (operand_index + 1))
+                comment += '  # Address: %08x' % (self.original_pos + operand_value)
         
-        return f'<{self.inst.name}>: <{", ".join(operands)}>{comment}'
+        return f'{"%08x" % self.original_pos}: <{self.inst.name}>: <{", ".join(operands)}>{comment}'
 
 def parse_hbc_bytecode(buf : BytesIO, bytecode_version : int, hbc_reader: 'HBCReader') -> List[Instruction]:
     
@@ -72,6 +77,8 @@ def parse_hbc_bytecode(buf : BytesIO, bytecode_version : int, hbc_reader: 'HBCRe
             break
     
     while True:
+        original_pos = buf.tell()
+        
         opcode = buf.read(1)
         if not opcode:
             break
@@ -86,6 +93,7 @@ def parse_hbc_bytecode(buf : BytesIO, bytecode_version : int, hbc_reader: 'HBCRe
         
         result = ParsedInstruction()
         result.inst = inst
+        result.original_pos = original_pos
         result.hbc_reader = hbc_reader
         
         for operand in ('arg1', 'arg2', 'arg3', 'arg4', 'arg5', 'arg6'):
