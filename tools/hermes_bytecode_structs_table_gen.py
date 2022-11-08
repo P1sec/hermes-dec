@@ -100,7 +100,8 @@ for git_tag in GIT_TAGS:
 
     opcode_count = 0
     
-    accumulated_comment = ''
+    accumulated_comment : str = ''
+    accumulated_comment_was_used : bool = False
     
     readable_type_to_c_type : Dict[str, str] = {}
 
@@ -141,11 +142,18 @@ OPERAND_FUNCTION_ID(CreateAsyncClosureLongIndex, 3)
     
     for line in lines:
         
+        if not line.strip():
+            accumulated_comment_was_used = False
+            accumulated_comment = ''
+        
         comment_line = match('^///\s*(.+)', line)
         
         if comment_line:
             comment = comment_line.group(1)
             
+            if accumulated_comment_was_used:
+                accumulated_comment_was_used = False
+                accumulated_comment = ''
             accumulated_comment += comment.strip() + '\n'
         
         line = match('^((?:DEFINE|OPERAND)[^(]+?)\((.+?)\)', line)
@@ -160,6 +168,7 @@ OPERAND_FUNCTION_ID(CreateAsyncClosureLongIndex, 3)
                 
                 global instruction_name_to_row
                 global opcode_count
+                global accumulated_comment_was_used
                 global accumulated_comment
                     
                 instruction_row = instruction_name_to_row.setdefault(instruction_name, InstructionRow())
@@ -190,7 +199,7 @@ OPERAND_FUNCTION_ID(CreateAsyncClosureLongIndex, 3)
                 
                 column_info.plain_text_desc = escape(accumulated_comment.strip()).replace('\n', '<br>')
                 
-                accumulated_comment = ''
+                accumulated_comment_was_used = True
                 
                 opcode_count += 1
             
@@ -267,7 +276,6 @@ for instruction_name, row in instruction_name_to_row.items():
             or column.plain_text_desc != previous_column.plain_text_desc):
             
             column.has_changed_from_previous = True
-            break
         
         previous_column = column
 
@@ -297,15 +305,21 @@ out_source = '''<!DOCTYPE html>
             <thead>
                 <tr>
                     <th>Instruction</th>
-                    %s
+                    <th colspan="%s">Bytecode version to opcode</th>
                     <th>Documentation</th>
+                </tr>
+                <tr>
+                    <th></th>
+                    %s
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
-''' % ''.join(
+''' % (len(all_bytecode_versions),
+    ''.join(
     '<th>%s</th>' % tag
     for tag in sorted(all_bytecode_versions)
-)
+))
 
 
 for instruction_name, row in sorted(instruction_name_to_row.items()):
