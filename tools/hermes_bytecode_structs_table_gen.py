@@ -4,6 +4,7 @@ from re import search, match, findall, sub, finditer, MULTILINE, DOTALL
 from typing import List, Dict, Set, Sequence, Union, Optional, Any
 from os.path import dirname, realpath
 from dataclasses import dataclass
+from html import escape
 
 TOOLS_DIR = dirname(realpath(__file__))
 ROOT_DIR = realpath(TOOLS_DIR + '/..')
@@ -14,9 +15,76 @@ GIT_TAGS = 'v0.0.1 v0.0.2 v0.0.3 v0.1.0 v0.1.1 v0.2.1 v0.3.0 v0.4.0 v0.4.1 v0.4.
 
 OUTPUT_FILE_NAME = DOCS_DIR + '/opcodes_table.html'
 
+class OperandInfo:
+    
+    # Note for later: the extra information should maybe
+    # put into an HTML tooltip (through the "title"
+    # attribute) over respective icons, when rendering
+    # the table cells regarding the bytecode versions
+    # for each opcode and their respective changes
+    
+    operand_c_type : str
+    operand_readable_type : str
+    operand_meaning : Optional[str]
+    operand_size_bytes : int
+
+# Each column row should be laid in in the form
+# of "<raw_opcode> (<struct_size_bytes>)", be
+# bold if the structure size has changed from
+# the previous version of the colum, display
+# more information at hover
+
+class ColumnInfo:
+    
+    raw_opcode : int
+    present : bool
+    has_changed_from_previous : bool
+    has_ret_target : bool
+    struct_size_bytes : int
+    operands : List[OperandInfo]
+    
+    # Scrape comment information, and render it in a
+    # separate row/tooltip then?
+    plain_text_desc : Optional[str]
+    
+    def to_html(self):
+        
+        if self.has_changed_from_previous:
+            html = '<td class="changed" '
+        else:
+            html = '<td '
+        
+        html += 'title="%s">' % self.plain_text_desc.replace('<br>', '\n')
+        
+        html += str(self.raw_opcode)
+        
+        # html += 'op=%s\x0asz=%s' % (
+        #     self.raw_opcode,
+        #     self.struct_size_bytes
+        # )
+        
+        html += '</td>'
+        
+        return html
+
 class InstructionRow:
     
-    instruction_name = , bytecode_version_to_colums, operands_info, plain_text_desc)
+    instruction_name : str
+    bytecode_version_to_columns : Dict[int, ColumnInfo]
+
+C_TYPE_TO_RAW_SIZE : Dict[str, int] = {
+    'int8_t': 1,
+    'int32_t': 4,
+    'uint8_t': 1,
+    'uint16_t': 2,
+    'uint32_t': 4,
+    'float': 4,
+    'double': 8
+}
+
+instruction_name_to_row : Dict[str, InstructionRow] = {}
+
+all_bytecode_versions : Set[int] = set()
 
 for git_tag in GIT_TAGS:
 
@@ -27,8 +95,14 @@ for git_tag in GIT_TAGS:
     with open(INPUT_VERSION_FILE_NAME) as fd:
         version_file_contents = fd.read()
     bytecode_version : int = int(search(r'BYTECODE_VERSION = (\d+)', version_file_contents).group(1))
+    
+    all_bytecode_versions.add(bytecode_version)
 
     opcode_count = 0
+    
+    accumulated_comment = ''
+    
+    readable_type_to_c_type : Dict[str, str] = {}
 
     with open(INPUT_FILE_NAME) as fd:
         
@@ -63,73 +137,199 @@ OPERAND_FUNCTION_ID(CreateAsyncClosure, 3)
 OPERAND_FUNCTION_ID(CreateAsyncClosureLongIndex, 3)
 '''
         
-    lines = input_source.splitlines()
+    lines : List[str] = input_source.splitlines()
     
     for line in lines:
         
-        line = match('^((?:DEFINE|OPERAND)[^(]+?)\((.+?)\)', line)
+        comment_line = match('^///\s*(.+)', line)
         
+        if comment_line:
+            comment = comment_line.group(1)
+            
+            accumulated_comment += comment.strip() + '\n'
+        
+        line = match('^((?:DEFINE|OPERAND)[^(]+?)\((.+?)\)', line)
+            
         if line:
             directive, args = line.groups()
             args = args.split(', ')
             
             # print('=>', directive, args)
             
-            if directive.startswith('DEFINE_OPERAND_TYPE'):
-                out_source = out_source[:-1] # No endline before that for readibility
-                out_source += f'{args[0]} = OperandType(\'{args[0]}\', \'{args[1]}\')\n\n'
-            elif directive.startswith('DEFINE_OPCODE'):
-                out_source += f'{args[0]} = Instruction(\'{args[0]}\', {opcode_count}, [{", ".join(args[1:])}], globals())\n\n'
+            def define_opcode(instruction_name : str, operand_types : List[str]):
+                
+                global instruction_name_to_row
+                global opcode_count
+                global accumulated_comment
+                    
+                instruction_row = instruction_name_to_row.setdefault(instruction_name, InstructionRow())
+                instruction_row.instruction_name = instruction_name
+                    
+                if not getattr(instruction_row, 'bytecode_version_to_columns', None):
+                    instruction_row.bytecode_version_to_columns = {}
+                
+                column_info = ColumnInfo()
+                instruction_row.bytecode_version_to_columns[bytecode_version] = column_info
+                
+                instruction_operands : List[OperandInfo] = []
+                
+                for operand_readable_type in operand_types:
+                    operand_info = OperandInfo()
+                    operand_info.operand_meaning = None
+                    operand_info.operand_readable_type = operand_readable_type
+                    operand_info.operand_c_type = readable_type_to_c_type[operand_readable_type]
+                    operand_info.operand_size_bytes = C_TYPE_TO_RAW_SIZE[operand_info.operand_c_type]
+                    
+                    instruction_operands.append(operand_info)
+                
+                column_info.has_changed_from_previous = False
+                column_info.struct_size_bytes = sum(operand.operand_size_bytes for operand in instruction_operands)
+                column_info.present = True
+                column_info.raw_opcode = opcode_count
+                column_info.operands = instruction_operands
+                
+                column_info.plain_text_desc = escape(accumulated_comment.strip()).replace('\n', '<br>')
+                
+                accumulated_comment = ''
+                
                 opcode_count += 1
+            
+            if directive.startswith('DEFINE_OPERAND_TYPE'):
+                
+                readable_type_to_c_type[args[0]] = args[1]
+                
+            elif directive.startswith('DEFINE_OPCODE'):
+                
+                define_opcode(args[0], args[1:])
+                
             elif directive.startswith('DEFINE_JUMP'):
                 args += {
                     'DEFINE_JUMP_1': ['Addr8'],
                     'DEFINE_JUMP_2': ['Addr8', 'Reg8'],
                     'DEFINE_JUMP_3': ['Addr8', 'Reg8', 'Reg8']
                 }[directive]
-                out_source += f'{args[0]} = Instruction(\'{args[0]}\', {opcode_count}, [{", ".join(args[1:])}], globals())\n'
-                out_source += f'{args[0]}Long = Instruction(\'{args[0]}Long\', {opcode_count + 1}, [{", ".join(["Addr32"] + args[2:])}], globals())\n\n'
-                opcode_count += 2
+                
+                saved_comment = accumulated_comment
+                define_opcode(args[0], args[1:])
+                
+                accumulated_comment = saved_comment
+                define_opcode(args[0] + 'Long', ['Addr32'] + args[2:])
+            
             elif directive.startswith('DEFINE_RET_TARGET'):
-                out_source = out_source.strip()
-                out_source += f'\n{args[0]}.has_ret_target = True\n\n'
+
+                instruction_row = instruction_name_to_row[args[0]]
+                
+                column_info = instruction_row.bytecode_version_to_columns[bytecode_version]
+                column_info.has_ret_target = True
+
             elif directive.startswith('OPERAND_'):
                 operand_meaning = {
-                    'OPERAND_BIGINT_ID': 'OperandMeaning.bigint_id',
-                    'OPERAND_FUNCTION_ID': 'OperandMeaning.function_id',
-                    'OPERAND_STRING_ID': 'OperandMeaning.string_id'
+                    'OPERAND_BIGINT_ID': 'bigint_id',
+                    'OPERAND_FUNCTION_ID': 'function_id',
+                    'OPERAND_STRING_ID': 'string_id'
                 }[directive]
-                # out_source = out_source.strip()
-                out_source += f'{args[0]}.operands[{(int(args[1]) - 1)}].operand_meaning = {operand_meaning}\n\n'
+
+                instruction_row = instruction_name_to_row[args[0]]
+                
+                column_info = instruction_row.bytecode_version_to_columns[bytecode_version]
+                column_info.operands[int(args[1]) - 1].operand_meaning = operand_meaning
+
+# Diff each "ColumnInfo" entry contained within an 
+# "InstructionRow" object, in order to set a
+# boolean value for the "has_changed_from_previous"
+# attribute of it
 
 
+for instruction_name, row in instruction_name_to_row.items():
+    
+    previous_column : Optional[ColumnInfo] = None
+    
+    for bytecode_version, column in sorted(row.bytecode_version_to_columns.items()):
+                
+        column.plain_text_desc = '%s (total size %d)%s' % (
+            ', '.join(
+                operand.operand_readable_type
+                if not operand.operand_meaning
+                else '%s (%s)' % (
+                    operand.operand_readable_type,
+                    operand.operand_meaning
+                )
+                for operand in column.operands
+            ),
+            column.struct_size_bytes,
+            '<br><br>' + column.plain_text_desc
+            if column.plain_text_desc else ''
+        )
+        
+        if previous_column and (
+            [operand.__dict__ for operand in previous_column.operands] !=
+            [operand.__dict__ for operand in column.operands]
+            or column.plain_text_desc != previous_column.plain_text_desc):
+            
+            column.has_changed_from_previous = True
+            break
+        
+        previous_column = column
 
 out_source = '''<!DOCTYPE html>
 <html>
     <head>
         <title>Opcodes table</title>
         <meta charset="utf-8">
+        <style>
+            table {
+                border-collapse: collapse;
+                margin: 14px;
+            }
+            
+            th, td {
+                padding: 3px;
+                border: 1px solid #ccc;
+            }
+        
+            .changed {
+                background: #AB3535;
+            }
+        </style>
     </head>
     <body>
         <table>
             <thead>
                 <tr>
-                    <th></th>
+                    <th>Instruction</th>
+                    %s
+                    <th>Documentation</th>
                 </tr>
             </thead>
             <tbody>
-'''
+''' % ''.join(
+    '<th>%s</th>' % tag
+    for tag in sorted(all_bytecode_versions)
+)
 
+
+for instruction_name, row in sorted(instruction_name_to_row.items()):
+    
+    out_source += '''<tr>
+        <td>%s</td>''' % instruction_name
+    
+    for bytecode_version in sorted(all_bytecode_versions):
+        if bytecode_version in row.bytecode_version_to_columns:
+            column = row.bytecode_version_to_columns[bytecode_version]
+            out_source += column.to_html()
+        else:
+            out_source += '<td></td>'
+    
+    out_source += '''
+        <td>%s</td>
+    </tr>''' % column.plain_text_desc
+            
 
 out_source += '''    </body>
 </html>
 '''
 
-for instruction_row:
-    
-    # 
-
-with open(OUTPUT_FILE_NAME) as file_handle:
+with open(OUTPUT_FILE_NAME, 'w') as file_handle:
     
     file_handle.write(out_source)
 
