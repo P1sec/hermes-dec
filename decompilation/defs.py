@@ -2,6 +2,7 @@
 #-*- encoding: Utf-8 -*-
 from typing import List, Set, Dict, Tuple, Optional, Sequence, Union, Any
 from os.path import dirname, realpath
+from dataclasses import dataclass
 from sys import path
 
 SCRIPT_DIR = dirname(realpath(__file__))
@@ -10,9 +11,8 @@ PARSERS_DIR = realpath(ROOT_DIR + '/parsers')
 
 path.append(PARSERS_DIR)
 
+from hbc_bytecode_parser import ParsedInstruction
 from hbc_file_parser import HBCReader
-
-# TODO... class DecompiledFunctionBody?
 
 class HermesDecompiler:
     
@@ -26,42 +26,54 @@ class DecompiledFunctionBody:
     function_name : str
     function_object : object
     
-    lines : List['FlowComponent']
+    statements : List['TokenString']
     
     #XX
     pass # WIP ..
     
+@dataclass
+class TokenString:
+    tokens : List['Token']
+    assembly : ParsedInstruction
 
-class FlowComponent:
-    
-    reads_registers : Optional[Set[int]]
-    string_index_referencing_register_variables : Optional[Set[int]]
-    side_mutates_registers : Optional[Set[int]] # Register assignments other than setting "self.assigns_to_register", e.g in a "for" or "if" statement
-    
-    pass # WIP
+class Token:
+    pass
 
-class BlockStart(FlowComponent):
+@dataclass
+class LeftHandRegToken(Token):
+    register : int
 
-    pass # WIP
+class AssignmentToken(Token):
+    pass
 
-class BlockEnd(FlowComponent):
-    
-    pass # WIP
+class LeftParenthesisToken(Token):
+    pass
 
-class JumpTarget(FlowComponent):
-    
-    pass # Used to make labels, should be retargeted later
+class RightParenthesisToken(Token):
+    pass
 
-class AtomicFlowStatement(FlowComponent):
-    # This may assign to a register (at at most function_header.), a global variable, a table array index:
-    
-    assigns_to_register : Optional[int]
-    assigns_to_global_var : Optional[str]  
+class CatchBlockStart(Token):
+    pass
 
-    assignment_string : str # The Javascript expression (including the left-hand) that should assign to the any of self.assigns_to_register to self.assigns_to_global_var, if present, or an array index of it, or just executed.
-    registers_referenced_at_in_assignment_string : List[Tuple[int, int, int, bool]] # (start, end, register_id, is_lefthanded) tuples indicating where register numbers in the form "r0" are referenced in self.assignment_string.
+class DotAccessorToken(Token):
+    pass
 
-    pass # WIP 
+@dataclass
+class RightHandRegToken(Token):
+    register : int
+
+@dataclass
+class BuiltinFunctionToken(Token):
+    buildit_function_id : int
+
+@dataclass
+class FunctionToken(Token):
+    function_id : int
+
+@dataclass
+class RawToken(Token):
+    token : str
+
 
 # WIP .. .
 
