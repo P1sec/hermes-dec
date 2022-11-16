@@ -80,7 +80,7 @@ class HBCReader:
     small_string_table : List[object]
     overflow_string_table : List[object]
     string_storage : BytesIO
-    strings : List[Union[bytes, str]]
+    strings : List[str]
     
     file_buffer : BufferedReader
     
@@ -526,6 +526,8 @@ class HBCReader:
             assert len(string) == length
             if is_utf_16:
                 string = string.decode('utf-16')
+            else:
+                string = ''.join(chr(char) for char in string)
             
             self.strings.append(string)
     

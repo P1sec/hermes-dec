@@ -15,7 +15,8 @@ class Pass1MakeGraphes:
             
             for instruction in state.hbc_reader.function_ops[function_count]:
                 
-                if instruction.inst.name in ('CreateClosure', 'CreateClosureLongIndex'):
+                if instruction.inst.name in ('CreateClosure', 'CreateClosureLongIndex',
+                    'CreateAsyncClosure', 'CreateAsyncClosureLongIndex'):
                     
                     source_function_id = function_count
                     target_function_id = instruction.arg3

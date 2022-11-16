@@ -43,17 +43,21 @@ class Token:
 class LeftHandRegToken(Token):
     register : int
 
+@dataclass
 class AssignmentToken(Token):
     pass
 
+@dataclass
 class LeftParenthesisToken(Token):
     pass
 
+@dataclass
 class RightParenthesisToken(Token):
     pass
 
+@dataclass
 class CatchBlockStart(Token):
-    pass
+    arg_register : int
 
 class DotAccessorToken(Token):
     pass
@@ -63,16 +67,28 @@ class RightHandRegToken(Token):
     register : int
 
 @dataclass
-class BuiltinFunctionToken(Token):
-    buildit_function_id : int
+class GetEnvironmentToken(Token):
+    register : int
+    nesting_level : int
 
 @dataclass
-class FunctionToken(Token):
+class NewEnvironmentToken(Token):
+    register : int
+
+@dataclass
+class FunctionTableIndex(Token):
     function_id : int
+    environment_id : Optional[int] = None
+    
+    is_closure : bool = False
+    is_builtin : bool = False
+    is_generator : bool = False
+    is_async : bool = False
 
 @dataclass
 class RawToken(Token):
     token : str
+
 
 
 # WIP .. .

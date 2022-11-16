@@ -22,7 +22,7 @@ if __name__ == '__main__':
         
         for function_count, function_header in enumerate(hbc_reader.function_headers):
             # pretty_print_structure(function_header)
-            print('=> [Function #%d %s of %d bytes]: %d params, frame size=%d, env size=%d, read index sz=%d, write index sz=%d, strict=%r, exc handler=%r, debug info=%r  @ offset 0x%08x' % (
+            print('=> [Function #%d "%s" of %d bytes]: %d params, frame size=%d, env size=%d, read index sz=%d, write index sz=%d, strict=%r, exc handler=%r, debug info=%r  @ offset 0x%08x' % (
                 
                 function_count,
                 hbc_reader.strings[function_header.functionName],

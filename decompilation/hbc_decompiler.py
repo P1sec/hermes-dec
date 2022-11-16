@@ -36,6 +36,22 @@ if __name__ == '__main__':
     # DEBUG:
     print('[DEBUG] => Number of closures in the JS document:', len(state.closure_to_caller_function_ids))
     
+    print('=> DEBUG: [Intermediary representation of the decompiled code]')
+        
+    for function_id, function_body in state.function_id_to_body.items():
+        
+        print()
+        print('=> Decompiling function #%d "%s" (at address 0x%08x):' % (
+            function_id, function_body.function_name,
+            function_body.function_object.offset))
+        print()
+        print('_' * 37)
+        print()
+        for statement in function_body.statements:
+            print('===> ', statement)
+        print()
+    
+    print()
     
     # WIP .. Call Pass0 here
     
