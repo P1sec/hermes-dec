@@ -3,7 +3,7 @@
 from typing import List, Tuple, Dict, Set, Sequence, Union, Optional, Any
 from os.path import dirname, realpath
 
-from defs import HermesDecompiler, DecompiledFunctionBody, TokenString, LeftParenthesisToken, RightParenthesisToken, LeftHandRegToken, AssignmentToken, DotAccessorToken, CatchBlockStart, RightHandRegToken, GetEnvironmentToken, NewEnvironmentToken, FunctionTableIndex, RawToken
+from defs import HermesDecompiler, DecompiledFunctionBody, TokenString, LeftParenthesisToken, RightParenthesisToken, LeftHandRegToken, AssignmentToken, DotAccessorToken, CatchBlockStart, RightHandRegToken, GetEnvironmentToken, NewEnvironmentToken, JumpConditionToken, FunctionTableIndex, ForInLoopInit, ForInLoopNextIter, RawToken
 
 class Pass2MakeAtomicFlow:
     
@@ -20,6 +20,11 @@ class Pass2MakeAtomicFlow:
         
         GET = GetEnvironmentToken
         NET = NewEnvironmentToken
+        
+        JCT = JumpConditionToken
+        
+        FILI = ForInLoopInit
+        FILNI = ForInLoopNextIter
         
         DAT = DotAccessorToken
         CBS = CatchBlockStart
@@ -197,7 +202,7 @@ class Pass2MakeAtomicFlow:
                     lines.append(TS([LHRT(op1), AT(), RT('__uasm.divu32'), LPT(), RHRT(op2), RT(', '), RHRT(op3), RPT()],
                         assembly = [instruction]))
                 elif instruction.inst.name == 'Eq':
-                    lines.append(TS([LHRT(op1), AT(), RHRT(op2), RT('=='), RHRT(op3)],
+                    lines.append(TS([LHRT(op1), AT(), RHRT(op2), RT(' == '), RHRT(op3)],
                         assembly = [instruction]))
                 elif instruction.inst.name == 'GetArgumentsLength':
                     lines.append(TS([LHRT(op1), AT(), RT('arguments.length')],
@@ -210,7 +215,7 @@ class Pass2MakeAtomicFlow:
                     lines.append(TS([LHRT(op1), AT(), FTI(op2, is_builtin = True, is_closure = True)],
                         assembly = [instruction]))
                 elif instruction.inst.name in ('GetById', 'GetByIdLong', 'GetByIdShort'):
-                    string = state.hbc_reader.strings[instruction.inst.name]
+                    string = state.hbc_reader.strings[op4]
                     
                     lines.append(TS([LHRT(op1), AT(), RHRT(op2), DAT(), RT(string)],
                         assembly = [instruction]))
@@ -224,7 +229,89 @@ class Pass2MakeAtomicFlow:
                 elif instruction.inst.name == 'GetNewTarget':
                     lines.append(TS([LHRT(op1), AT(), RT('new.target')], assembly = [instruction]))
                 elif instruction.inst.name == 'GetNextPName':
-                    lines.append(TS([
+                    lines.append(TS([FILNI(op1, op2, op3, op4, op5)], assembly = [instruction]))
+                elif instruction.inst.name == 'GetPNameList':
+                    lines.append(TS([FILI(op1, op2, op3, op4)], assembly = [instruction]))
+                elif instruction.inst.name == 'Greater':
+                    lines.append(TS([LHRT(op1), AT(), RHRT(op2), RT(' > '), RHRT(op3)],
+                        assembly = [instruction]))
+                elif instruction.inst.name == 'GreaterEq':
+                    lines.append(TS([LHRT(op1), AT(), RHRT(op2), RT(' >= '), RHRT(op3)],
+                        assembly = [instruction]))
+                elif instruction.inst.name == 'Inc':
+                    lines.append(TS([LHRT(op1), AT(), RHRT(op2), RT(' + 1')],
+                        assembly = [instruction]))
+                elif instruction.inst.name == 'InstanceOf':
+                    lines.append(TS([LHRT(op1), AT(), RHRT(op2), RT(' instanceof '), RHRT(op3)],
+                        assembly = [instruction]))
+                elif instruction.inst.name == 'IsIn':
+                    lines.append(TS([LHRT(op1), AT(), RHRT(op2), RT(' in '), RHRT(op3)],
+                        assembly = [instruction]))
+                # Note: The implementations of the methods related to the iteration below
+                # is not fully consistent with the corresponding React Native instruction
+                # behavior, which has special handling for iterating over arrays, may
+                # suppress propagating the exception over certain IteratorClose() calls...
+                #
+                # This may be improved in the future if any required.
+                elif instruction.inst.name == 'IteratorBegin':
+                    lines.append(TS([LHRT(op1), AT(), RHRT(op2), RT('[Symbol.iterator]')],
+                        assembly = [instruction]))
+                    lines.append(TS([LHRT(op2), AT(), RHRT(op1), LPT(), RPT(), DAT(), RT('next')],
+                        assembly = [instruction]))
+                elif instruction.inst.name == 'IteratorNext':
+                    lines.append(TS([LHRT(op1), AT(), RHRT(op3), LPT(), RPT(), DAT(), RT('value')],
+                        assembly = [instruction]))
+                elif instruction.inst.name == 'IteratorClose':
+                    lines.append(TS([RHRT(op1), DAT(), RT('return'), LPT(), RPT()],
+                        assembly = [instruction]))
+                elif instruction.inst.name in ('JEqual', 'JEqualLong'):
+                    lines.append(TS([JCT(op1), RHRT(op2), RT(' == '), RHRT(op3)],
+                        assembly = [instruction]))
+                elif instruction.inst.name in ('JGreater', 'JGreaterN', 'JGreaterLong', 'JGreaterNLong'):
+                    lines.append(TS([JCT(op1), RHRT(op2), RT(' > '), RHRT(op3)],
+                        assembly = [instruction]))
+                elif instruction.inst.name in ('JNotGreater', 'JNotGreaterN', 'JNotGreaterLong', 'JNotGreaterNLong'):
+                    lines.append(TS([JCT(op1), RT('!'), LPT(), RHRT(op2), RT(' > '), RHRT(op3), RPT()],
+                        assembly = [instruction]))
+                elif instruction.inst.name in ('JGreaterEqual', 'JGreaterEqualN', 'JGreaterEqualLong', 'JGreaterEqualNLong'):
+                    lines.append(TS([JCT(op1), RHRT(op2), RT(' >= '), RHRT(op3)],
+                        assembly = [instruction]))
+                elif instruction.inst.name in ('JNotGreaterEqual', 'JNotGreaterEqualN', 'JNotGreaterEqualLong', 'JNotGreaterEqualNLong'):
+                    lines.append(TS([JCT(op1), RT('!'), LPT(), RHRT(op2), RT(' >= '), RHRT(op3), RPT()],
+                        assembly = [instruction]))
+                elif instruction.inst.name in ('JLess', 'JLessN', 'JLessLong', 'JLessNLong'):
+                    lines.append(TS([JCT(op1), RHRT(op2), RT(' < '), RHRT(op3)],
+                        assembly = [instruction]))
+                elif instruction.inst.name in ('JNotLess', 'JNotLessN', 'JNotLessLong', 'JNotLessNLong'):
+                    lines.append(TS([JCT(op1), RT('!'), LPT(), RHRT(op2), RT(' < '), RHRT(op3), RPT()],
+                        assembly = [instruction]))
+                elif instruction.inst.name in ('JLessEqual', 'JLessEqualN', 'JLessEqualLong', 'JLessEqualNLong'):
+                    lines.append(TS([JCT(op1), RHRT(op2), RT(' <= '), RHRT(op3)],
+                        assembly = [instruction]))
+                elif instruction.inst.name in ('JNotLessEqual', 'JNotLessEqualN', 'JNotLessEqualLong', 'JNotLessEqualNLong'):
+                    lines.append(TS([JCT(op1), RT('!'), LPT(), RHRT(op2), RT(' <= '), RHRT(op3), RPT()],
+                        assembly = [instruction]))
+                elif instruction.inst.name in ('JNotEqual', 'JNotEqualLong'):
+                    lines.append(TS([JCT(op1), RHRT(op2), RT(' != '), RHRT(op3)],
+                        assembly = [instruction]))
+                elif instruction.inst.name in ('JStrictEqual', 'JStrictEqualLong'):
+                    lines.append(TS([JCT(op1), RHRT(op2), RT(' === '), RHRT(op3)],
+                        assembly = [instruction]))
+                elif instruction.inst.name in ('JStrictNotEqual', 'JStrictNotEqualLong'):
+                    lines.append(TS([JCT(op1), RHRT(op2), RT(' !== '), RHRT(op3)],
+                        assembly = [instruction]))
+                elif instruction.inst.name in ('Jmp', 'JmpLong'):
+                    lines.append(TS([JCT(op1), RT('true')],
+                        assembly = [instruction]))
+                elif instruction.inst.name in ('JmpFalse', 'JmpFalseLong'):
+                    lines.append(TS([JCT(op1), RT('!'), RHRT(op2)],
+                        assembly = [instruction]))
+                elif instruction.inst.name in ('JmpTrue', 'JmpTrueLong'):
+                    lines.append(TS([JCT(op1), RHRT(op2)],
+                        assembly = [instruction]))
+                elif instruction.inst.name in ('JmpUndefined', 'JmpUndefinedLong'):
+                    lines.append(TS([JCT(op1), RHRT(op2), RT(' === undefined')],
+                        assembly = [instruction]))
                 else:
                     lines.append(TS([RT('// Unsupported instruction: %r' % instruction)],
                         assembly = [instruction]))

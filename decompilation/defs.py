@@ -76,6 +76,32 @@ class NewEnvironmentToken(Token):
     register : int
 
 @dataclass
+class ForInLoopInit(Token):
+    obj_props_register : int
+    obj_register : int
+    iter_index_register : int
+    iter_size_register : int
+
+@dataclass
+class ForInLoopInit(Token):
+    obj_props_register : int
+    obj_register : int
+    iter_index_register : int
+    iter_size_register : int
+
+@dataclass
+class ForInLoopNextIter(Token):
+    next_value_register : int
+    obj_props_register : int
+    obj_register : int
+    iter_index_register : int
+    iter_size_register : int
+
+@dataclass
+class JumpConditionToken(Token):
+    target_address : int
+
+@dataclass
 class FunctionTableIndex(Token):
     function_id : int
     environment_id : Optional[int] = None
