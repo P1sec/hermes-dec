@@ -8,7 +8,6 @@ from enum import IntEnum, IntFlag
 from hashlib import sha1
 
 # The following imports are made from the current directory:
-from serialized_literal_parser import unpack_slp_array, SLPArray, SLPTag, TagType
 from hbc_bytecode_parser import parse_hbc_bytecode, ParsedInstruction
 from regexp_bytecode_parser import decompile_regex, parse_regex
 from pretty_print import pretty_print_structure
@@ -84,9 +83,12 @@ class HBCReader:
     
     file_buffer : BufferedReader
     
-    arrays : SLPArray
-    object_keys : SLPArray
-    object_values : SLPArray
+    # The following bytes can be sliced and decoded to "SLPArray"
+    # objects using the "unpack_slp_array" object of
+    # "serialized_literal_parser.py":
+    arrays : bytes
+    object_keys : bytes
+    object_values : bytes
     
     bigint_table : List[object]
     bigint_storage : BytesIO
@@ -534,13 +536,13 @@ class HBCReader:
     def read_arrays(self):
         
         self.align_over_padding()
-        self.arrays = unpack_slp_array(self.file_buffer.read(self.header.arrayBufferSize))
+        self.arrays = self.file_buffer.read(self.header.arrayBufferSize)
         
         self.align_over_padding()
-        self.object_keys = unpack_slp_array(self.file_buffer.read(self.header.objKeyBufferSize))
+        self.object_keys = self.file_buffer.read(self.header.objKeyBufferSize)
         
         self.align_over_padding()
-        self.object_values = unpack_slp_array(self.file_buffer.read(self.header.objValueBufferSize))
+        self.object_values = self.file_buffer.read(self.header.objValueBufferSize)
     
     def read_bigints(self):
         
@@ -573,8 +575,8 @@ class HBCReader:
         self.regexp_storage = BytesIO(self.file_buffer.read(
             self.header.regExpStorageSize))
         
-        # TODO implement a RegExp bytecode decoder in the
-        # neighboring "regexp_bytecode_parser.py" file.
+        # (We have implemented a RegExp bytecode decoder in the
+        # neighboring "regexp_bytecode_parser.py" file.)
     
     def read_cjs_modules(self):
         
@@ -694,7 +696,7 @@ if __name__ == '__main__':
             # Safety checks:
             assert function_header.unused == 0 and function_header.paramCount < 100
         
-        # Comment, huge
+        # Comment, huge (and outdated)
         
         """
         print()

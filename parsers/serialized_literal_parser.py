@@ -55,22 +55,46 @@ class TagType(IntEnum):
     
 
 @dataclass
-class SLPTag:
+class SLPValue:
     tag_type : TagType
     
-    values : list
+    value : object
 
 @dataclass
 class SLPArray:
-    items : List[SLPTag]
+    items : List[SLPValue]
+    
+    def to_strings(self, string_table : List[str]) -> List[str]:
+        
+        stringified_items : List[str] = []
+        for item in self.items:
+            if item.tag_type == TagType.NullTag:
+                string = 'null'
+            elif item.tag_type == TagType.TrueTag:
+                string = 'true'
+            elif item.tag_type == TagType.FalseTag:
+                string = 'false'
+            elif item.tag_type == TagType.NumberTag:
+                string = str(item.value)
+            elif item.tag_type in (TagType.LongStringTag,
+                TagType.ShortStringTag, TagType.ByteStringTag):
+                string = repr(string_table[item.value])
+            elif item.tag_type == TagType.IntegerTag:
+                string = str(item.value)
+            else:
+                raise ValueError
+            
+            stringified_items.append(string)
+    
+        return stringified_items
     
 
-def unpack_slp_array(data : bytes) -> SLPArray:
+def unpack_slp_array(data : bytes, num_items : int) -> SLPArray:
     data = BytesIO(data)
     
     items = []
     
-    while True:
+    while len(items) < num_items:
         values = []
         
         next_tag = data.read(1)
@@ -102,8 +126,9 @@ def unpack_slp_array(data : bytes) -> SLPArray:
                 values.append(int.from_bytes(data.read(4), 'little'))
             else:
                 raise ValueError
-            
-            items.append(SLPTag(tag_type, values))
         
-    return SLPArray(items)
+        items.extend(SLPValue(tag_type, value)
+            for value in values)
+
+    return SLPArray(items[:num_items])
     

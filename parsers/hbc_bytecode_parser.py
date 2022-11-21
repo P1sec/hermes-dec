@@ -5,6 +5,7 @@ from io import BytesIO
 
 # Imports relative to the current directory:
 from hbc_opcodes import hbc51, hbc59, hbc60, hbc62, hbc71, hbc74, hbc76, hbc83, hbc84, hbc89
+from serialized_literal_parser import unpack_slp_array, SLPArray, SLPValue, TagType
 from hbc_opcodes.def_classes import OperandMeaning, Instruction
 
 class ParsedInstruction:
@@ -51,6 +52,18 @@ class ParsedInstruction:
             elif operand.operand_type.name in ('Addr8', 'Addr32'):
                 operand_value = getattr(self, 'arg%d' % (operand_index + 1))
                 comment += '  # Address: %08x' % (self.original_pos + operand_value)
+        if self.inst.name in ('NewArrayWithBuffer', 'NewArrayWithBufferLong'):
+            comment += '  # Array: [%s]' % ', '.join(unpack_slp_array(
+                self.hbc_reader.arrays[self.arg4:], self.arg3).to_strings(self.hbc_reader.strings))
+        elif self.inst.name in ('NewObjectWithBuffer', 'NewObjectWithBufferLong'):
+            comment += '  # Object: {%s}' % ', '.join('%s: %s' % (key, value)
+                for key, value in zip(
+                    unpack_slp_array(
+                        self.hbc_reader.object_keys[self.arg4:], self.arg3).to_strings(self.hbc_reader.strings),
+                    unpack_slp_array(
+                        self.hbc_reader.object_values[self.arg5:], self.arg3).to_strings(self.hbc_reader.strings)
+                )
+            )
         
         return f'{"%08x" % self.original_pos}: <{self.inst.name}>: <{", ".join(operands)}>{comment}'
 

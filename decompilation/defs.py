@@ -72,6 +72,11 @@ class GetEnvironmentToken(Token):
     nesting_level : int
 
 @dataclass
+class LoadFromEnvironmentToken(Token):
+    register : int
+    slot_index : int
+
+@dataclass
 class NewEnvironmentToken(Token):
     register : int
 
