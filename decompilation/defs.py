@@ -40,6 +40,23 @@ class Token:
     pass
 
 @dataclass
+class ResumeGenerator(Token):
+    result_out_reg : int
+    return_bool_out_reg : int
+
+@dataclass
+class SaveGenerator(Token):
+    address : int
+
+@dataclass
+class StartGenerator(Token):
+    pass
+
+@dataclass
+class ReturnDirective(Token):
+    register : int
+
+@dataclass
 class LeftHandRegToken(Token):
     register : int
 
@@ -79,6 +96,20 @@ class LoadFromEnvironmentToken(Token):
 @dataclass
 class NewEnvironmentToken(Token):
     register : int
+
+@dataclass
+class SwitchImm(Token):
+    value_reg : int
+    jump_table_offset : int
+    default_jump_offset : int
+    unsigned_min_value : int
+    unsigned_max_value : int
+
+@dataclass
+class StoreToEnvironment(Token):
+    env_register : int
+    slot_index : int
+    value_register : int
 
 @dataclass
 class ForInLoopInit(Token):

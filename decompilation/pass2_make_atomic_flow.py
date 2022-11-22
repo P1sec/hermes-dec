@@ -3,7 +3,7 @@
 from typing import List, Tuple, Dict, Set, Sequence, Union, Optional, Any
 from os.path import dirname, realpath
 
-from defs import HermesDecompiler, DecompiledFunctionBody, TokenString, LeftParenthesisToken, RightParenthesisToken, LeftHandRegToken, AssignmentToken, DotAccessorToken, CatchBlockStart, RightHandRegToken, GetEnvironmentToken, LoadFromEnvironmentToken, NewEnvironmentToken, JumpConditionToken, FunctionTableIndex, ForInLoopInit, ForInLoopNextIter, RawToken
+from defs import HermesDecompiler, DecompiledFunctionBody, TokenString, LeftParenthesisToken, RightParenthesisToken, LeftHandRegToken, AssignmentToken, DotAccessorToken, CatchBlockStart, RightHandRegToken, GetEnvironmentToken, StoreToEnvironment, SwitchImm, LoadFromEnvironmentToken, ReturnDirective, ResumeGenerator, SaveGenerator, StartGenerator, NewEnvironmentToken, JumpConditionToken, FunctionTableIndex, ForInLoopInit, ForInLoopNextIter, RawToken
 from serialized_literal_parser import unpack_slp_array, SLPArray, SLPValue, TagType
 
 class Pass2MakeAtomicFlow:
@@ -14,15 +14,22 @@ class Pass2MakeAtomicFlow:
         
         TS = TokenString
         
+        RG = ResumeGenerator
+        SG = SaveGenerator
+        SG2 = StartGenerator
+
         LHRT = LeftHandRegToken
         AT = AssignmentToken
         RHRT = RightHandRegToken
         RT = RawToken
         
         GET = GetEnvironmentToken
+        STE = StoreToEnvironment
         NET = NewEnvironmentToken
         LFET = LoadFromEnvironmentToken
         
+        RD = ReturnDirective
+        SI = SwitchImm
         JCT = JumpConditionToken
         
         FILI = ForInLoopInit
@@ -219,7 +226,8 @@ class Pass2MakeAtomicFlow:
                 elif instruction.inst.name == 'GetBuiltinClosure':
                     lines.append(TS([LHRT(op1), AT(), FTI(op2, is_builtin = True, is_closure = True)],
                         assembly = [instruction]))
-                elif instruction.inst.name in ('GetById', 'GetByIdLong', 'GetByIdShort'):
+                elif instruction.inst.name in ('GetById', 'GetByIdLong', 'GetByIdShort',
+                    'TryPutById', 'TryPutByIdLong'):
                     string = state.hbc_reader.strings[op4]
                     
                     lines.append(TS([LHRT(op1), AT(), RHRT(op2), DAT(), RT(string)],
@@ -373,7 +381,7 @@ class Pass2MakeAtomicFlow:
                     lines.append(TS([LHRT(op1), AT(), RT('__uasm.mul32'), LPT(), RHRT(op2), RT(', '), RHRT(op3), RPT()],
                         assembly = [instruction]))
                 elif instruction.inst.name in ('Mul', 'MulN'):
-                    lines.append(TS([LHRT(op1), AT(), RHRT(op2), RT(' % '), RHRT(op3)],
+                    lines.append(TS([LHRT(op1), AT(), RHRT(op2), RT(' * '), RHRT(op3)],
                         assembly = [instruction]))
                 elif instruction.inst.name == 'Negate':
                     lines.append(TS([LHRT(op1), AT(), RT('-'), RHRT(op2)],
@@ -405,6 +413,113 @@ class Pass2MakeAtomicFlow:
                         assembly = [instruction]))
                 elif instruction.inst.name == 'ProfilePoint':
                     lines.append(TS([], assembly = [instruction]))
+                elif instruction.inst.name in ('PutById', 'PutByIdLong',
+                    'TryPutById', 'TryPutByIdLong'):
+                    index = repr(state.hbc_reader.strings[op4])
+                    lines.append(TS([LHRT(op1), RT('[' + index + ']'), AT(), RHRT(op2)],
+                        assembly = [instruction]))
+                elif instruction.inst.name in ('PutNewOwnById', 'PutNewOwnByIdLong',
+                    'PutNewOwnByIdShort'):
+                    index = repr(state.hbc_reader.strings[op3])
+                    lines.append(TS([LHRT(op1), RT('[' + index + ']'), AT(), RHRT(op2)],
+                        assembly = [instruction]))
+                elif instruction.inst.name in ('PutNewOwnNEById', 'PutNewOwnNEByIdLong'):
+                    index = repr(state.hbc_reader.strings[op3])
+                    lines.append(TS([RT('Object.defineProperty'), LPT(),
+                        LHRT(op1), RT(', '), RT(repr(index)),
+                        RT('{value: '), RHRT(op2), RT('}'), RPT()],
+                        assembly = [instruction]))
+                    # TODO: Are non-enumerable values set correctly?
+                    # When are these used if they are used?
+                elif instruction.inst.name == 'PutByVal':
+                    lines.append(TS([LHRT(op1), DAT(), RHRT(op2), AT(), RHRT(op3)],
+                        assembly = [instruction]))
+                elif instruction.inst.name == 'PutOwnByVal':
+                    if op4: # Is the property enumerable?
+                        lines.append(TS([LHRT(op1), DAT(), RHRT(op3), AT(), RHRT(op2)],
+                            assembly = [instruction]))
+                    else:
+                        lines.append(TS([RT('Object.defineProperty'), LPT(),
+                            LHRT(op1), RT(', '), RHRT(op3),
+                            RT('{value: '), RHRT(op2), RT('}'), RPT()],
+                            assembly = [instruction]))
+                elif instruction.inst.name in ('PutOwnByIndex', 'PutOwnByIndexL'):
+                    lines.append(TS([LHRT(op1), RT('[%d]' % op3), AT(), RHRT(op2)],
+                        assembly = [instruction]))
+                elif instruction.inst.name in ('PutOwnGetterSetterByVal'):
+                    index = repr(state.hbc_reader.strings[op3])
+                    lines.append(TS([RT('Object.defineProperty'), LPT(),
+                        LHRT(op1), RT(', '), RHRT(op2),
+                        RT('{get: '), RHRT(op3), RT(', set: '), RHRT(op4),
+                        RT(', enumerable: ' + ('true' if op5 else 'false') + '}'), RPT()],
+                        assembly = [instruction]))
+                elif instruction.inst.name == 'RShift':
+                    lines.append(TS([LHRT(op1), AT(), RHRT(op2), RT(' >> '), RHRT(op3)],
+                        assembly = [instruction]))
+                elif instruction.inst.name == 'ReifyArguments':
+                    lines.append(TS([LHRT(op1), AT(), RT('arguments')],
+                        assembly = [instruction]))
+                elif instruction.inst.name == 'ResumeGenerator':
+                    lines.append(TS([RG(op1, op2)], assembly = [instruction]))
+                elif instruction.inst.name == 'Ret':
+                    lines.append(TS([RD(op1)], assembly = [instruction]))
+                elif instruction.inst.name in ('SaveGenerator', 'SaveGeneratorLong'):
+                    lines.append(TS([SG(op1)], assembly = [instruction]))
+                elif instruction.inst.name == 'SelectObject':
+                    lines.append(TS([LHRT(op1), AT(), RHRT(op3), RT(' instanceof Object ? '),
+                        RHRT(op3), RT(' : '), RHRT(op2)],
+                        assembly = [instruction]))
+                elif instruction.inst.name == 'StartGenerator':
+                    lines.append(TS([SG2()], assembly = [instruction]))
+                elif instruction.inst.name in ('Store16', 'Store32', 'Store8'):
+                    lines.append(TS([RT('__uasm.' + instruction.inst.name.lower()), LPT(), RHRT(op1), RT(', '), RHRT(op2), RT(', '), RHRT(op3), RPT()],
+                        assembly = [instruction]))
+                elif instruction.inst.name in ('StoreNPToEnvironment', 'StoreNPToEnvironmentL',
+                    'StoreToEnvironment', 'StoreToEnvironmentL'):
+                    lines.append(TS([STE(op1, op2, op3)], assembly = [instruction]))
+                elif instruction.inst.name == 'StrictEq':
+                    lines.append(TS([LHRT(op1), AT(), RHRT(op2), RT(' === '), RHRT(op3)],
+                        assembly = [instruction]))
+                elif instruction.inst.name == 'StrictNeq':
+                    lines.append(TS([LHRT(op1), AT(), RHRT(op2), RT(' !== '), RHRT(op3)],
+                        assembly = [instruction]))
+                elif instruction.inst.name in ('Sub', 'SubN'):
+                    lines.append(TS([LHRT(op1), AT(), RHRT(op2), RT(' - '), RHRT(op3)],
+                        assembly = [instruction]))
+                elif instruction.inst.name == 'Sub32':
+                    lines.append(TS([LHRT(op1), AT(), RT('__uasm.sub32'), LPT(), RHRT(op2), RT(', '), RHRT(op3), RPT()],
+                        assembly = [instruction]))
+                elif instruction.inst.name == 'SwitchImm':
+                    lines.append(TS([SI(op1, op2, op3, op4, op5)], assembly = [instruction]))
+                elif instruction.inst.name == 'Throw':
+                    lines.append(TS([RT('throw '), RHRT(op1)], assembly = [instruction]))
+                elif instruction.inst.name == 'ThrowIfEmpty':
+                    lines.append(TS([RT('if'), LPT(), RT('!'), RHRT(op2), RPT(), RT(' throw ReferenceError()')],
+                        assembly = [instruction]))
+                    lines.append(TS([RT('else '), LHRT(op1), AT(), RHRT(op2)], assembly = []))
+                elif instruction.inst.name == 'ThrowIfUndefinedInst':
+                    lines.append(TS([RT('if'), LPT(), RT('typeof '), RHRT(op1), RT(" === 'undefined'"),
+                        RPT(), RT(' throw ReferenceError()')],
+                        assembly = [instruction]))
+                elif instruction.inst.name == 'ToInt32':
+                    lines.append(TS([LHRT(op1), AT(), RHRT(op2), RT(' | 0')],
+                        assembly = [instruction]))
+                elif instruction.inst.name == 'ToNumber':
+                    lines.append(TS([LHRT(op1), AT(), RHRT(op2), RT(' - 0')],
+                        assembly = [instruction]))
+                elif instruction.inst.name == 'ToNumeric':
+                    lines.append(TS([LHRT(op1), AT(), RT('parseFloat'), LPT(),
+                        RHRT(op2), RPT()],
+                        assembly = [instruction]))
+                elif instruction.inst.name == 'TypeOf':
+                    lines.append(TS([LHRT(op1), AT(), RT('typeof '), RHRT(op2)],
+                        assembly = [instruction]))
+                elif instruction.inst.name == 'URShift':
+                    lines.append(TS([LHRT(op1), AT(), RHRT(op2), RT(' >>> '),
+                        RHRT(op3)], assembly = [instruction]))
+                elif instruction.inst.name == 'Unreachable':
+                    raise ValueError('Unreachable position reached: %r' % instruction)
+
                 else:
                     lines.append(TS([RT('// Unsupported instruction: %r' % instruction)],
                         assembly = [instruction]))
