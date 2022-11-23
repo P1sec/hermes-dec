@@ -48,7 +48,8 @@ if __name__ == '__main__':
         print('_' * 37)
         print()
         for statement in function_body.statements:
-            print('===> ', statement)
+            # print('===> ', statement)
+            print('    ' + ''.join(str(op) for op in statement.tokens) + ';')
         print()
     
     print()

@@ -68,7 +68,7 @@ class Pass2MakeAtomicFlow:
                 op5 = getattr(instruction, 'arg5', None)
                 op6 = getattr(instruction, 'arg6', None)
                 
-                if instruction.inst.name == 'Add':
+                if instruction.inst.name in ('Add', 'AddN'):
                     lines.append(TS([LHRT(op1), AT(), RHRT(op2), RT(' + '), RHRT(op3)],
                         assembly = [instruction]))
                 elif instruction.inst.name == 'Add32':
@@ -182,7 +182,9 @@ class Pass2MakeAtomicFlow:
                     lines.append(TS([LHRT(op1), AT(), RT(readable_regexp)],
                         assembly = [instruction]))
                 elif instruction.inst.name == 'CreateThis':
-                    lines.append(TS([], assembly = [instruction]))
+                    lines.append(TS([LHRT(op1), AT(), RT('Object.create'), LPT(),
+                        RHRT(op2), RT(', {constructor: {value: '), RHRT(op3), RT('}}'),
+                            RPT()], assembly = [instruction]))
                 elif instruction.inst.name == 'Debugger':
                     lines.append(TS([RT('debugger')], assembly = [instruction]))
                 elif instruction.inst.name == 'DebuggerBreakCheck':
@@ -227,7 +229,7 @@ class Pass2MakeAtomicFlow:
                     lines.append(TS([LHRT(op1), AT(), FTI(op2, is_builtin = True, is_closure = True)],
                         assembly = [instruction]))
                 elif instruction.inst.name in ('GetById', 'GetByIdLong', 'GetByIdShort',
-                    'TryPutById', 'TryPutByIdLong'):
+                    'TryGetById', 'TryGetByIdLong'):
                     string = state.hbc_reader.strings[op4]
                     
                     lines.append(TS([LHRT(op1), AT(), RHRT(op2), DAT(), RT(string)],
@@ -337,7 +339,7 @@ class Pass2MakeAtomicFlow:
                 elif instruction.inst.name in ('LoadConstBigInt', 'LoadConstBigIntLongIndex'):
                     lines.append(TS([LHRT(op1), AT(), RT('/* TODO: BigInts are not decoded yet */')],
                         assembly = [instruction])) # TODO : Decode BigInts correctly
-                elif instruction.inst.name in('LoadConstDouble', 'LoadConstInt' 'LoadConstUInt8'):
+                elif instruction.inst.name in ('LoadConstDouble', 'LoadConstInt', 'LoadConstUInt8'):
                     lines.append(TS([LHRT(op1), AT(), str(op2)],
                         assembly = [instruction]))
                 elif instruction.inst.name in ('LoadConstEmpty', 'LoadConstUndefined'):
@@ -396,6 +398,9 @@ class Pass2MakeAtomicFlow:
                     array_text = '[%s]' % ', '.join(unpack_slp_array(
                         state.hbc_reader.arrays[op4:], op3).to_strings(state.hbc_reader.strings))
                     lines.append(TS([LHRT(op1), AT(), RT(array_text)],
+                        assembly = [instruction]))
+                elif instruction.inst.name == 'NewObject':
+                    lines.append(TS([LHRT(op1), AT(), RT('{}')],
                         assembly = [instruction]))
                 elif instruction.inst.name in ('NewObjectWithBuffer', 'NewObjectWithBufferLong'):
                     object_text = '{%s}' % ', '.join('%s: %s' % (key, value)
@@ -514,7 +519,7 @@ class Pass2MakeAtomicFlow:
                 elif instruction.inst.name == 'TypeOf':
                     lines.append(TS([LHRT(op1), AT(), RT('typeof '), RHRT(op2)],
                         assembly = [instruction]))
-                elif instruction.inst.name == 'URShift':
+                elif instruction.inst.name == 'URshift':
                     lines.append(TS([LHRT(op1), AT(), RHRT(op2), RT(' >>> '),
                         RHRT(op3)], assembly = [instruction]))
                 elif instruction.inst.name == 'Unreachable':

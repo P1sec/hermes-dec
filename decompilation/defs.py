@@ -4,6 +4,7 @@ from typing import List, Set, Dict, Tuple, Optional, Sequence, Union, Any
 from os.path import dirname, realpath
 from dataclasses import dataclass
 from sys import path
+from re import sub
 
 SCRIPT_DIR = dirname(realpath(__file__))
 ROOT_DIR = realpath(SCRIPT_DIR + '/..')
@@ -38,6 +39,10 @@ class TokenString:
 
 class Token:
     pass
+    
+    # def __str__(self):
+    #     return repr(self).replace(self.__class__.__name__,
+    #         sub('[^A-Z]', '', self.__class__.__name__), 1)
 
 @dataclass
 class ResumeGenerator(Token):
@@ -59,29 +64,40 @@ class ReturnDirective(Token):
 @dataclass
 class LeftHandRegToken(Token):
     register : int
+    
+    def __str__(self):
+        return 'r%d' % self.register
 
 @dataclass
 class AssignmentToken(Token):
-    pass
+    def __str__(self):
+        return ' = '
 
 @dataclass
 class LeftParenthesisToken(Token):
-    pass
+    def __str__(self):
+        return '('
 
 @dataclass
 class RightParenthesisToken(Token):
-    pass
+    def __str__(self):
+        return ')'
 
 @dataclass
 class CatchBlockStart(Token):
     arg_register : int
 
+@dataclass
 class DotAccessorToken(Token):
-    pass
+    def __str__(self):
+        return '.'
 
 @dataclass
 class RightHandRegToken(Token):
     register : int
+    
+    def __str__(self):
+        return 'r%d' % self.register
 
 @dataclass
 class GetEnvironmentToken(Token):
@@ -150,6 +166,9 @@ class FunctionTableIndex(Token):
 @dataclass
 class RawToken(Token):
     token : str
+    
+    def __str__(self):
+        return self.token
 
 
 
