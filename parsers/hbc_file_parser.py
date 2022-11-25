@@ -453,7 +453,7 @@ class HBCReader:
             before_pos = self.file_buffer.tell()
             self.file_buffer.seek(function_header.offset)
             data = self.file_buffer.read(function_header.bytecodeSizeInBytes)
-            function_ops = parse_hbc_bytecode(BytesIO(data), self.header.version, self)
+            function_ops = parse_hbc_bytecode(BytesIO(data), function_header.offset, self.header.version, self)
             self.file_buffer.seek(before_pos)
             
             self.function_ops.append(function_ops)

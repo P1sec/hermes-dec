@@ -15,11 +15,21 @@ for git_tag in GIT_TAGS:
 
     INPUT_FILE_NAME = PARSERS_DIR + '/original_hermes_bytecode_c_src/BytecodeList-%s.def' % git_tag
 
+    INPUT_BUILTINS_FILE_NAMES = PARSERS_DIR + '/original_function_builtins_c_src/Builtins-%s.def' % git_tag
+
     INPUT_VERSION_FILE_NAME = PARSERS_DIR + '/original_hermes_bytecode_c_src/BytecodeVersion-%s.h' % git_tag
 
     with open(INPUT_VERSION_FILE_NAME) as fd:
         version_file_contents = fd.read()
     bytecode_version : int = int(search(r'BYTECODE_VERSION = (\d+)', version_file_contents).group(1))
+    
+    builtin_function_names : List[str] = []
+    with open(INPUT_BUILTINS_FILE_NAMES) as fd:
+        for line in fd:
+            if line.split('(')[0] in ('BUILTIN_METHOD',
+                'PRIVATE_BUILTIN', 'JS_BUILTIN'):
+                operands = line.split('(')[1].split(')')[0].split(', ')
+                builtin_function_names.append('.'.join(operands))
 
     OUTPUT_FILE_NAME = PARSERS_DIR + '/hbc_opcodes/hbc%d.py' % bytecode_version
 
@@ -121,6 +131,13 @@ OPERAND_FUNCTION_ID(CreateAsyncClosureLongIndex, 3)
 _name_to_instruction : Dict[str, Instruction] = {v.name: v for v in _instructions}
 
 '''
+
+    out_source += '''_builtin_function_names : List[str] = [
+    %s
+]
+
+''' % ',\n    '.join(repr(string)
+    for string in builtin_function_names)
 
     with open(OUTPUT_FILE_NAME, 'w') as fd:
         fd.write(out_source)

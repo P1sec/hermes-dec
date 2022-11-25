@@ -16,6 +16,7 @@ class ParsedInstruction:
     arg4 : object
     arg5 : object
     arg6 : object
+    switch_jump_table : Optional[List[int]]
     original_pos : int
     hbc_reader : 'HBCReader'
     
@@ -64,13 +65,13 @@ class ParsedInstruction:
                         self.hbc_reader.object_values[self.arg5:], self.arg3).to_strings(self.hbc_reader.strings)
                 )
             )
+        elif self.inst.name == 'SwitchImm':
+            comment += '  # Jump table: [%s]' % ', '.join('%08x' % value for value in
+                self.switch_jump_table)
         
         return f'{"%08x" % self.original_pos}: <{self.inst.name}>: <{", ".join(operands)}>{comment}'
 
-def parse_hbc_bytecode(buf : BytesIO, bytecode_version : int, hbc_reader: 'HBCReader') -> List[Instruction]:
-    
-    output_instructions : List['Instruction'] = []
-    
+def get_parser(bytecode_version : int) -> 'module':
     parser_module_tbl = {
         51: hbc51,
         59: hbc59,
@@ -88,6 +89,18 @@ def parse_hbc_bytecode(buf : BytesIO, bytecode_version : int, hbc_reader: 'HBCRe
         if bytecode_version >= min_version:
             parser_module = parser_module_tbl[min_version]
             break
+    
+    return parser_module
+
+def get_builtin_functions(bytecode_version : int) -> List[str]:
+    
+    return get_parser(bytecode_version)._builtin_function_names
+
+def parse_hbc_bytecode(buf : BytesIO, file_offset : int, bytecode_version : int, hbc_reader: 'HBCReader') -> List[Instruction]:
+    
+    output_instructions : List['Instruction'] = []
+    
+    parser_module = get_parser(bytecode_version)
     
     while True:
         original_pos = buf.tell()
@@ -112,6 +125,15 @@ def parse_hbc_bytecode(buf : BytesIO, bytecode_version : int, hbc_reader: 'HBCRe
         for operand in ('arg1', 'arg2', 'arg3', 'arg4', 'arg5', 'arg6'):
             if hasattr(structure, operand):
                 setattr(result, operand, getattr(structure, operand))
+        
+        if inst.name == 'SwitchImm':
+            result.switch_jump_table = []
+            hbc_reader.file_buffer.seek(file_offset + original_pos + structure.arg2)
+            hbc_reader.align_over_padding()
+            
+            for jump_table_entry in range(structure.arg4, structure.arg5 + 1):
+                result.switch_jump_table.append(int.from_bytes(
+                    hbc_reader.file_buffer.read(4), 'little') + original_pos)
         
         output_instructions.append(result)
         

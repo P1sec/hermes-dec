@@ -12,7 +12,7 @@ PARSERS_DIR = realpath(ROOT_DIR + '/parsers')
 
 path.append(PARSERS_DIR)
 
-from hbc_bytecode_parser import ParsedInstruction
+from hbc_bytecode_parser import ParsedInstruction, get_builtin_functions
 from hbc_file_parser import HBCReader
 
 class HermesDecompiler:
@@ -20,17 +20,63 @@ class HermesDecompiler:
     hbc_reader : HBCReader
     closure_to_caller_function_ids : List[Tuple[int, int]] = {}
     
+    indent_level : int = 0 # Used while producing decompilation output
+    
     function_id_to_body : Dict[int, 'DecompiledFunctionBody']
 
 class DecompiledFunctionBody:
     
+    function_id : int
     function_name : str
     function_object : object
     
+    is_closure : bool = False
+    is_async : bool = False
+    is_generator : bool = False
+    
+    argument_list : 'TODO' # todo
+    
+    jump_targets : Set[int]
+    
     statements : List['TokenString']
     
-    #XX
-    pass # WIP ..
+    def stringify(self, state : HermesDecompiler, environment_id = None):
+        output = ''
+        
+        if self.function_id != 0: # Don't prototype the global function
+                # or maybe do it for readibility?
+            if self.is_async:
+                output += 'async '
+            output += 'function'
+            if self.is_generator:
+                output += '*'
+            if not self.is_closure:
+                assert self.function_name
+                output += ' ' + self.function_name
+            output += '('
+            # TODO: Handle function arguments
+            output += ') {'
+            if self.is_closure and self.function_name:
+                output += ' // Original name: ' + self.function_name
+                if environment_id:
+                    output += ', environment Id: ' + str(environment_id)
+            output += '\n'
+            state.indent_level += 1
+            
+        
+        for statement in self.statements:
+            if statement.assembly and statement.assembly[0].original_pos in self.jump_targets:
+                output += 'label_%d:\n' % statement.assembly[0].original_pos
+            # print('===> ', statement)
+            
+            output += (' ' * (state.indent_level * 4)) + ''.join(str(op) for op in statement.tokens) + ';\n'
+    
+        if self.function_id != 0:
+            state.indent_level -= 1
+            output += ' ' * (state.indent_level * 4)
+            output += '}'
+    
+        return output
     
 @dataclass
 class TokenString:
@@ -59,7 +105,8 @@ class StartGenerator(Token):
 
 @dataclass
 class ReturnDirective(Token):
-    register : int
+    def __str__(self):
+        return 'return '
 
 @dataclass
 class LeftHandRegToken(Token):
@@ -116,8 +163,8 @@ class NewEnvironmentToken(Token):
 @dataclass
 class SwitchImm(Token):
     value_reg : int
-    jump_table_offset : int
-    default_jump_offset : int
+    jump_table_address : int
+    default_jump_address : int
     unsigned_min_value : int
     unsigned_max_value : int
 
@@ -156,12 +203,47 @@ class JumpConditionToken(Token):
 @dataclass
 class FunctionTableIndex(Token):
     function_id : int
+    state : HermesDecompiler
     environment_id : Optional[int] = None
     
     is_closure : bool = False
     is_builtin : bool = False
     is_generator : bool = False
     is_async : bool = False
+    
+    def __post_init__(self):
+        
+        if not self.is_builtin:
+            self.function_body = self.state.function_id_to_body[self.function_id]
+            self.function_body.is_closure = self.is_closure
+            self.function_body.is_generator = self.is_generator
+            self.function_body.is_async = self.is_async
+    
+    def __repr__(self):
+        if self.is_closure and not self.is_builtin:
+            return self.function_body.stringify(self.state, self.environment_id)
+        name = self._name_if_any()
+        return '<Function #%d%s: %s>' % (
+            self.function_id,
+            ' (%s)' % name if name else '',
+            ', '.join(
+                '%s: %s' % (key, value)
+                for key, value in self.__dict__.items()
+                if key != 'state' and value)
+            )
+    
+    def _name_if_any(self) -> Optional[str]:
+        
+        if self.is_builtin:
+            builtin_functions = get_builtin_functions(self.state.hbc_reader.version)
+            return builtin_functions[self.environment_id]
+        
+        else:
+            return self.state.hbc_reader.strings[
+                self.state.hbc_reader.function_headers[
+                    self.function_id].functionName
+            ] or None
+            
 
 @dataclass
 class RawToken(Token):

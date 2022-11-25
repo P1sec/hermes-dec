@@ -10,8 +10,6 @@ class Pass2MakeAtomicFlow:
     
     def __init__(self, state : HermesDecompiler):
         
-        state.function_id_to_body = {}
-        
         TS = TokenString
         
         RG = ResumeGenerator
@@ -51,12 +49,8 @@ class Pass2MakeAtomicFlow:
         
         for function_count, function_header in enumerate(state.hbc_reader.function_headers):
             
-            function_body = DecompiledFunctionBody()
-            function_body.function_name = state.hbc_reader.strings[function_header.functionName]
-            function_body.function_object = function_header
-            
-            state.function_id_to_body[function_count] = function_body
-            
+            function_body = state.function_id_to_body[function_count]
+
             lines = function_body.statements = []
             
             for instruction in state.hbc_reader.function_ops[function_count]:
@@ -123,7 +117,7 @@ class Pass2MakeAtomicFlow:
                         function_header.frameSize - 7)):
                         args += [RHRT(register), RT(', ')]
                     lines.append(TS([LHRT(op1), AT(),
-                            RHRT(function_header.frameSize - 7), DAT(), FTI(op3),
+                            RHRT(function_header.frameSize - 7), DAT(), FTI(op3, state),
                             LPT(), *args[:-1], RPT()],
                         assembly = [instruction]))
                 elif instruction.inst.name in ('CallBuiltin', 'CallBuiltinLong'):
@@ -153,19 +147,19 @@ class Pass2MakeAtomicFlow:
                             LPT(), *args[:-1], RPT()],
                         assembly = [instruction]))
                 elif instruction.inst.name in ('CreateAsyncClosure', 'CreateAsyncClosureLongIndex'):
-                    lines.append(TS([LHRT(op1), AT(), FTI(op3, op2, is_async = True, is_closure = True)],
+                    lines.append(TS([LHRT(op1), AT(), FTI(op3, state, op2, is_async = True, is_closure = True)],
                         assembly = [instruction]))
                 elif instruction.inst.name in ('CreateClosure', 'CreateClosureLongIndex'):
-                    lines.append(TS([LHRT(op1), AT(), FTI(op3, op2, is_closure = True)],
+                    lines.append(TS([LHRT(op1), AT(), FTI(op3, state, op2, is_closure = True)],
                         assembly = [instruction]))
                 elif instruction.inst.name == 'CreateEnvironment':
                     lines.append(TS([NET(op1)],
                         assembly = [instruction]))
                 elif instruction.inst.name in ('CreateGenerator', 'CreateGeneratorLongIndex'):
-                    lines.append(TS([LHRT(op1), AT(), FTI(op3, op2, is_generator = True)],
+                    lines.append(TS([LHRT(op1), AT(), FTI(op3, state, op2, is_generator = True)],
                         assembly = [instruction]))
                 elif instruction.inst.name in ('CreateGeneratorClosure', 'CreateGeneratorClosureLongIndex'):
-                    lines.append(TS([LHRT(op1), AT(), FTI(op3, op2, is_closure = True, is_generator = True)],
+                    lines.append(TS([LHRT(op1), AT(), FTI(op3, state, op2, is_closure = True, is_generator = True)],
                         assembly = [instruction]))
                 elif instruction.inst.name == 'CreateRegExp':
                     pattern_string = state.hbc_reader.strings[op2]
@@ -226,7 +220,7 @@ class Pass2MakeAtomicFlow:
                         assembly = [instruction]))
                     # WIP .. ?
                 elif instruction.inst.name == 'GetBuiltinClosure':
-                    lines.append(TS([LHRT(op1), AT(), FTI(op2, is_builtin = True, is_closure = True)],
+                    lines.append(TS([LHRT(op1), AT(), FTI(op2, state, is_builtin = True, is_closure = True)],
                         assembly = [instruction]))
                 elif instruction.inst.name in ('GetById', 'GetByIdLong', 'GetByIdShort',
                     'TryGetById', 'TryGetByIdLong'):
@@ -280,52 +274,52 @@ class Pass2MakeAtomicFlow:
                     lines.append(TS([RHRT(op1), DAT(), RT('return'), LPT(), RPT()],
                         assembly = [instruction]))
                 elif instruction.inst.name in ('JEqual', 'JEqualLong'):
-                    lines.append(TS([JCT(op1), RHRT(op2), RT(' == '), RHRT(op3)],
+                    lines.append(TS([JCT(instruction.original_pos + op1), RHRT(op2), RT(' == '), RHRT(op3)],
                         assembly = [instruction]))
                 elif instruction.inst.name in ('JGreater', 'JGreaterN', 'JGreaterLong', 'JGreaterNLong'):
-                    lines.append(TS([JCT(op1), RHRT(op2), RT(' > '), RHRT(op3)],
+                    lines.append(TS([JCT(instruction.original_pos + op1), RHRT(op2), RT(' > '), RHRT(op3)],
                         assembly = [instruction]))
                 elif instruction.inst.name in ('JNotGreater', 'JNotGreaterN', 'JNotGreaterLong', 'JNotGreaterNLong'):
-                    lines.append(TS([JCT(op1), RT('!'), LPT(), RHRT(op2), RT(' > '), RHRT(op3), RPT()],
+                    lines.append(TS([JCT(instruction.original_pos + op1), RT('!'), LPT(), RHRT(op2), RT(' > '), RHRT(op3), RPT()],
                         assembly = [instruction]))
                 elif instruction.inst.name in ('JGreaterEqual', 'JGreaterEqualN', 'JGreaterEqualLong', 'JGreaterEqualNLong'):
-                    lines.append(TS([JCT(op1), RHRT(op2), RT(' >= '), RHRT(op3)],
+                    lines.append(TS([JCT(instruction.original_pos + op1), RHRT(op2), RT(' >= '), RHRT(op3)],
                         assembly = [instruction]))
                 elif instruction.inst.name in ('JNotGreaterEqual', 'JNotGreaterEqualN', 'JNotGreaterEqualLong', 'JNotGreaterEqualNLong'):
-                    lines.append(TS([JCT(op1), RT('!'), LPT(), RHRT(op2), RT(' >= '), RHRT(op3), RPT()],
+                    lines.append(TS([JCT(instruction.original_pos + op1), RT('!'), LPT(), RHRT(op2), RT(' >= '), RHRT(op3), RPT()],
                         assembly = [instruction]))
                 elif instruction.inst.name in ('JLess', 'JLessN', 'JLessLong', 'JLessNLong'):
-                    lines.append(TS([JCT(op1), RHRT(op2), RT(' < '), RHRT(op3)],
+                    lines.append(TS([JCT(instruction.original_pos + op1), RHRT(op2), RT(' < '), RHRT(op3)],
                         assembly = [instruction]))
                 elif instruction.inst.name in ('JNotLess', 'JNotLessN', 'JNotLessLong', 'JNotLessNLong'):
-                    lines.append(TS([JCT(op1), RT('!'), LPT(), RHRT(op2), RT(' < '), RHRT(op3), RPT()],
+                    lines.append(TS([JCT(instruction.original_pos + op1), RT('!'), LPT(), RHRT(op2), RT(' < '), RHRT(op3), RPT()],
                         assembly = [instruction]))
                 elif instruction.inst.name in ('JLessEqual', 'JLessEqualN', 'JLessEqualLong', 'JLessEqualNLong'):
-                    lines.append(TS([JCT(op1), RHRT(op2), RT(' <= '), RHRT(op3)],
+                    lines.append(TS([JCT(instruction.original_pos + op1), RHRT(op2), RT(' <= '), RHRT(op3)],
                         assembly = [instruction]))
                 elif instruction.inst.name in ('JNotLessEqual', 'JNotLessEqualN', 'JNotLessEqualLong', 'JNotLessEqualNLong'):
-                    lines.append(TS([JCT(op1), RT('!'), LPT(), RHRT(op2), RT(' <= '), RHRT(op3), RPT()],
+                    lines.append(TS([JCT(instruction.original_pos + op1), RT('!'), LPT(), RHRT(op2), RT(' <= '), RHRT(op3), RPT()],
                         assembly = [instruction]))
                 elif instruction.inst.name in ('JNotEqual', 'JNotEqualLong'):
-                    lines.append(TS([JCT(op1), RHRT(op2), RT(' != '), RHRT(op3)],
+                    lines.append(TS([JCT(instruction.original_pos + op1), RHRT(op2), RT(' != '), RHRT(op3)],
                         assembly = [instruction]))
                 elif instruction.inst.name in ('JStrictEqual', 'JStrictEqualLong'):
-                    lines.append(TS([JCT(op1), RHRT(op2), RT(' === '), RHRT(op3)],
+                    lines.append(TS([JCT(instruction.original_pos + op1), RHRT(op2), RT(' === '), RHRT(op3)],
                         assembly = [instruction]))
                 elif instruction.inst.name in ('JStrictNotEqual', 'JStrictNotEqualLong'):
-                    lines.append(TS([JCT(op1), RHRT(op2), RT(' !== '), RHRT(op3)],
+                    lines.append(TS([JCT(instruction.original_pos + op1), RHRT(op2), RT(' !== '), RHRT(op3)],
                         assembly = [instruction]))
                 elif instruction.inst.name in ('Jmp', 'JmpLong'):
-                    lines.append(TS([JCT(op1), RT('true')],
+                    lines.append(TS([JCT(instruction.original_pos + op1), RT('true')],
                         assembly = [instruction]))
                 elif instruction.inst.name in ('JmpFalse', 'JmpFalseLong'):
-                    lines.append(TS([JCT(op1), RT('!'), RHRT(op2)],
+                    lines.append(TS([JCT(instruction.original_pos + op1), RT('!'), RHRT(op2)],
                         assembly = [instruction]))
                 elif instruction.inst.name in ('JmpTrue', 'JmpTrueLong'):
-                    lines.append(TS([JCT(op1), RHRT(op2)],
+                    lines.append(TS([JCT(instruction.original_pos + op1), RHRT(op2)],
                         assembly = [instruction]))
                 elif instruction.inst.name in ('JmpUndefined', 'JmpUndefinedLong'):
-                    lines.append(TS([JCT(op1), RHRT(op2), RT(' === undefined')],
+                    lines.append(TS([JCT(instruction.original_pos + op1), RHRT(op2), RT(' === undefined')],
                         assembly = [instruction]))
                 elif instruction.inst.name == 'LShift':
                     lines.append(TS([LHRT(op1), AT(), RHRT(op2), RT(' << '), RHRT(op3)],
@@ -432,7 +426,7 @@ class Pass2MakeAtomicFlow:
                     index = repr(state.hbc_reader.strings[op3])
                     lines.append(TS([RT('Object.defineProperty'), LPT(),
                         LHRT(op1), RT(', '), RT(repr(index)),
-                        RT('{value: '), RHRT(op2), RT('}'), RPT()],
+                        RT(', {value: '), RHRT(op2), RT('}'), RPT()],
                         assembly = [instruction]))
                     # TODO: Are non-enumerable values set correctly?
                     # When are these used if they are used?
@@ -446,7 +440,7 @@ class Pass2MakeAtomicFlow:
                     else:
                         lines.append(TS([RT('Object.defineProperty'), LPT(),
                             LHRT(op1), RT(', '), RHRT(op3),
-                            RT('{value: '), RHRT(op2), RT('}'), RPT()],
+                            RT(', {value: '), RHRT(op2), RT('}'), RPT()],
                             assembly = [instruction]))
                 elif instruction.inst.name in ('PutOwnByIndex', 'PutOwnByIndexL'):
                     lines.append(TS([LHRT(op1), RT('[%d]' % op3), AT(), RHRT(op2)],
@@ -455,7 +449,7 @@ class Pass2MakeAtomicFlow:
                     index = repr(state.hbc_reader.strings[op3])
                     lines.append(TS([RT('Object.defineProperty'), LPT(),
                         LHRT(op1), RT(', '), RHRT(op2),
-                        RT('{get: '), RHRT(op3), RT(', set: '), RHRT(op4),
+                        RT(', {get: '), RHRT(op3), RT(', set: '), RHRT(op4),
                         RT(', enumerable: ' + ('true' if op5 else 'false') + '}'), RPT()],
                         assembly = [instruction]))
                 elif instruction.inst.name == 'RShift':
@@ -467,9 +461,9 @@ class Pass2MakeAtomicFlow:
                 elif instruction.inst.name == 'ResumeGenerator':
                     lines.append(TS([RG(op1, op2)], assembly = [instruction]))
                 elif instruction.inst.name == 'Ret':
-                    lines.append(TS([RD(op1)], assembly = [instruction]))
+                    lines.append(TS([RD(), RHRT(op1)], assembly = [instruction]))
                 elif instruction.inst.name in ('SaveGenerator', 'SaveGeneratorLong'):
-                    lines.append(TS([SG(op1)], assembly = [instruction]))
+                    lines.append(TS([SG(instruction.original_pos + op1)], assembly = [instruction]))
                 elif instruction.inst.name == 'SelectObject':
                     lines.append(TS([LHRT(op1), AT(), RHRT(op3), RT(' instanceof Object ? '),
                         RHRT(op3), RT(' : '), RHRT(op2)],
@@ -495,7 +489,9 @@ class Pass2MakeAtomicFlow:
                     lines.append(TS([LHRT(op1), AT(), RT('__uasm.sub32'), LPT(), RHRT(op2), RT(', '), RHRT(op3), RPT()],
                         assembly = [instruction]))
                 elif instruction.inst.name == 'SwitchImm':
-                    lines.append(TS([SI(op1, op2, op3, op4, op5)], assembly = [instruction]))
+                    lines.append(TS([SI(op1, instruction.original_pos + op2,
+                        instruction.original_pos + op3, op4, op5),
+                        RT(' // Switch table: %s' % instruction.switch_jump_table)], assembly = [instruction]))
                 elif instruction.inst.name == 'Throw':
                     lines.append(TS([RT('throw '), RHRT(op1)], assembly = [instruction]))
                 elif instruction.inst.name == 'ThrowIfEmpty':
