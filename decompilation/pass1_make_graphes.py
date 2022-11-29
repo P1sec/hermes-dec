@@ -19,6 +19,7 @@ class Pass1MakeGraphes:
             function_body.function_id = function_count
             function_body.function_name = state.hbc_reader.strings[function_header.functionName]
             function_body.function_object = function_header
+            function_body.basic_blocks = []
             function_body.jump_targets = set()
             
             state.function_id_to_body[function_count] = function_body

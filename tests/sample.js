@@ -1,0 +1,5 @@
+bigInt = -4057069294949984n
+console.log(bigInt)
+
+bigInt2 = -409090990090999999999999999999999939n
+print(bigInt2)

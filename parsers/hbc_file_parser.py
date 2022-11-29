@@ -12,7 +12,8 @@ from hbc_bytecode_parser import parse_hbc_bytecode, ParsedInstruction
 from regexp_bytecode_parser import decompile_regex, parse_regex
 from pretty_print import pretty_print_structure
 
-ROOT_DIR = dirname(realpath(__file__))
+PARSERS_DIR = dirname(realpath(__file__))
+ROOT_DIR = realpath(PARSERS_DIR + '/..')
 TESTS_DIR = realpath(ROOT_DIR + '/tests')
 ASSETS_DIR = realpath(TESTS_DIR + '/assets')
 
@@ -90,8 +91,7 @@ class HBCReader:
     object_keys : bytes
     object_values : bytes
     
-    bigint_table : List[object]
-    bigint_storage : BytesIO
+    bigint_values : List[int]
     
     regexp_table : List[object]
     regexp_storage : BytesIO
@@ -548,18 +548,18 @@ class HBCReader:
         
         self.align_over_padding()
         
-        self.bigint_table = (self.get_offset_length_pair_reader() *
-            self.header.bigIntCount)
+        bigint_table = (self.get_offset_length_pair_reader() *
+            self.header.bigIntCount)()
         
-        self.file_buffer.readinto(self.bigint_table)
+        self.file_buffer.readinto(bigint_table)
         
         self.align_over_padding()
         
-        self.bigint_storage = BytesIO(self.file_buffer.read(
-            self.header.bigIntStorageSize))
+        bigint_data = self.file_buffer.read(self.header.bigIntStorageSize)
         
-        # TODO: Run the program with a .HBC file bearing version
-        # >= 87 in order to actually decode BigInts.
+        self.bigint_values = [int.from_bytes(bigint_data[
+            entry.offset:entry.offset + entry.length], 'little')
+            for entry in bigint_table]
     
     def read_regexp(self):
         
@@ -644,6 +644,7 @@ class HBCReader:
 if __name__ == '__main__':
     
     with open(ASSETS_DIR + '/index.android.bundle', 'rb') as file_descriptor:
+    # with open(TESTS_DIR + '/sample.hbc', 'rb') as file_descriptor:
 
         hbc_reader = HBCReader()
 
@@ -717,6 +718,11 @@ if __name__ == '__main__':
                     print('[i] %s #%d of %s: %r' % (arr_type, item_count, item.tag_type, item.values))
         """
         
+        print()
+        print('=> BigInts:')
+        for bigint in hbc_reader.bigint_values:
+            print('=> BigInt:', bigint)
+
         print()
         for regexp_count, regexp in enumerate(hbc_reader.regexp_table):
             hbc_reader.regexp_storage.seek(regexp.offset)

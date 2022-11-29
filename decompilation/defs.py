@@ -24,6 +24,16 @@ class HermesDecompiler:
     
     function_id_to_body : Dict[int, 'DecompiledFunctionBody']
 
+# This will store information related to the curly braces that
+# will encompass a loop, a condition, a switch...
+#
+# At a latter stage of decompilation, the latter basic blocks
+# should be checked for non-overlap (TODO)
+@dataclass
+class BasicBlock:
+    start_address : int
+    end_address : int
+
 class DecompiledFunctionBody:
     
     function_id : int
@@ -35,6 +45,8 @@ class DecompiledFunctionBody:
     is_generator : bool = False
     
     argument_list : 'TODO' # todo
+    
+    basic_blocks : List[BasicBlock]
     
     jump_targets : Set[int]
     
@@ -62,14 +74,37 @@ class DecompiledFunctionBody:
                     output += ', environment Id: ' + str(environment_id)
             output += '\n'
             state.indent_level += 1
-            
+        
+        basic_block_starts = [basic_block.start_address
+            for basic_block in self.basic_blocks]
+        basic_block_ends = [basic_block.end_address
+            for basic_block in self.basic_blocks]
         
         for statement in self.statements:
-            if statement.assembly and statement.assembly[0].original_pos in self.jump_targets:
-                output += 'label_%d:\n' % statement.assembly[0].original_pos
-            # print('===> ', statement)
+            if statement.assembly:
+                pos = statement.assembly[0].original_pos
+                
+                while pos in basic_block_ends:
+                    basic_block_ends.pop(basic_block_ends.index(pos))
+                    state.indent_level -= 1
+                    output += (' ' * (state.indent_level * 4)) + '}\n'
+                
+                if pos in self.jump_targets:
+                    output += 'label_%d:\n' % pos
+                
+                while pos in basic_block_starts:
+                    basic_block_starts.pop(basic_block_starts.index(pos))
+                    output += (' ' * (state.indent_level * 4)) + '{\n'
+                    state.indent_level += 1
+                
+                # print('===> ', statement)
             
-            output += (' ' * (state.indent_level * 4)) + ''.join(str(op) for op in statement.tokens) + ';\n'
+            if statement.tokens:
+                output += (' ' * (state.indent_level * 4)) + ''.join(str(op) for op in statement.tokens)
+                if statement.tokens[:2] == [RawToken('for'), LeftParenthesisToken()]:
+                    output += '\n'
+                else:
+                    output += ';\n'
     
         if self.function_id != 0:
             state.indent_level -= 1
@@ -107,6 +142,11 @@ class StartGenerator(Token):
 class ReturnDirective(Token):
     def __str__(self):
         return 'return '
+
+@dataclass
+class ThrowDirective(Token):
+    def __str__(self):
+        return 'throw '
 
 @dataclass
 class LeftHandRegToken(Token):
@@ -182,13 +222,6 @@ class ForInLoopInit(Token):
     iter_size_register : int
 
 @dataclass
-class ForInLoopInit(Token):
-    obj_props_register : int
-    obj_register : int
-    iter_index_register : int
-    iter_size_register : int
-
-@dataclass
 class ForInLoopNextIter(Token):
     next_value_register : int
     obj_props_register : int
@@ -196,8 +229,14 @@ class ForInLoopNextIter(Token):
     iter_index_register : int
     iter_size_register : int
 
+# Used to mark backward jumps (used in loops)
 @dataclass
-class JumpConditionToken(Token):
+class JumpCondition(Token):
+    target_address : int
+
+# Used to mark forward jumps
+@dataclass
+class JumpNotCondition(Token):
     target_address : int
 
 @dataclass
@@ -251,6 +290,7 @@ class RawToken(Token):
     
     def __str__(self):
         return self.token
+
 
 
 

@@ -14,6 +14,9 @@ from hbc_file_parser import HBCReader
 
 if __name__ == '__main__':
     
+    # TODO : Make an actual CLI here ..
+    
+    # with open(TESTS_DIR + '/sample.hbc', 'rb') as file_descriptor:
     with open(ASSETS_DIR + '/index.android.bundle', 'rb') as file_descriptor:
 
         hbc_reader = HBCReader()

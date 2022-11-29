@@ -13,6 +13,7 @@ from defs import HermesDecompiler, FunctionTableIndex
 from pass0_internally_disassemble import Pass0InternallyDisassemble
 from pass1_make_graphes import Pass1MakeGraphes
 from pass2_make_atomic_flow import Pass2MakeAtomicFlow
+from pass3_structure_decompiled_flow import Pass3StructureDecompiledFlow
 
 """
     Entry point for the Hermes HBC Decompiler
@@ -33,6 +34,8 @@ if __name__ == '__main__':
     
     Pass2MakeAtomicFlow(state)
     
+    Pass3StructureDecompiledFlow(state) # WIP ..
+
     # DEBUG:
     print('[DEBUG] => Number of closures in the JS document:', len(state.closure_to_caller_function_ids))
     

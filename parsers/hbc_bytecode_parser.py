@@ -42,6 +42,10 @@ class ParsedInstruction:
                         self.hbc_reader.string_kinds[operand_value].name
                     )
                     # WIP ..
+                elif operand.operand_meaning == OperandMeaning.bigint_id:
+                    comment += '  # BigInt: %s' % (
+                        self.hbc_reader.bigint_values[operand_value]
+                    )
                 elif operand.operand_meaning == OperandMeaning.function_id:
                     function_header = self.hbc_reader.function_headers[operand_value]
                     comment += '  # Function: [#%d %s of %d bytes]: %d params @ offset 0x%08x' % (
