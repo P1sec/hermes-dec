@@ -1,0 +1,79 @@
+
++-------------------------------------------------------------------------+
+| Magic                        | 0x1f1903c103bc1fc6                       |
++-------------------------------------------------------------------------+
+| Version                      | 84                                       |
++-------------------------------------------------------------------------+
+| SourceHash                   | 9c1a5d9e132ec646edb05cfa1732898aa435a83c |
++-------------------------------------------------------------------------+
+| FileLength                   | 1037                                     |
++-------------------------------------------------------------------------+
+| GlobalCodeIndex              | 0                                        |
++-------------------------------------------------------------------------+
+| FunctionCount                | 6                                        |
++-------------------------------------------------------------------------+
+| StringKindCount              | 2                                        |
++-------------------------------------------------------------------------+
+| IdentifierCount              | 7                                        |
++-------------------------------------------------------------------------+
+| StringCount                  | 16                                       |
++-------------------------------------------------------------------------+
+| OverflowStringCount          | 0                                        |
++-------------------------------------------------------------------------+
+| StringStorageSize            | 144                                      |
++-------------------------------------------------------------------------+
+| RegExpCount                  | 1                                        |
++-------------------------------------------------------------------------+
+| RegExpStorageSize            | 66                                       |
++-------------------------------------------------------------------------+
+| ArrayBufferSize              | 0                                        |
++-------------------------------------------------------------------------+
+| ObjKeyBufferSize             | 0                                        |
++-------------------------------------------------------------------------+
+| ObjValueBufferSize           | 0                                        |
++-------------------------------------------------------------------------+
+| SegmentID                    | 0                                        |
++-------------------------------------------------------------------------+
+| CjsModuleCount               | 0                                        |
++-------------------------------------------------------------------------+
+| FunctionSourceCount          | 2                                        |
++-------------------------------------------------------------------------+
+| DebugInfoOffset              | 872                                      |
++-------------------------------------------------------------------------+
+| StaticBuiltins               | 0                                        |
++-------------------------------------------------------------------------+
+| CjsModulesStaticallyResolved | 0                                        |
++-------------------------------------------------------------------------+
+| HasAsync                     | 1                                        |
++-------------------------------------------------------------------------+
+
+=> StringKind.String: '' 
+=> StringKind.String: '?anon_0_?anon_0_testx' 
+=> StringKind.String: '?anon_0_testx' 
+=> StringKind.String: '?anon_0_gen' 
+=> StringKind.String: 'bonjour' 
+=> StringKind.String: 'dkooDD JPOD D09D\\n\\\\  @ .\\r\\n\\t@ \\x00 D+D  ' 
+=> StringKind.String: 'global' 
+=> StringKind.String: 'gmi' 
+=> StringKind.String: 'D+D +D\u202f+D +\nD+ÉD ' 
+=> StringKind.Identifier: 'testx' 
+=> StringKind.Identifier: 'xy' 
+=> StringKind.Identifier: 'gen' 
+=> StringKind.Identifier: 'log' 
+=> StringKind.Identifier: 'exec' 
+=> StringKind.Identifier: 'console' 
+=> StringKind.Identifier: 'test2' 
+=> [Function #0 global of 94 bytes]: 1 params @ offset 0x00000230
+=> [Function #1 testx of 30 bytes]: 2 params @ offset 0x0000028e
+=> [Function #2 ?anon_0_testx of 9 bytes]: 2 params @ offset 0x000002ac
+=> [Function #3 ?anon_0_?anon_0_testx of 105 bytes]: 2 params @ offset 0x000002b5
+=> [Function #4 gen of 9 bytes]: 1 params @ offset 0x0000031e
+=> [Function #5 ?anon_0_gen of 31 bytes]: 1 params @ offset 0x00000327
+
+=> BigInts:
+
+=> Regexp #0: 0000010007040b16444b4f4f4444204a504f4420443039440a5c20204020050b070d0a09402000201c0000000001000000ffffffff01360000000c440b0344202000
+  => Decompiled:  /DKOODD JPOD D09D\n\\  @ .\r\n\t@ \x00 D+D  /igm
+
+=> Function source #0: functionId 3 = string @ 00000000
+=> Function source #1: functionId 5 = string @ 00000000

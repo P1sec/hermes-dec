@@ -1,0 +1,113 @@
+[DEBUG] => Number of closures in the JS document: 1
+=> DEBUG: [Intermediary representation of the decompiled code]
+
+=> Decompiling function #0 "global" (at address 0x00000230):
+
+_____________________________________
+
+testx = undefined;
+gen = undefined;
+NewEnvironmentToken(register=1);
+r2 = async function() { // Original name: testx, environment Id: 1
+    r4 = undefined;
+    r0 = undefined;
+    r0 = arguments;
+    r3 = r0;
+    r2 = <Function #53 (spawnAsync): function_id: 53, is_closure: True, is_builtin: True>;
+    NewEnvironmentToken(register=0);
+    r1 = function*() { // Original name: ?anon_0_testx
+        NewEnvironmentToken(register=0);
+        r0 = <Function #3 (?anon_0_?anon_0_testx): function_id: 3, is_generator: True, function_body: <defs.DecompiledFunctionBody object at 0x7f182ce9bb50>>;
+        return r0;
+    };
+    r0 = this;
+    r0 = r4.r2(r1, r0, r3);
+    return r0;
+};
+r0 = global;
+r0['testx'] = r2;
+r1 = function*() { // Original name: gen, environment Id: 1
+    NewEnvironmentToken(register=0);
+    r0 = <Function #5 (?anon_0_gen): function_id: 5, is_generator: True, function_body: <defs.DecompiledFunctionBody object at 0x7f182ce9bc10>>;
+    return r0;
+};
+r0['gen'] = r1;
+r1 = /dkooDD JPOD D09D\\n\\\\  @ .\\r\\n\\t@ \\x00 D+D  /gmi;
+r0['test2'] = r1;
+r2 = r0.console;
+r1 = r2.log;
+r4 = r0.test2;
+r3 = r4.exec;
+r0 = 'bonjour';
+r0 = r4.r3(r0);
+r0 = r2.r1(r0);
+return r0;
+
+
+
+=> Decompiling function #3 "?anon_0_?anon_0_testx" (at address 0x000002b5, Generator: 1):
+
+_____________________________________
+
+function* ?anon_0_?anon_0_testx() {
+    StartGenerator();
+    ResumeGenerator(result_out_reg=0, return_bool_out_reg=1);
+    JumpNotCondition(target_address=102)!r1;
+    r4 = global;
+    r2 = r4.testx;
+    r3 = r4.test2;
+    r5 = 42;
+    r1 = 'D+D +D\u202f+D +\nD+ÉD ';
+    r1 = r5 + r1;
+    r1 = r1 + r3;
+    r3 = undefined;
+    r1 = r3.r2(r1);
+    SaveGenerator(address=46);
+    return r1;
+label_46:
+    ResumeGenerator(result_out_reg=1, return_bool_out_reg=2);
+    JumpNotCondition(target_address=99)!r2;
+    r2 = r4.gen;
+    r2 = r3.r2();
+    SaveGenerator(address=65);
+    return r2;
+label_65:
+    ResumeGenerator(result_out_reg=2, return_bool_out_reg=5);
+    JumpNotCondition(target_address=96)!r5;
+    r6 = r4.console;
+    r5 = r6.log;
+    r4 = r4.xy;
+    r4 = r6.r5(r4);
+    return r3;
+label_96:
+    return r2;
+label_99:
+    return r1;
+label_102:
+    return r0;
+}
+
+
+=> Decompiling function #5 "?anon_0_gen" (at address 0x00000327, Generator: 1):
+
+_____________________________________
+
+function* ?anon_0_gen() {
+    StartGenerator();
+    ResumeGenerator(result_out_reg=0, return_bool_out_reg=1);
+    JumpNotCondition(target_address=28)!r1;
+    r1 = 42;
+    SaveGenerator(address=14);
+    return r1;
+label_14:
+    ResumeGenerator(result_out_reg=1, return_bool_out_reg=2);
+    JumpNotCondition(target_address=25)!r2;
+    r2 = undefined;
+    return r2;
+label_25:
+    return r1;
+label_28:
+    return r0;
+}
+
+

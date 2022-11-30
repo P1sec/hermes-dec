@@ -21,8 +21,8 @@ class Pass0InternallyDisassemble:
         hbc_reader = HBCReader()
         state.hbc_reader = hbc_reader
     
-        # with open(TESTS_DIR + '/sample.hbc', 'rb') as file_handle:
-        with open(ASSETS_DIR + '/index.android.bundle', 'rb') as file_handle:
+        with open(state.input_file, 'rb') as file_handle:
+        # with open(ASSETS_DIR + '/index.android.bundle', 'rb') as file_handle:
             state.hbc_reader.read_whole_file(file_handle)
         
         

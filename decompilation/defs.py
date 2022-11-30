@@ -17,6 +17,9 @@ from hbc_file_parser import HBCReader
 
 class HermesDecompiler:
     
+    input_file : str
+    output_file : Optional[str]
+    
     hbc_reader : HBCReader
     closure_to_caller_function_ids : List[Tuple[int, int]] = {}
     
@@ -274,8 +277,8 @@ class FunctionTableIndex(Token):
     def _name_if_any(self) -> Optional[str]:
         
         if self.is_builtin:
-            builtin_functions = get_builtin_functions(self.state.hbc_reader.version)
-            return builtin_functions[self.environment_id]
+            builtin_functions = get_builtin_functions(self.state.hbc_reader.header.version)
+            return builtin_functions[self.function_id]
         
         else:
             return self.state.hbc_reader.strings[

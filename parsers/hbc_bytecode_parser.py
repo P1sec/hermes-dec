@@ -69,6 +69,10 @@ class ParsedInstruction:
                         self.hbc_reader.object_values[self.arg5:], self.arg3).to_strings(self.hbc_reader.strings)
                 )
             )
+        elif self.inst.name in ('CallBuiltin', 'CallBuiltinLong', 'GetBuiltinClosure'):
+            builtin_number = self.arg2
+            builtin_functions = get_builtin_functions(self.hbc_reader.header.version)
+            comment += '  # Built-in function: [#%d %s]' % (builtin_number, builtin_functions[builtin_number])
         elif self.inst.name == 'SwitchImm':
             comment += '  # Jump table: [%s]' % ', '.join('%08x' % value for value in
                 self.switch_jump_table)

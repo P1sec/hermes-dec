@@ -4,6 +4,7 @@ from ctypes import LittleEndianStructure, c_uint8, c_uint16, c_uint32, c_uint64,
 from typing import Sequence, Union, Dict, List, Set
 from io import BytesIO, BufferedReader
 from os.path import dirname, realpath
+from argparse import ArgumentParser
 from enum import IntEnum, IntFlag
 from hashlib import sha1
 
@@ -452,8 +453,10 @@ class HBCReader:
             
             before_pos = self.file_buffer.tell()
             self.file_buffer.seek(function_header.offset)
+            
             data = self.file_buffer.read(function_header.bytecodeSizeInBytes)
             function_ops = parse_hbc_bytecode(BytesIO(data), function_header.offset, self.header.version, self)
+            
             self.file_buffer.seek(before_pos)
             
             self.function_ops.append(function_ops)
@@ -583,7 +586,7 @@ class HBCReader:
         self.align_over_padding()
         
         self.cjs_modules = (self.get_symbol_offset_pair_reader() *
-            self.header.functionSourceCount)()
+            self.header.cjsModuleCount)()
         
         self.file_buffer.readinto(self.cjs_modules)
     
@@ -630,6 +633,7 @@ class HBCReader:
         
         self.read_arrays() # Defines self.arrays, self.object_keys, self.object_values
         
+        self.bigint_values = []
         if self.header.version >= 87:
             self.read_bigints() # Defines self.bigint_table and self.bigint_storage
         
@@ -643,8 +647,14 @@ class HBCReader:
 
 if __name__ == '__main__':
     
-    with open(ASSETS_DIR + '/index.android.bundle', 'rb') as file_descriptor:
-    # with open(TESTS_DIR + '/sample.hbc', 'rb') as file_descriptor:
+    args = ArgumentParser()
+    
+    args.add_argument('input_file')
+    
+    args = args.parse_args()
+    
+    with open(args.input_file, 'rb') as file_descriptor:
+    # with open(ASSETS_DIR + '/index.android.bundle', 'rb') as file_descriptor:
 
         hbc_reader = HBCReader()
 
@@ -738,8 +748,8 @@ if __name__ == '__main__':
             ))
         
         for function_source_count, function_source in enumerate(hbc_reader.function_sources):
-            print("=> Function source #%d: functionId %d = string %r" % (cjs_module_count,
+            print("=> Function source #%d: functionId %d = string @ %08x" % (function_source_count,
                 function_source.function_id,
-                hbc_reader.strings[function_source.string_id]
+                function_source.string_id
             ))
             

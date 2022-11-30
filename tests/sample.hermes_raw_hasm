@@ -1,0 +1,191 @@
+hbcdump> Bytecode File Information:
+  Bytecode version number: 84
+  Source hash: 9c1a5d9e132ec646edb05cfa1732898aa435a83c
+  Function count: 6
+  String count: 16
+  String Kind Entry count: 2
+  RegExp count: 1
+  Segment ID: 0
+  CommonJS module count: 0
+  CommonJS module count (static): 0
+  Function source count: 2
+  Bytecode options:
+    staticBuiltins: 0
+    cjsModulesStaticallyResolved: 0
+
+Global String Table:
+s0[ASCII, 0..-1]: 
+s1[ASCII, 0..20]: ?anon_0_?anon_0_testx
+s2[ASCII, 8..20]: ?anon_0_testx
+s3[ASCII, 22..32]: ?anon_0_gen
+s4[ASCII, 33..39]: bonjour
+s5[ASCII, 40..82]: dkooDD JPOD D09D\n\\  @ .\r\n\t@ \x00 D+D  
+s6[ASCII, 85..90]: global
+s7[ASCII, 91..93]: gmi
+s8[UTF-16, 110..143]: \x44\x00\x2B\x00\x44\x00\x20\x00\x2B\x00\x44\x00\x2F\x20\x2B\x00\x44\x00\x20\x00\x2B\x00\x0A\x00\x44\x00\x2B\x00\xC9\x00\x44\x00\x20\x00
+i9[ASCII, 16..20] #13923238: testx
+i10[ASCII, 20..21] #07BD3EB3: xy
+i11[ASCII, 30..32] #CC293D73: gen
+i12[ASCII, 83..85] #1C35E808: log
+i13[ASCII, 94..97] #B0F82D55: exec
+i14[ASCII, 97..103] #629A2BFD: console
+i15[ASCII, 104..108] #13935E65: test2
+
+Function Source Table:
+  Function ID 3 -> s0
+  Function ID 5 -> s0
+
+Function<global>0(1 params, 13 registers, 0 symbols):
+Offset in debug table: source 0x0000, lexical 0x0000
+[@ 0] DeclareGlobalVar 9<UInt32>
+[@ 5] DeclareGlobalVar 11<UInt32>
+[@ 10] CreateEnvironment 1<Reg8>
+[@ 12] CreateAsyncClosure 2<Reg8>, 1<Reg8>, 1<UInt16>
+[@ 17] GetGlobalObject 0<Reg8>
+[@ 19] PutById 0<Reg8>, 2<Reg8>, 1<UInt8>, 9<UInt16>
+[@ 25] CreateGeneratorClosure 1<Reg8>, 1<Reg8>, 4<UInt16>
+[@ 30] PutById 0<Reg8>, 1<Reg8>, 2<UInt8>, 11<UInt16>
+[@ 36] CreateRegExp 1<Reg8>, 5<UInt32>, 7<UInt32>, 0<UInt32>
+[@ 50] PutById 0<Reg8>, 1<Reg8>, 3<UInt8>, 15<UInt16>
+[@ 56] TryGetById 2<Reg8>, 0<Reg8>, 1<UInt8>, 14<UInt16>
+[@ 62] GetByIdShort 1<Reg8>, 2<Reg8>, 2<UInt8>, 12<UInt8>
+[@ 67] TryGetById 4<Reg8>, 0<Reg8>, 3<UInt8>, 15<UInt16>
+[@ 73] GetByIdShort 3<Reg8>, 4<Reg8>, 4<UInt8>, 13<UInt8>
+[@ 78] LoadConstString 0<Reg8>, 4<UInt16>
+[@ 82] Call2 0<Reg8>, 3<Reg8>, 4<Reg8>, 0<Reg8>
+[@ 87] Call2 0<Reg8>, 1<Reg8>, 2<Reg8>, 0<Reg8>
+[@ 92] Ret 0<Reg8>
+
+NCFunction<testx>1(2 params, 15 registers, 0 symbols):
+Offset in debug table: source 0x001f, lexical 0x0000
+[@ 0] LoadConstUndefined 4<Reg8>
+[@ 2] LoadConstUndefined 0<Reg8>
+[@ 4] ReifyArguments 0<Reg8>
+[@ 6] Mov 3<Reg8>, 0<Reg8>
+[@ 9] GetBuiltinClosure 2<Reg8>, 53<UInt8>
+[@ 12] CreateEnvironment 0<Reg8>
+[@ 14] CreateGeneratorClosure 1<Reg8>, 0<Reg8>, 2<UInt16>
+[@ 19] LoadThisNS 0<Reg8>
+[@ 21] Call4 0<Reg8>, 2<Reg8>, 4<Reg8>, 1<Reg8>, 0<Reg8>, 3<Reg8>
+[@ 28] Ret 0<Reg8>
+
+NCFunction<?anon_0_testx>2(2 params, 1 registers, 0 symbols):
+[@ 0] CreateEnvironment 0<Reg8>
+[@ 2] CreateGenerator 0<Reg8>, 0<Reg8>, 3<UInt16>
+[@ 7] Ret 0<Reg8>
+
+Function<?anon_0_?anon_0_testx>3(2 params, 15 registers, 0 symbols):
+Offset in debug table: source 0x0026, lexical 0x0000
+[@ 0] StartGenerator
+[@ 1] ResumeGenerator 0<Reg8>, 1<Reg8>
+[@ 4] JmpTrue 98<Addr8>, 1<Reg8>
+[@ 7] GetGlobalObject 4<Reg8>
+[@ 9] GetByIdShort 2<Reg8>, 4<Reg8>, 1<UInt8>, 9<UInt8>
+[@ 14] TryGetById 3<Reg8>, 4<Reg8>, 2<UInt8>, 15<UInt16>
+[@ 20] LoadConstUInt8 5<Reg8>, 42<UInt8>
+[@ 23] LoadConstString 1<Reg8>, 8<UInt16>
+[@ 27] Add 1<Reg8>, 5<Reg8>, 1<Reg8>
+[@ 31] Add 1<Reg8>, 1<Reg8>, 3<Reg8>
+[@ 35] LoadConstUndefined 3<Reg8>
+[@ 37] Call2 1<Reg8>, 2<Reg8>, 3<Reg8>, 1<Reg8>
+[@ 42] SaveGenerator 4<Addr8>
+[@ 44] Ret 1<Reg8>
+[@ 46] ResumeGenerator 1<Reg8>, 2<Reg8>
+[@ 49] JmpTrue 50<Addr8>, 2<Reg8>
+[@ 52] GetByIdShort 2<Reg8>, 4<Reg8>, 3<UInt8>, 11<UInt8>
+[@ 57] Call1 2<Reg8>, 2<Reg8>, 3<Reg8>
+[@ 61] SaveGenerator 4<Addr8>
+[@ 63] Ret 2<Reg8>
+[@ 65] ResumeGenerator 2<Reg8>, 5<Reg8>
+[@ 68] JmpTrue 28<Addr8>, 5<Reg8>
+[@ 71] TryGetById 6<Reg8>, 4<Reg8>, 4<UInt8>, 14<UInt16>
+[@ 77] GetByIdShort 5<Reg8>, 6<Reg8>, 5<UInt8>, 12<UInt8>
+[@ 82] TryGetById 4<Reg8>, 4<Reg8>, 6<UInt8>, 10<UInt16>
+[@ 88] Call2 4<Reg8>, 5<Reg8>, 6<Reg8>, 4<Reg8>
+[@ 93] CompleteGenerator
+[@ 94] Ret 3<Reg8>
+[@ 96] CompleteGenerator
+[@ 97] Ret 2<Reg8>
+[@ 99] CompleteGenerator
+[@ 100] Ret 1<Reg8>
+[@ 102] CompleteGenerator
+[@ 103] Ret 0<Reg8>
+
+NCFunction<gen>4(1 params, 1 registers, 0 symbols):
+[@ 0] CreateEnvironment 0<Reg8>
+[@ 2] CreateGenerator 0<Reg8>, 0<Reg8>, 5<UInt16>
+[@ 7] Ret 0<Reg8>
+
+Function<?anon_0_gen>5(1 params, 3 registers, 0 symbols):
+Offset in debug table: source 0x0054, lexical 0x0000
+[@ 0] StartGenerator
+[@ 1] ResumeGenerator 0<Reg8>, 1<Reg8>
+[@ 4] JmpTrue 24<Addr8>, 1<Reg8>
+[@ 7] LoadConstUInt8 1<Reg8>, 42<UInt8>
+[@ 10] SaveGenerator 4<Addr8>
+[@ 12] Ret 1<Reg8>
+[@ 14] ResumeGenerator 1<Reg8>, 2<Reg8>
+[@ 17] JmpTrue 8<Addr8>, 2<Reg8>
+[@ 20] LoadConstUndefined 2<Reg8>
+[@ 22] CompleteGenerator
+[@ 23] Ret 2<Reg8>
+[@ 25] CompleteGenerator
+[@ 26] Ret 1<Reg8>
+[@ 28] CompleteGenerator
+[@ 29] Ret 0<Reg8>
+
+RegExp Bytecodes:
+0: /dkooDD JPOD D09D\n\\  @ .\r\n\t@ \x00 D+D  /gmi
+  Header: marked: 0 loops: 1 flags: 7 constraints: 4
+  0000  MatchNCharICase8: 'DKOODD JPOD D09D0x0a\  @ '
+  0018  MatchAnyButNewline
+  0019  MatchNCharICase8: '0x0d0x0a0x09@ 0x00 '
+  0022  Width1Loop: 0 greedy {1, 4294967295}
+  0034  MatchCharICase8: 'D'
+  0036  MatchNCharICase8: 'D  '
+  003b  Goal
+
+Debug filename table:
+  0: sample.js
+
+Debug file table:
+  source table offset 0x0000: filename id 0
+
+Debug source table:
+  0x0000  function idx 0, starts at line 7 col 1
+    bc 19: line 7 col 1
+    bc 30: line 7 col 1
+    bc 50: line 19 col 7
+    bc 56: line 20 col 1
+    bc 62: line 20 col 12
+    bc 67: line 20 col 13
+    bc 73: line 20 col 23
+    bc 82: line 20 col 23
+    bc 87: line 20 col 12
+  0x001f  function idx 1, starts at line 7 col 1
+    bc 21: line 7 col 1
+  0x0026  function idx 3, starts at line 7 col 1
+    bc 9: line 8 col 11
+    bc 14: line 8 col 51
+    bc 31: line 8 col 17
+    bc 37: line 8 col 16
+    bc 42: line 8 col 5
+    bc 46: line 8 col 5
+    bc 52: line 10 col 11
+    bc 57: line 10 col 14
+    bc 61: line 10 col 5
+    bc 65: line 10 col 5
+    bc 71: line 12 col 5
+    bc 77: line 12 col 16
+    bc 82: line 12 col 17
+    bc 88: line 12 col 16
+  0x0054  function idx 5, starts at line 15 col 1
+    bc 10: line 16 col 5
+    bc 14: line 16 col 5
+  0x005e  end of debug source table
+
+Debug lexical table:
+  0x0000  lexical parent: none, variable count: 0
+  0x0002  end of debug lexical table
+
+hbcdump> 

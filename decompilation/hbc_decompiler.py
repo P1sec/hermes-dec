@@ -2,7 +2,7 @@
 #-*- encoding: Utf-8 -*-
 from os.path import realpath, dirname
 from argparse import ArgumentParser
-from sys import path
+import sys
 
 SCRIPT_DIR = dirname(realpath(__file__))
 ROOT_DIR = realpath(SCRIPT_DIR + '/..')
@@ -19,15 +19,8 @@ from pass3_structure_decompiled_flow import Pass3StructureDecompiledFlow
     Entry point for the Hermes HBC Decompiler
 """
 
-if __name__ == '__main__':
-    
-    args = ArgumentParser()
-    
-    args = args.parse_args()
-    
-    # WIP .. Instantiate 
-    state = HermesDecompiler()
-    
+def do_decompilation(state : HermesDecompiler):
+
     Pass0InternallyDisassemble(state)
     
     Pass1MakeGraphes(state)
@@ -35,7 +28,7 @@ if __name__ == '__main__':
     Pass2MakeAtomicFlow(state)
     
     Pass3StructureDecompiledFlow(state) # WIP ..
-
+    
     # DEBUG:
     print('[DEBUG] => Number of closures in the JS document:', len(state.closure_to_caller_function_ids))
     
@@ -67,7 +60,32 @@ if __name__ == '__main__':
     
     print()
     
-    # WIP .. Call Pass0 here
-    
     # WIP ..
+
+if __name__ == '__main__':
+    
+    args = ArgumentParser()
+    
+    args.add_argument('input_file')
+    args.add_argument('output_file', nargs = '?')
+    
+    args = args.parse_args()
+    
+    # WIP .. Instantiate
+    state = HermesDecompiler()
+    state.input_file = args.input_file
+    state.output_file = args.output_file
+    
+    if state.output_file:
+        stdout = sys.stdout
+        with open(state.output_file, 'w') as sys.stdout:
+            do_decompilation(state)
+        sys.stdout = stdout
+        
+        print()
+        print('[+] Decompiled output wrote to "%s"' % state.output_file)
+        print()
+    else:
+        do_decompilation(state)
+
     

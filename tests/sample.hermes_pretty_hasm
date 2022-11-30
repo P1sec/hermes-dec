@@ -1,0 +1,211 @@
+hbcdump> Bytecode File Information:
+  Bytecode version number: 84
+  Source hash: 9c1a5d9e132ec646edb05cfa1732898aa435a83c
+  Function count: 6
+  String count: 16
+  String Kind Entry count: 2
+  RegExp count: 1
+  Segment ID: 0
+  CommonJS module count: 0
+  CommonJS module count (static): 0
+  Function source count: 2
+  Bytecode options:
+    staticBuiltins: 0
+    cjsModulesStaticallyResolved: 0
+
+Global String Table:
+s0[ASCII, 0..-1]: 
+s1[ASCII, 0..20]: ?anon_0_?anon_0_testx
+s2[ASCII, 8..20]: ?anon_0_testx
+s3[ASCII, 22..32]: ?anon_0_gen
+s4[ASCII, 33..39]: bonjour
+s5[ASCII, 40..82]: dkooDD JPOD D09D\n\\  @ .\r\n\t@ \x00 D+D  
+s6[ASCII, 85..90]: global
+s7[ASCII, 91..93]: gmi
+s8[UTF-16, 110..143]: \x44\x00\x2B\x00\x44\x00\x20\x00\x2B\x00\x44\x00\x2F\x20\x2B\x00\x44\x00\x20\x00\x2B\x00\x0A\x00\x44\x00\x2B\x00\xC9\x00\x44\x00\x20\x00
+i9[ASCII, 16..20] #13923238: testx
+i10[ASCII, 20..21] #07BD3EB3: xy
+i11[ASCII, 30..32] #CC293D73: gen
+i12[ASCII, 83..85] #1C35E808: log
+i13[ASCII, 94..97] #B0F82D55: exec
+i14[ASCII, 97..103] #629A2BFD: console
+i15[ASCII, 104..108] #13935E65: test2
+
+Function Source Table:
+  Function ID 3 -> s0
+  Function ID 5 -> s0
+
+Function<global>0(1 params, 13 registers, 0 symbols):
+Offset in debug table: source 0x0000, lexical 0x0000
+sample.js[7:1]
+    DeclareGlobalVar  "testx"
+    DeclareGlobalVar  "gen"
+    CreateEnvironment r1
+    CreateAsyncClosure r2, r1, 1
+    GetGlobalObject   r0
+    PutById           r0, r2, 1, "testx"
+    CreateGeneratorClosure r1, r1, 4
+    PutById           r0, r1, 2, "gen"
+    CreateRegExp      r1, "dkooDD JPOD D09D\"..., "gmi", 0
+    PutById           r0, r1, 3, "test2"
+    TryGetById        r2, r0, 1, "console"
+    GetByIdShort      r1, r2, 2, "log"
+    TryGetById        r4, r0, 3, "test2"
+    GetByIdShort      r3, r4, 4, "exec"
+    LoadConstString   r0, "bonjour"
+    Call2             r0, r3, r4, r0
+    Call2             r0, r1, r2, r0
+    Ret               r0
+
+NCFunction<testx>1(2 params, 15 registers, 0 symbols):
+Offset in debug table: source 0x001f, lexical 0x0000
+sample.js[7:1]
+    LoadConstUndefined r4
+    LoadConstUndefined r0
+    ReifyArguments    r0
+    Mov               r3, r0
+    GetBuiltinClosure r2, "HermesBuiltin.spawnAsync"
+    CreateEnvironment r0
+    CreateGeneratorClosure r1, r0, 2
+    LoadThisNS        r0
+    Call4             r0, r2, r4, r1, r0, r3
+    Ret               r0
+
+NCFunction<?anon_0_testx>2(2 params, 1 registers, 0 symbols):
+    CreateEnvironment r0
+    CreateGenerator   r0, r0, 3
+    Ret               r0
+
+Function<?anon_0_?anon_0_testx>3(2 params, 15 registers, 0 symbols):
+Offset in debug table: source 0x0026, lexical 0x0000
+sample.js[7:1]
+    StartGenerator   
+    ResumeGenerator   r0, r1
+    JmpTrue           L1, r1
+    GetGlobalObject   r4
+    GetByIdShort      r2, r4, 1, "testx"
+    TryGetById        r3, r4, 2, "test2"
+    LoadConstUInt8    r5, 42
+    LoadConstString   r1, "D+D +D\u202f+D"
+    Add               r1, r5, r1
+    Add               r1, r1, r3
+    LoadConstUndefined r3
+    Call2             r1, r2, r3, r1
+    SaveGenerator     L2
+    Ret               r1
+L2:
+sample.js[8:5]
+    ResumeGenerator   r1, r2
+    JmpTrue           L3, r2
+    GetByIdShort      r2, r4, 3, "gen"
+    Call1             r2, r2, r3
+    SaveGenerator     L4
+    Ret               r2
+L4:
+sample.js[10:5]
+    ResumeGenerator   r2, r5
+    JmpTrue           L5, r5
+    TryGetById        r6, r4, 4, "console"
+    GetByIdShort      r5, r6, 5, "log"
+    TryGetById        r4, r4, 6, "xy"
+    Call2             r4, r5, r6, r4
+    CompleteGenerator
+    Ret               r3
+L5:
+sample.js[12:16]
+    CompleteGenerator
+    Ret               r2
+L3:
+sample.js[12:16]
+    CompleteGenerator
+    Ret               r1
+L1:
+sample.js[12:16]
+    CompleteGenerator
+    Ret               r0
+
+NCFunction<gen>4(1 params, 1 registers, 0 symbols):
+    CreateEnvironment r0
+    CreateGenerator   r0, r0, 5
+    Ret               r0
+
+Function<?anon_0_gen>5(1 params, 3 registers, 0 symbols):
+Offset in debug table: source 0x0054, lexical 0x0000
+sample.js[15:1]
+    StartGenerator   
+    ResumeGenerator   r0, r1
+    JmpTrue           L1, r1
+    LoadConstUInt8    r1, 42
+    SaveGenerator     L2
+    Ret               r1
+L2:
+sample.js[16:5]
+    ResumeGenerator   r1, r2
+    JmpTrue           L3, r2
+    LoadConstUndefined r2
+    CompleteGenerator
+    Ret               r2
+L3:
+sample.js[16:5]
+    CompleteGenerator
+    Ret               r1
+L1:
+sample.js[16:5]
+    CompleteGenerator
+    Ret               r0
+
+RegExp Bytecodes:
+0: /dkooDD JPOD D09D\n\\  @ .\r\n\t@ \x00 D+D  /gmi
+  Header: marked: 0 loops: 1 flags: 7 constraints: 4
+  0000  MatchNCharICase8: 'DKOODD JPOD D09D0x0a\  @ '
+  0018  MatchAnyButNewline
+  0019  MatchNCharICase8: '0x0d0x0a0x09@ 0x00 '
+  0022  Width1Loop: 0 greedy {1, 4294967295}
+  0034  MatchCharICase8: 'D'
+  0036  MatchNCharICase8: 'D  '
+  003b  Goal
+
+Debug filename table:
+  0: sample.js
+
+Debug file table:
+  source table offset 0x0000: filename id 0
+
+Debug source table:
+  0x0000  function idx 0, starts at line 7 col 1
+    bc 19: line 7 col 1
+    bc 30: line 7 col 1
+    bc 50: line 19 col 7
+    bc 56: line 20 col 1
+    bc 62: line 20 col 12
+    bc 67: line 20 col 13
+    bc 73: line 20 col 23
+    bc 82: line 20 col 23
+    bc 87: line 20 col 12
+  0x001f  function idx 1, starts at line 7 col 1
+    bc 21: line 7 col 1
+  0x0026  function idx 3, starts at line 7 col 1
+    bc 9: line 8 col 11
+    bc 14: line 8 col 51
+    bc 31: line 8 col 17
+    bc 37: line 8 col 16
+    bc 42: line 8 col 5
+    bc 46: line 8 col 5
+    bc 52: line 10 col 11
+    bc 57: line 10 col 14
+    bc 61: line 10 col 5
+    bc 65: line 10 col 5
+    bc 71: line 12 col 5
+    bc 77: line 12 col 16
+    bc 82: line 12 col 17
+    bc 88: line 12 col 16
+  0x0054  function idx 5, starts at line 15 col 1
+    bc 10: line 16 col 5
+    bc 14: line 16 col 5
+  0x005e  end of debug source table
+
+Debug lexical table:
+  0x0000  lexical parent: none, variable count: 0
+  0x0002  end of debug lexical table
+
+hbcdump> 

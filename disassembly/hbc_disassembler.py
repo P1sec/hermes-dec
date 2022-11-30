@@ -1,23 +1,23 @@
 #!/usr/bin/python3
 #-*- encoding: Utf-8 -*-
 from os.path import dirname, realpath
-from sys import path
+from argparse import ArgumentParser
+import sys
 
 DISASSEMBLY_DIR = dirname(realpath(__file__))
 ROOT_DIR = realpath(DISASSEMBLY_DIR + '/..')
 PARSERS_DIR = realpath(ROOT_DIR + '/parsers')
 TESTS_DIR = realpath(ROOT_DIR + '/tests')
 ASSETS_DIR = realpath(TESTS_DIR + '/assets')
-path.append(PARSERS_DIR)
+sys.path.append(PARSERS_DIR)
 
 from hbc_file_parser import HBCReader
 
-if __name__ == '__main__':
-    
-    # TODO : Make an actual CLI here ..
+
+def do_disassemble(input_file : str):
     
     # with open(TESTS_DIR + '/sample.hbc', 'rb') as file_descriptor:
-    with open(ASSETS_DIR + '/index.android.bundle', 'rb') as file_descriptor:
+    with open(input_file, 'rb') as file_descriptor:
 
         hbc_reader = HBCReader()
 
@@ -40,7 +40,7 @@ if __name__ == '__main__':
                 function_header.hasDebugInfo,
                 
                 function_header.offset))
-            
+
             print()
             print('Bytecode listing:')
             print()
@@ -53,6 +53,29 @@ if __name__ == '__main__':
             
             # Safety checks:
             assert function_header.unused == 0 and function_header.paramCount < 100
-        
-        # WIP ..
 
+
+if __name__ == '__main__':
+    
+    # TODO : Make an actual CLI with extra options here ..
+    
+    args = ArgumentParser()
+    
+    args.add_argument('input_file') # , default = ASSETS_DIR + '/index.android.bundle')
+    args.add_argument('output_file', nargs = '?') # , default = '/dev/stdout'
+    
+    args = args.parse_args()
+
+    if args.output_file:
+        stdout = sys.stdout
+        with open(args.output_file, 'w') as sys.stdout:
+            do_disassemble(args.input_file)
+        sys.stdout = stdout
+    
+        print()
+        print('[+] Disassembly output wrote to "%s"' % args.output_file)
+        print()
+    
+    else:
+        do_disassemble(args.input_file)
+        
