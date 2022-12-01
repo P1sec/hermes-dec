@@ -77,3 +77,77 @@
 
 => Function source #0: functionId 3 = string @ 00000000
 => Function source #1: functionId 5 = string @ 00000000
+
+=> Debug data:
+
++----------------------------+
+| Filename count        | 1  |
++----------------------------+
+| Filename storage size | 9  |
++----------------------------+
+| File region count     | 1  |
++----------------------------+
+| Lexical data offset   | 94 |
++----------------------------+
+| Debug data size       | 96 |
++----------------------------+
+
++------------+
+| Offset | 0 |
++------------+
+| Length | 9 |
++------------+
+b'sample.js'
+
++-----------------------+
+| From address      | 0 |
++-----------------------+
+| Filename id       | 0 |
++-----------------------+
+| Source mapping id | 0 |
++-----------------------+
+
+Function index: 0
+Start line: 7
+Start column: 1
+  Address 19: Line 7 - Column 1 - Statement 0
+  Address 30: Line 7 - Column 1 - Statement 0
+  Address 50: Line 19 - Column 7 - Statement 0
+  Address 56: Line 20 - Column 1 - Statement 0
+  Address 62: Line 20 - Column 12 - Statement 0
+  Address 67: Line 20 - Column 13 - Statement 0
+  Address 73: Line 20 - Column 23 - Statement 0
+  Address 82: Line 20 - Column 23 - Statement 0
+  Address 87: Line 20 - Column 12 - Statement 0
+
+Function index: 1
+Start line: 7
+Start column: 1
+  Address 21: Line 7 - Column 1 - Statement 0
+
+Function index: 3
+Start line: 7
+Start column: 1
+  Address 9: Line 8 - Column 11 - Statement 0
+  Address 14: Line 8 - Column 51 - Statement 0
+  Address 31: Line 8 - Column 17 - Statement 0
+  Address 37: Line 8 - Column 16 - Statement 0
+  Address 42: Line 8 - Column 5 - Statement 0
+  Address 46: Line 8 - Column 5 - Statement 0
+  Address 52: Line 10 - Column 11 - Statement 0
+  Address 57: Line 10 - Column 14 - Statement 0
+  Address 61: Line 10 - Column 5 - Statement 0
+  Address 65: Line 10 - Column 5 - Statement 0
+  Address 71: Line 12 - Column 5 - Statement 0
+  Address 77: Line 12 - Column 16 - Statement 0
+  Address 82: Line 12 - Column 17 - Statement 0
+  Address 88: Line 12 - Column 16 - Statement 0
+
+Function index: 5
+Start line: 15
+Start column: 1
+  Address 10: Line 16 - Column 5 - Statement 0
+  Address 14: Line 16 - Column 5 - Statement 0
+
+  => Sources data: 0007011300000b000014180606027a06000b05000106000a0900000500757f0107011500007f03070109020a05002811005e06007f05007504000006040605000304007704000006040006000b05000106007f7f050f010a02040400007f
+  => Lexical raw data: 7f00

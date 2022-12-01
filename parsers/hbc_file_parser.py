@@ -12,6 +12,7 @@ from hashlib import sha1
 from hbc_bytecode_parser import parse_hbc_bytecode, ParsedInstruction
 from regexp_bytecode_parser import decompile_regex, parse_regex
 from pretty_print import pretty_print_structure
+from debug_info_parser import print_debug_info
 
 PARSERS_DIR = dirname(realpath(__file__))
 ROOT_DIR = realpath(PARSERS_DIR + '/..')
@@ -99,6 +100,13 @@ class HBCReader:
     
     cjs_modules : List[object]
     function_sources : List[object]
+    
+    debug_info_header : object
+    debug_string_table : List[object]
+    debug_string_storage : BytesIO
+    debug_file_regions : List[object]
+    sources_data_storage : BytesIO
+    lexical_data_storage : BytesIO
 
     def get_header_reader(self, bytecode_version : int = LATEST_BYTECODE_VERSION) -> type:
         
@@ -365,6 +373,32 @@ class HBCReader:
         
         return CTypesReader
     
+    def get_debug_info_header_reader(self) -> type:
+        
+        class CTypesReader(LittleEndianStructure):
+            _pack_ = True
+            _fields_ = [
+                ('filename_count', c_uint32),
+                ('filename_storage_size', c_uint32),
+                ('file_region_count', c_uint32),
+                ('lexical_data_offset', c_uint32),
+                ('debug_data_size', c_uint32)
+            ]
+        
+        return CTypesReader
+    
+    def get_debug_file_region_reader(self) -> type:
+        
+        class CTypesReader(LittleEndianStructure):
+            _pack_ = True
+            _fields_ = [
+                ('from_address', c_uint32),
+                ('filename_id', c_uint32),
+                ('source_mapping_id', c_uint32)
+            ]
+        
+        return CTypesReader
+    
     def align_over_padding(self, padding_amount = 4):
         
         # Each bytecode segment should be padded over
@@ -598,7 +632,28 @@ class HBCReader:
             self.header.functionSourceCount)()
         
         self.file_buffer.readinto(self.function_sources)
+    
+    def read_debug_info(self):
         
+        self.file_buffer.seek(self.header.debugInfoOffset)
+        
+        self.debug_info_header = self.get_debug_info_header_reader()()
+        self.file_buffer.readinto(self.debug_info_header)
+        
+        reader = self.get_offset_length_pair_reader()
+        self.debug_string_table = (reader * self.debug_info_header.filename_count)()
+        self.file_buffer.readinto(self.debug_string_table)
+        
+        self.debug_string_storage = BytesIO(self.file_buffer.read(self.debug_info_header.filename_storage_size))
+        
+        reader = self.get_debug_file_region_reader()
+        self.debug_file_regions = (reader * self.debug_info_header.file_region_count)()
+        self.file_buffer.readinto(self.debug_file_regions)
+        
+        self.sources_data_storage = BytesIO(self.file_buffer.read(self.debug_info_header.debug_data_size - (self.debug_info_header.debug_data_size - self.debug_info_header.lexical_data_offset)))
+        self.lexical_data_storage = BytesIO(self.file_buffer.read(self.debug_info_header.debug_data_size - self.debug_info_header.lexical_data_offset))
+        
+        # WIP ..
 
     def read_whole_file(self, file_buffer : BufferedReader):
         
@@ -642,6 +697,8 @@ class HBCReader:
         self.read_cjs_modules() # Defines self.cjs_modules
         
         self.read_function_sources() # Defines self.function_sources
+        
+        self.read_debug_info() # Defines self.debug_info_header, self.debug_string_table, ...
         
         pass # WIP .. Read the bytecode here?
 
@@ -752,4 +809,19 @@ if __name__ == '__main__':
                 function_source.function_id,
                 function_source.string_id
             ))
-            
+        
+        print()
+        print('=> Debug data:')
+        pretty_print_structure(hbc_reader.debug_info_header)
+        for item in hbc_reader.debug_string_table:
+            pretty_print_structure(item)
+        print(hbc_reader.debug_string_storage.getvalue())
+        for item in hbc_reader.debug_file_regions:
+            pretty_print_structure(item)
+
+        hbc_reader.sources_data_storage.seek(0)
+        print_debug_info(hbc_reader.sources_data_storage)
+
+        print('  => Sources data:', hbc_reader.sources_data_storage.getvalue().hex())
+        print('  => Lexical raw data:', hbc_reader.lexical_data_storage.getvalue().hex())
+

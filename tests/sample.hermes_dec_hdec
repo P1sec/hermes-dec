@@ -17,7 +17,7 @@ r2 = async function() { // Original name: testx, environment Id: 1
     NewEnvironmentToken(register=0);
     r1 = function*() { // Original name: ?anon_0_testx
         NewEnvironmentToken(register=0);
-        r0 = <Function #3 (?anon_0_?anon_0_testx): function_id: 3, is_generator: True, function_body: <defs.DecompiledFunctionBody object at 0x7f182ce9bb50>>;
+        r0 = <Function #3 (?anon_0_?anon_0_testx): function_id: 3, is_generator: True, function_body: <defs.DecompiledFunctionBody object at 0x7fcafcaf3e80>>;
         return r0;
     };
     r0 = this;
@@ -28,7 +28,7 @@ r0 = global;
 r0['testx'] = r2;
 r1 = function*() { // Original name: gen, environment Id: 1
     NewEnvironmentToken(register=0);
-    r0 = <Function #5 (?anon_0_gen): function_id: 5, is_generator: True, function_body: <defs.DecompiledFunctionBody object at 0x7f182ce9bc10>>;
+    r0 = <Function #5 (?anon_0_gen): function_id: 5, is_generator: True, function_body: <defs.DecompiledFunctionBody object at 0x7fcafcaf3f40>>;
     return r0;
 };
 r0['gen'] = r1;
