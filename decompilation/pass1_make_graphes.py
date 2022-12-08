@@ -2,6 +2,7 @@
 #-*- encoding: Utf-8 -*-
 from typing import List, Tuple, Dict, Set, Sequence, Union, Optional, Any
 from os.path import dirname, realpath
+from collections import defaultdict
 
 from defs import HermesDecompiler, DecompiledFunctionBody
 
@@ -22,11 +23,22 @@ class Pass1MakeGraphes:
             function_body.basic_blocks = []
             function_body.jump_targets = set()
             
+            function_body.try_starts = defaultdict(list)
+            function_body.try_ends = defaultdict(list)
+            function_body.catch_targets = defaultdict(list)
+            if function_body.function_object.hasExceptionHandler:
+                for handler_count, handler in enumerate(state.hbc_reader.function_id_to_exc_handlers[function_count]):
+                    function_body.try_starts[handler.start].append('try_start_%d' % handler_count)
+                    function_body.try_ends[handler.end].append('try_end%d' % handler_count)
+                    function_body.catch_targets[handler.target].append('catch_target%d' % handler_count)
+
             state.function_id_to_body[function_count] = function_body
             
             for instruction in state.hbc_reader.function_ops[function_count]:
                 
                 if instruction.inst.name in ('CreateClosure', 'CreateClosureLongIndex',
+                    'CreateGeneratorClosure', 'CreateGeneratorClosureLongIndex',
+                    'CreateGenerator', 'CreateGeneratorLongIndex', # Generators are actually function bodies nested into generator closures in the HBC generated structures
                     'CreateAsyncClosure', 'CreateAsyncClosureLongIndex'):
                     
                     source_function_id = function_count

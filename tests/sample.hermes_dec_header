@@ -4,23 +4,23 @@
 +-------------------------------------------------------------------------+
 | Version                      | 84                                       |
 +-------------------------------------------------------------------------+
-| SourceHash                   | 9c1a5d9e132ec646edb05cfa1732898aa435a83c |
+| SourceHash                   | a692192bdc8ee6f7b2b9918faf18a64db39587c8 |
 +-------------------------------------------------------------------------+
-| FileLength                   | 1037                                     |
+| FileLength                   | 1898                                     |
 +-------------------------------------------------------------------------+
 | GlobalCodeIndex              | 0                                        |
 +-------------------------------------------------------------------------+
-| FunctionCount                | 6                                        |
+| FunctionCount                | 8                                        |
 +-------------------------------------------------------------------------+
 | StringKindCount              | 2                                        |
 +-------------------------------------------------------------------------+
-| IdentifierCount              | 7                                        |
+| IdentifierCount              | 17                                       |
 +-------------------------------------------------------------------------+
-| StringCount                  | 16                                       |
+| StringCount                  | 34                                       |
 +-------------------------------------------------------------------------+
 | OverflowStringCount          | 0                                        |
 +-------------------------------------------------------------------------+
-| StringStorageSize            | 144                                      |
+| StringStorageSize            | 238                                      |
 +-------------------------------------------------------------------------+
 | RegExpCount                  | 1                                        |
 +-------------------------------------------------------------------------+
@@ -38,7 +38,7 @@
 +-------------------------------------------------------------------------+
 | FunctionSourceCount          | 2                                        |
 +-------------------------------------------------------------------------+
-| DebugInfoOffset              | 872                                      |
+| DebugInfoOffset              | 1568                                     |
 +-------------------------------------------------------------------------+
 | StaticBuiltins               | 0                                        |
 +-------------------------------------------------------------------------+
@@ -51,24 +51,44 @@
 => StringKind.String: '?anon_0_?anon_0_testx' 
 => StringKind.String: '?anon_0_testx' 
 => StringKind.String: '?anon_0_gen' 
+=> StringKind.String: 'AAAAAAAA' 
+=> StringKind.String: 'Bon-jour : ' 
+=> StringKind.String: 'Hello! Exception handling' 
+=> StringKind.String: 'global' 
+=> StringKind.String: 'a' 
+=> StringKind.String: 'zb' 
+=> StringKind.String: 'b' 
 => StringKind.String: 'bonjour' 
 => StringKind.String: 'dkooDD JPOD D09D\\n\\\\  @ .\\r\\n\\t@ \\x00 D+D  ' 
-=> StringKind.String: 'global' 
 => StringKind.String: 'gmi' 
+=> StringKind.String: 'le' 
+=> StringKind.String: 'dçdàçD°D+D' 
 => StringKind.String: 'D+D +D\u202f+D +\nD+ÉD ' 
 => StringKind.Identifier: 'testx' 
 => StringKind.Identifier: 'xy' 
 => StringKind.Identifier: 'gen' 
+=> StringKind.Identifier: 'next' 
+=> StringKind.Identifier: 'alert' 
+=> StringKind.Identifier: 'random' 
+=> StringKind.Identifier: 'onload' 
 => StringKind.Identifier: 'log' 
+=> StringKind.Identifier: 'ze' 
 => StringKind.Identifier: 'exec' 
 => StringKind.Identifier: 'console' 
+=> StringKind.Identifier: 'Date' 
 => StringKind.Identifier: 'test2' 
-=> [Function #0 global of 94 bytes]: 1 params @ offset 0x00000230
-=> [Function #1 testx of 30 bytes]: 2 params @ offset 0x0000028e
-=> [Function #2 ?anon_0_testx of 9 bytes]: 2 params @ offset 0x000002ac
-=> [Function #3 ?anon_0_?anon_0_testx of 105 bytes]: 2 params @ offset 0x000002b5
-=> [Function #4 gen of 9 bytes]: 1 params @ offset 0x0000031e
-=> [Function #5 ?anon_0_gen of 31 bytes]: 1 params @ offset 0x00000327
+=> StringKind.Identifier: 'Math' 
+=> StringKind.Identifier: 'now' 
+=> StringKind.Identifier: 'window' 
+=> StringKind.Identifier: 'print' 
+=> [Function #0 global of 235 bytes]: 1 params @ offset 0x00000320
+=> [Function #1 testx of 30 bytes]: 2 params @ offset 0x0000040b
+=> [Function #2 ?anon_0_testx of 9 bytes]: 2 params @ offset 0x00000429
+=> [Function #3 ?anon_0_?anon_0_testx of 124 bytes]: 2 params @ offset 0x00000432
+=> [Function #4 gen of 9 bytes]: 1 params @ offset 0x000004ae
+=> [Function #5 ?anon_0_gen of 179 bytes]: 1 params @ offset 0x000004b7
+=> [Function #6 ze of 54 bytes]: 1 params @ offset 0x0000056a
+=> [Function #7 zb of 37 bytes]: 1 params @ offset 0x000005a0
 
 => BigInts:
 
@@ -80,17 +100,17 @@
 
 => Debug data:
 
-+----------------------------+
-| Filename count        | 1  |
-+----------------------------+
-| Filename storage size | 9  |
-+----------------------------+
-| File region count     | 1  |
-+----------------------------+
-| Lexical data offset   | 94 |
-+----------------------------+
-| Debug data size       | 96 |
-+----------------------------+
++-----------------------------+
+| Filename count        | 1   |
++-----------------------------+
+| Filename storage size | 9   |
++-----------------------------+
+| File region count     | 1   |
++-----------------------------+
+| Lexical data offset   | 259 |
++-----------------------------+
+| Debug data size       | 261 |
++-----------------------------+
 
 +------------+
 | Offset | 0 |
@@ -110,15 +130,35 @@ b'sample.js'
 Function index: 0
 Start line: 7
 Start column: 1
-  Address 19: Line 7 - Column 1 - Statement 0
-  Address 30: Line 7 - Column 1 - Statement 0
-  Address 50: Line 19 - Column 7 - Statement 0
-  Address 56: Line 20 - Column 1 - Statement 0
-  Address 62: Line 20 - Column 12 - Statement 0
-  Address 67: Line 20 - Column 13 - Statement 0
-  Address 73: Line 20 - Column 23 - Statement 0
-  Address 82: Line 20 - Column 23 - Statement 0
-  Address 87: Line 20 - Column 12 - Statement 0
+  Address 24: Line 7 - Column 1 - Statement 0
+  Address 35: Line 7 - Column 1 - Statement 0
+  Address 46: Line 7 - Column 1 - Statement 0
+  Address 52: Line 52 - Column 1 - Statement 0
+  Address 58: Line 52 - Column 17 - Statement 0
+  Address 63: Line 52 - Column 15 - Statement 0
+  Address 69: Line 53 - Column 1 - Statement 0
+  Address 76: Line 53 - Column 3 - Statement 0
+  Address 94: Line 55 - Column 7 - Statement 0
+  Address 100: Line 56 - Column 1 - Statement 0
+  Address 106: Line 56 - Column 12 - Statement 0
+  Address 111: Line 56 - Column 13 - Statement 0
+  Address 117: Line 56 - Column 23 - Statement 0
+  Address 126: Line 56 - Column 23 - Statement 0
+  Address 131: Line 56 - Column 12 - Statement 0
+  Address 136: Line 58 - Column 1 - Statement 0
+  Address 142: Line 58 - Column 12 - Statement 0
+  Address 147: Line 58 - Column 18 - Statement 0
+  Address 152: Line 58 - Column 21 - Statement 0
+  Address 156: Line 58 - Column 28 - Statement 0
+  Address 161: Line 58 - Column 28 - Statement 0
+  Address 169: Line 58 - Column 12 - Statement 0
+  Address 175: Line 59 - Column 1 - Statement 0
+  Address 181: Line 59 - Column 12 - Statement 0
+  Address 186: Line 59 - Column 18 - Statement 0
+  Address 209: Line 59 - Column 23 - Statement 0
+  Address 214: Line 59 - Column 40 - Statement 0
+  Address 219: Line 59 - Column 40 - Statement 0
+  Address 227: Line 59 - Column 12 - Statement 0
 
 Function index: 1
 Start line: 7
@@ -140,14 +180,54 @@ Start column: 1
   Address 65: Line 10 - Column 5 - Statement 0
   Address 71: Line 12 - Column 5 - Statement 0
   Address 77: Line 12 - Column 16 - Statement 0
-  Address 82: Line 12 - Column 17 - Statement 0
-  Address 88: Line 12 - Column 16 - Statement 0
+  Address 85: Line 12 - Column 16 - Statement 0
+  Address 90: Line 13 - Column 5 - Statement 0
+  Address 96: Line 13 - Column 16 - Statement 0
+  Address 101: Line 13 - Column 17 - Statement 0
+  Address 107: Line 13 - Column 16 - Statement 0
 
 Function index: 5
-Start line: 15
+Start line: 16
 Start column: 1
-  Address 10: Line 16 - Column 5 - Statement 0
-  Address 14: Line 16 - Column 5 - Statement 0
+  Address 17: Line 17 - Column 5 - Statement 0
+  Address 21: Line 17 - Column 5 - Statement 0
+  Address 32: Line 20 - Column 13 - Statement 0
+  Address 37: Line 20 - Column 16 - Statement 0
+  Address 41: Line 20 - Column 23 - Statement 0
+  Address 46: Line 20 - Column 23 - Statement 0
+  Address 50: Line 21 - Column 9 - Statement 0
+  Address 52: Line 22 - Column 9 - Statement 0
+  Address 56: Line 23 - Column 13 - Statement 0
+  Address 66: Line 23 - Column 18 - Statement 0
+  Address 71: Line 25 - Column 5 - Statement 0
+  Address 73: Line 26 - Column 5 - Statement 0
+  Address 104: Line 29 - Column 17 - Statement 0
+  Address 110: Line 29 - Column 28 - Statement 0
+  Address 122: Line 29 - Column 29 - Statement 0
+  Address 132: Line 29 - Column 48 - Statement 0
+  Address 143: Line 29 - Column 28 - Statement 0
+  Address 149: Line 31 - Column 9 - Statement 0
+  Address 151: Line 32 - Column 9 - Statement 0
+  Address 155: Line 33 - Column 13 - Statement 0
+  Address 165: Line 33 - Column 18 - Statement 0
 
-  => Sources data: 0007011300000b000014180606027a06000b05000106000a0900000500757f0107011500007f03070109020a05002811005e06007f05007504000006040605000304007704000006040006000b05000106007f7f050f010a02040400007f
+Function index: 6
+Start line: 39
+Start column: 1
+  Address 6: Line 41 - Column 8 - Statement 0
+  Address 12: Line 41 - Column 19 - Statement 0
+  Address 17: Line 41 - Column 19 - Statement 0
+  Address 39: Line 48 - Column 11 - Statement 0
+  Address 43: Line 48 - Column 17 - Statement 0
+  Address 48: Line 48 - Column 19 - Statement 0
+
+Function index: 7
+Start line: 42
+Start column: 18
+  Address 2: Line 43 - Column 16 - Statement 0
+  Address 8: Line 43 - Column 24 - Statement 0
+  Address 13: Line 43 - Column 24 - Statement 0
+  Address 29: Line 44 - Column 19 - Statement 0
+
+  => Sources data: 0007011800000b00000b000006da000006001005007e06027207000212040406027a06000b05000106000a09000005007505047506000b05000605000304000705000008007006027506000b0500061700050500110500000800647f0107011500007f03070109020a05002811005e06007f05007504000006040605000304007704000006040006000b08000005027506000b05000106007f7f0510011102040400000b06080500030400070500000402720202000402040a00050504730202001f060c06000b0c00010a00130b006c06046d0202000402040a00057f06270106040706000b050000160e780400060500027f072a1202027e06000805000010027b7f
   => Lexical raw data: 7f00

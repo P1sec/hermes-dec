@@ -43,6 +43,10 @@ class DecompiledFunctionBody:
     function_name : str
     function_object : object
     
+    try_starts : Dict[int, List[str]]
+    try_ends : Dict[int, List[str]]
+    catch_targets : Dict[int, List[str]]
+    
     is_closure : bool = False
     is_async : bool = False
     is_generator : bool = False
@@ -58,23 +62,32 @@ class DecompiledFunctionBody:
     def stringify(self, state : HermesDecompiler, environment_id = None):
         output = ''
         
-        if self.function_id != 0: # Don't prototype the global function
+        global_function_index = state.hbc_reader.header.globalCodeIndex # Should be 0
+        
+        if self.function_id != global_function_index: # Don't prototype the global function
                 # or maybe do it for readibility?
             if self.is_async:
                 output += 'async '
             output += 'function'
             if self.is_generator:
                 output += '*'
-            if not self.is_closure:
+            if not (self.is_closure or self.is_generator):
                 assert self.function_name
                 output += ' ' + self.function_name
+            elif self.is_generator:
+                output += ' '
             output += '('
-            # TODO: Handle function arguments
+            output += ', '.join('a' + str(index)
+                for index in range(self.function_object.paramCount - 1))
+            # TODO: Handle function arguments properly otherwise
             output += ') {'
-            if self.is_closure and self.function_name:
-                output += ' // Original name: ' + self.function_name
-                if environment_id:
-                    output += ', environment Id: ' + str(environment_id)
+            if self.is_closure or self.is_generator:
+                if self.function_name:
+                    output += ' // Original name: ' + self.function_name
+                    if environment_id is not None:
+                        output += ', environment: r' + str(environment_id)
+                elif environment_id is not None:
+                    output += ' // Environment: r' + str(environment_id)
             output += '\n'
             state.indent_level += 1
         
@@ -92,6 +105,16 @@ class DecompiledFunctionBody:
                     state.indent_level -= 1
                     output += (' ' * (state.indent_level * 4)) + '}\n'
                 
+                if pos in self.try_starts:
+                    for label in self.try_starts[pos]:
+                        output += '%s:\n' % label
+                if pos in self.try_ends:
+                    for label in self.try_ends[pos]:
+                        output += '%s:\n' % label
+                if pos in self.catch_targets:
+                    for label in self.catch_targets[pos]:
+                        output += '%s:\n' % label
+
                 if pos in self.jump_targets:
                     output += 'label_%d:\n' % pos
                 
@@ -109,7 +132,7 @@ class DecompiledFunctionBody:
                 else:
                     output += ';\n'
     
-        if self.function_id != 0:
+        if self.function_id != global_function_index:
             state.indent_level -= 1
             output += ' ' * (state.indent_level * 4)
             output += '}'
@@ -181,6 +204,13 @@ class CatchBlockStart(Token):
 class DotAccessorToken(Token):
     def __str__(self):
         return '.'
+
+@dataclass
+class BindToken(Token):
+    register : int
+
+    def __str__(self):
+        return '.bind(r%d)' % self.register
 
 @dataclass
 class RightHandRegToken(Token):
@@ -256,15 +286,19 @@ class FunctionTableIndex(Token):
     def __post_init__(self):
         
         if not self.is_builtin:
+            name = self._name_if_any()
+            
             self.function_body = self.state.function_id_to_body[self.function_id]
             self.function_body.is_closure = self.is_closure
             self.function_body.is_generator = self.is_generator
             self.function_body.is_async = self.is_async
     
     def __repr__(self):
-        if self.is_closure and not self.is_builtin:
+        if (self.is_closure or self.is_generator) and not self.is_builtin:
             return self.function_body.stringify(self.state, self.environment_id)
         name = self._name_if_any()
+        if name:
+            return name
         return '<Function #%d%s: %s>' % (
             self.function_id,
             ' (%s)' % name if name else '',

@@ -1,8 +1,8 @@
 hbcdump> Bytecode File Information:
   Bytecode version number: 84
-  Source hash: 9c1a5d9e132ec646edb05cfa1732898aa435a83c
-  Function count: 6
-  String count: 16
+  Source hash: a692192bdc8ee6f7b2b9918faf18a64db39587c8
+  Function count: 8
+  String count: 34
   String Kind Entry count: 2
   RegExp count: 1
   Segment ID: 0
@@ -18,46 +18,92 @@ s0[ASCII, 0..-1]:
 s1[ASCII, 0..20]: ?anon_0_?anon_0_testx
 s2[ASCII, 8..20]: ?anon_0_testx
 s3[ASCII, 22..32]: ?anon_0_gen
-s4[ASCII, 33..39]: bonjour
-s5[ASCII, 40..82]: dkooDD JPOD D09D\n\\  @ .\r\n\t@ \x00 D+D  
-s6[ASCII, 85..90]: global
-s7[ASCII, 91..93]: gmi
-s8[UTF-16, 110..143]: \x44\x00\x2B\x00\x44\x00\x20\x00\x2B\x00\x44\x00\x2F\x20\x2B\x00\x44\x00\x20\x00\x2B\x00\x0A\x00\x44\x00\x2B\x00\xC9\x00\x44\x00\x20\x00
-i9[ASCII, 16..20] #13923238: testx
-i10[ASCII, 20..21] #07BD3EB3: xy
-i11[ASCII, 30..32] #CC293D73: gen
-i12[ASCII, 83..85] #1C35E808: log
-i13[ASCII, 94..97] #B0F82D55: exec
-i14[ASCII, 97..103] #629A2BFD: console
-i15[ASCII, 104..108] #13935E65: test2
+s4[ASCII, 36..43]: AAAAAAAA
+s5[ASCII, 44..54]: Bon-jour : 
+s6[ASCII, 55..79]: Hello! Exception handling
+s7[ASCII, 79..84]: global
+s8[ASCII, 83..83]: a
+s9[ASCII, 88..89]: zb
+s10[ASCII, 89..89]: b
+s11[ASCII, 89..95]: bonjour
+s12[ASCII, 106..148]: dkooDD JPOD D09D\n\\  @ .\r\n\t@ \x00 D+D  
+s13[ASCII, 151..153]: gmi
+s14[ASCII, 163..164]: le
+s15[UTF-16, 190..209]: \x64\x00\xE7\x00\x64\x00\xE0\x00\xE7\x00\x44\x00\xB0\x00\x44\x00\x2B\x00\x44\x00
+s16[UTF-16, 204..237]: \x44\x00\x2B\x00\x44\x00\x20\x00\x2B\x00\x44\x00\x2F\x20\x2B\x00\x44\x00\x20\x00\x2B\x00\x0A\x00\x44\x00\x2B\x00\xC9\x00\x44\x00\x20\x00
+i17[ASCII, 16..20] #13923238: testx
+i18[ASCII, 20..21] #07BD3EB3: xy
+i19[ASCII, 30..32] #CC293D73: gen
+i20[ASCII, 32..35] #C62208C8: next
+i21[ASCII, 83..87] #D037DAB6: alert
+i22[ASCII, 95..100] #50223B1A: random
+i23[ASCII, 101..106] #663E95F4: onload
+i24[ASCII, 149..151] #1C35E808: log
+i25[ASCII, 154..155] #07DDFB81: ze
+i26[ASCII, 155..158] #B0F82D55: exec
+i27[ASCII, 158..164] #629A2BFD: console
+i28[ASCII, 165..168] #CD347266: Date
+i29[ASCII, 167..171] #13935E65: test2
+i30[ASCII, 172..175] #1C182460: Math
+i31[ASCII, 176..178] #9D97125E: now
+i32[ASCII, 178..183] #4F138803: window
+i33[ASCII, 184..188] #A689F65B: print
 
 Function Source Table:
   Function ID 3 -> s0
   Function ID 5 -> s0
 
-Function<global>0(1 params, 13 registers, 0 symbols):
+Function<global>0(1 params, 16 registers, 0 symbols):
 Offset in debug table: source 0x0000, lexical 0x0000
-[@ 0] DeclareGlobalVar 9<UInt32>
-[@ 5] DeclareGlobalVar 11<UInt32>
-[@ 10] CreateEnvironment 1<Reg8>
-[@ 12] CreateAsyncClosure 2<Reg8>, 1<Reg8>, 1<UInt16>
-[@ 17] GetGlobalObject 0<Reg8>
-[@ 19] PutById 0<Reg8>, 2<Reg8>, 1<UInt8>, 9<UInt16>
-[@ 25] CreateGeneratorClosure 1<Reg8>, 1<Reg8>, 4<UInt16>
-[@ 30] PutById 0<Reg8>, 1<Reg8>, 2<UInt8>, 11<UInt16>
-[@ 36] CreateRegExp 1<Reg8>, 5<UInt32>, 7<UInt32>, 0<UInt32>
-[@ 50] PutById 0<Reg8>, 1<Reg8>, 3<UInt8>, 15<UInt16>
-[@ 56] TryGetById 2<Reg8>, 0<Reg8>, 1<UInt8>, 14<UInt16>
-[@ 62] GetByIdShort 1<Reg8>, 2<Reg8>, 2<UInt8>, 12<UInt8>
-[@ 67] TryGetById 4<Reg8>, 0<Reg8>, 3<UInt8>, 15<UInt16>
-[@ 73] GetByIdShort 3<Reg8>, 4<Reg8>, 4<UInt8>, 13<UInt8>
-[@ 78] LoadConstString 0<Reg8>, 4<UInt16>
-[@ 82] Call2 0<Reg8>, 3<Reg8>, 4<Reg8>, 0<Reg8>
-[@ 87] Call2 0<Reg8>, 1<Reg8>, 2<Reg8>, 0<Reg8>
-[@ 92] Ret 0<Reg8>
+[@ 0] DeclareGlobalVar 17<UInt32>
+[@ 5] DeclareGlobalVar 19<UInt32>
+[@ 10] DeclareGlobalVar 25<UInt32>
+[@ 15] CreateEnvironment 1<Reg8>
+[@ 17] CreateAsyncClosure 2<Reg8>, 1<Reg8>, 1<UInt16>
+[@ 22] GetGlobalObject 0<Reg8>
+[@ 24] PutById 0<Reg8>, 2<Reg8>, 1<UInt8>, 17<UInt16>
+[@ 30] CreateGeneratorClosure 2<Reg8>, 1<Reg8>, 4<UInt16>
+[@ 35] PutById 0<Reg8>, 2<Reg8>, 2<UInt8>, 19<UInt16>
+[@ 41] CreateClosure 1<Reg8>, 1<Reg8>, 6<UInt16>
+[@ 46] PutById 0<Reg8>, 1<Reg8>, 3<UInt8>, 25<UInt16>
+[@ 52] TryGetById 2<Reg8>, 0<Reg8>, 1<UInt8>, 32<UInt16>
+[@ 58] GetByIdShort 1<Reg8>, 0<Reg8>, 2<UInt8>, 25<UInt8>
+[@ 63] PutById 2<Reg8>, 1<Reg8>, 4<UInt8>, 23<UInt16>
+[@ 69] GetByIdShort 1<Reg8>, 0<Reg8>, 2<UInt8>, 25<UInt8>
+[@ 74] LoadConstUndefined 4<Reg8>
+[@ 76] Call1 1<Reg8>, 1<Reg8>, 4<Reg8>
+[@ 80] CreateRegExp 1<Reg8>, 12<UInt32>, 13<UInt32>, 0<UInt32>
+[@ 94] PutById 0<Reg8>, 1<Reg8>, 5<UInt8>, 29<UInt16>
+[@ 100] TryGetById 3<Reg8>, 0<Reg8>, 3<UInt8>, 27<UInt16>
+[@ 106] GetByIdShort 2<Reg8>, 3<Reg8>, 4<UInt8>, 24<UInt8>
+[@ 111] TryGetById 6<Reg8>, 0<Reg8>, 5<UInt8>, 29<UInt16>
+[@ 117] GetByIdShort 5<Reg8>, 6<Reg8>, 6<UInt8>, 26<UInt8>
+[@ 122] LoadConstString 1<Reg8>, 11<UInt16>
+[@ 126] Call2 1<Reg8>, 5<Reg8>, 6<Reg8>, 1<Reg8>
+[@ 131] Call2 1<Reg8>, 2<Reg8>, 3<Reg8>, 1<Reg8>
+[@ 136] TryGetById 5<Reg8>, 0<Reg8>, 3<UInt8>, 27<UInt16>
+[@ 142] GetByIdShort 3<Reg8>, 5<Reg8>, 4<UInt8>, 24<UInt8>
+[@ 147] GetByIdShort 1<Reg8>, 0<Reg8>, 7<UInt8>, 19<UInt8>
+[@ 152] Call1 2<Reg8>, 1<Reg8>, 4<Reg8>
+[@ 156] GetByIdShort 1<Reg8>, 2<Reg8>, 8<UInt8>, 20<UInt8>
+[@ 161] Call1 2<Reg8>, 1<Reg8>, 2<Reg8>
+[@ 165] LoadConstString 1<Reg8>, 8<UInt16>
+[@ 169] Call3 1<Reg8>, 3<Reg8>, 5<Reg8>, 1<Reg8>, 2<Reg8>
+[@ 175] TryGetById 3<Reg8>, 0<Reg8>, 3<UInt8>, 27<UInt16>
+[@ 181] GetByIdShort 2<Reg8>, 3<Reg8>, 4<UInt8>, 24<UInt8>
+[@ 186] GetByIdShort 1<Reg8>, 0<Reg8>, 9<UInt8>, 17<UInt8>
+[@ 191] LoadConstDouble 5<Reg8>, 7.300000e+00<Double>
+[@ 201] LoadConstString 0<Reg8>, 14<UInt16>
+[@ 205] Add 0<Reg8>, 5<Reg8>, 0<Reg8>
+[@ 209] Call2 1<Reg8>, 1<Reg8>, 4<Reg8>, 0<Reg8>
+[@ 214] GetByIdShort 0<Reg8>, 1<Reg8>, 8<UInt8>, 20<UInt8>
+[@ 219] Call1 1<Reg8>, 0<Reg8>, 1<Reg8>
+[@ 223] LoadConstString 0<Reg8>, 10<UInt16>
+[@ 227] Call3 0<Reg8>, 2<Reg8>, 3<Reg8>, 0<Reg8>, 1<Reg8>
+[@ 233] Ret 0<Reg8>
 
 NCFunction<testx>1(2 params, 15 registers, 0 symbols):
-Offset in debug table: source 0x001f, lexical 0x0000
+Offset in debug table: source 0x005c, lexical 0x0000
 [@ 0] LoadConstUndefined 4<Reg8>
 [@ 2] LoadConstUndefined 0<Reg8>
 [@ 4] ReifyArguments 0<Reg8>
@@ -74,16 +120,16 @@ NCFunction<?anon_0_testx>2(2 params, 1 registers, 0 symbols):
 [@ 2] CreateGenerator 0<Reg8>, 0<Reg8>, 3<UInt16>
 [@ 7] Ret 0<Reg8>
 
-Function<?anon_0_?anon_0_testx>3(2 params, 15 registers, 0 symbols):
-Offset in debug table: source 0x0026, lexical 0x0000
+Function<?anon_0_?anon_0_testx>3(2 params, 16 registers, 0 symbols):
+Offset in debug table: source 0x0063, lexical 0x0000
 [@ 0] StartGenerator
 [@ 1] ResumeGenerator 0<Reg8>, 1<Reg8>
-[@ 4] JmpTrue 98<Addr8>, 1<Reg8>
+[@ 4] JmpTrue 117<Addr8>, 1<Reg8>
 [@ 7] GetGlobalObject 4<Reg8>
-[@ 9] GetByIdShort 2<Reg8>, 4<Reg8>, 1<UInt8>, 9<UInt8>
-[@ 14] TryGetById 3<Reg8>, 4<Reg8>, 2<UInt8>, 15<UInt16>
+[@ 9] GetByIdShort 2<Reg8>, 4<Reg8>, 1<UInt8>, 17<UInt8>
+[@ 14] TryGetById 3<Reg8>, 4<Reg8>, 2<UInt8>, 29<UInt16>
 [@ 20] LoadConstUInt8 5<Reg8>, 42<UInt8>
-[@ 23] LoadConstString 1<Reg8>, 8<UInt16>
+[@ 23] LoadConstString 1<Reg8>, 16<UInt16>
 [@ 27] Add 1<Reg8>, 5<Reg8>, 1<Reg8>
 [@ 31] Add 1<Reg8>, 1<Reg8>, 3<Reg8>
 [@ 35] LoadConstUndefined 3<Reg8>
@@ -91,48 +137,126 @@ Offset in debug table: source 0x0026, lexical 0x0000
 [@ 42] SaveGenerator 4<Addr8>
 [@ 44] Ret 1<Reg8>
 [@ 46] ResumeGenerator 1<Reg8>, 2<Reg8>
-[@ 49] JmpTrue 50<Addr8>, 2<Reg8>
-[@ 52] GetByIdShort 2<Reg8>, 4<Reg8>, 3<UInt8>, 11<UInt8>
+[@ 49] JmpTrue 69<Addr8>, 2<Reg8>
+[@ 52] GetByIdShort 2<Reg8>, 4<Reg8>, 3<UInt8>, 19<UInt8>
 [@ 57] Call1 2<Reg8>, 2<Reg8>, 3<Reg8>
 [@ 61] SaveGenerator 4<Addr8>
 [@ 63] Ret 2<Reg8>
 [@ 65] ResumeGenerator 2<Reg8>, 5<Reg8>
-[@ 68] JmpTrue 28<Addr8>, 5<Reg8>
-[@ 71] TryGetById 6<Reg8>, 4<Reg8>, 4<UInt8>, 14<UInt16>
-[@ 77] GetByIdShort 5<Reg8>, 6<Reg8>, 5<UInt8>, 12<UInt8>
-[@ 82] TryGetById 4<Reg8>, 4<Reg8>, 6<UInt8>, 10<UInt16>
-[@ 88] Call2 4<Reg8>, 5<Reg8>, 6<Reg8>, 4<Reg8>
-[@ 93] CompleteGenerator
-[@ 94] Ret 3<Reg8>
-[@ 96] CompleteGenerator
-[@ 97] Ret 2<Reg8>
-[@ 99] CompleteGenerator
-[@ 100] Ret 1<Reg8>
-[@ 102] CompleteGenerator
-[@ 103] Ret 0<Reg8>
+[@ 68] JmpTrue 47<Addr8>, 5<Reg8>
+[@ 71] TryGetById 7<Reg8>, 4<Reg8>, 4<UInt8>, 27<UInt16>
+[@ 77] GetByIdShort 6<Reg8>, 7<Reg8>, 5<UInt8>, 24<UInt8>
+[@ 82] LoadParam 5<Reg8>, 1<UInt8>
+[@ 85] Call2 5<Reg8>, 6<Reg8>, 7<Reg8>, 5<Reg8>
+[@ 90] TryGetById 6<Reg8>, 4<Reg8>, 4<UInt8>, 27<UInt16>
+[@ 96] GetByIdShort 5<Reg8>, 6<Reg8>, 5<UInt8>, 24<UInt8>
+[@ 101] TryGetById 4<Reg8>, 4<Reg8>, 6<UInt8>, 18<UInt16>
+[@ 107] Call2 4<Reg8>, 5<Reg8>, 6<Reg8>, 4<Reg8>
+[@ 112] CompleteGenerator
+[@ 113] Ret 3<Reg8>
+[@ 115] CompleteGenerator
+[@ 116] Ret 2<Reg8>
+[@ 118] CompleteGenerator
+[@ 119] Ret 1<Reg8>
+[@ 121] CompleteGenerator
+[@ 122] Ret 0<Reg8>
 
 NCFunction<gen>4(1 params, 1 registers, 0 symbols):
 [@ 0] CreateEnvironment 0<Reg8>
 [@ 2] CreateGenerator 0<Reg8>, 0<Reg8>, 5<UInt16>
 [@ 7] Ret 0<Reg8>
 
-Function<?anon_0_gen>5(1 params, 3 registers, 0 symbols):
-Offset in debug table: source 0x0054, lexical 0x0000
+Function<?anon_0_gen>5(1 params, 17 registers, 0 symbols):
+Offset in debug table: source 0x009a, lexical 0x0000
 [@ 0] StartGenerator
-[@ 1] ResumeGenerator 0<Reg8>, 1<Reg8>
-[@ 4] JmpTrue 24<Addr8>, 1<Reg8>
-[@ 7] LoadConstUInt8 1<Reg8>, 42<UInt8>
-[@ 10] SaveGenerator 4<Addr8>
-[@ 12] Ret 1<Reg8>
-[@ 14] ResumeGenerator 1<Reg8>, 2<Reg8>
-[@ 17] JmpTrue 8<Addr8>, 2<Reg8>
-[@ 20] LoadConstUndefined 2<Reg8>
-[@ 22] CompleteGenerator
-[@ 23] Ret 2<Reg8>
-[@ 25] CompleteGenerator
-[@ 26] Ret 1<Reg8>
-[@ 28] CompleteGenerator
-[@ 29] Ret 0<Reg8>
+[@ 1] LoadConstUndefined 2<Reg8>
+[@ 3] LoadConstUndefined 3<Reg8>
+[@ 5] ResumeGenerator 0<Reg8>, 1<Reg8>
+[@ 8] JmpTrueLong 168<Addr32>, 1<Reg8>
+[@ 14] LoadConstUInt8 1<Reg8>, 42<UInt8>
+[@ 17] SaveGenerator 4<Addr8>
+[@ 19] Ret 1<Reg8>
+[@ 21] ResumeGenerator 1<Reg8>, 4<Reg8>
+[@ 24] JmpTrueLong 149<Addr32>, 4<Reg8>
+[@ 30] GetGlobalObject 4<Reg8>
+[@ 32] GetByIdShort 4<Reg8>, 4<Reg8>, 1<UInt8>, 19<UInt8>
+[@ 37] Call1 5<Reg8>, 4<Reg8>, 2<Reg8>
+[@ 41] GetByIdShort 4<Reg8>, 5<Reg8>, 2<UInt8>, 20<UInt8>
+[@ 46] Call1 4<Reg8>, 4<Reg8>, 5<Reg8>
+[@ 50] Jmp 21<Addr8>
+[@ 52] Catch 4<Reg8>
+[@ 54] GetGlobalObject 4<Reg8>
+[@ 56] TryGetById 5<Reg8>, 4<Reg8>, 3<UInt8>, 33<UInt16>
+[@ 62] LoadConstString 4<Reg8>, 6<UInt16>
+[@ 66] Call2 4<Reg8>, 5<Reg8>, 2<Reg8>, 4<Reg8>
+[@ 71] Jmp 99<Addr8>
+[@ 73] Catch 3<Reg8>
+[@ 75] LoadConstInt 5<Reg8>, 432<Imm32>
+[@ 81] LoadConstString 4<Reg8>, 15<UInt16>
+[@ 85] Mul 5<Reg8>, 5<Reg8>, 4<Reg8>
+[@ 89] LoadConstInt 4<Reg8>, 478<Imm32>
+[@ 95] AddN 4<Reg8>, 5<Reg8>, 4<Reg8>
+[@ 99] JmpFalse 50<Addr8>, 4<Reg8>
+[@ 102] GetGlobalObject 4<Reg8>
+[@ 104] TryGetById 6<Reg8>, 4<Reg8>, 4<UInt8>, 27<UInt16>
+[@ 110] GetByIdShort 5<Reg8>, 6<Reg8>, 5<UInt8>, 24<UInt8>
+[@ 115] Mov 7<Reg8>, 3<Reg8>
+[@ 118] LoadConstString 3<Reg8>, 5<UInt16>
+[@ 122] Add 4<Reg8>, 3<Reg8>, 7<Reg8>
+[@ 126] LoadConstInt 3<Reg8>, 340000<Imm32>
+[@ 132] Mul 7<Reg8>, 7<Reg8>, 3<Reg8>
+[@ 136] LoadConstUInt8 3<Reg8>, 6<UInt8>
+[@ 139] AddN 3<Reg8>, 7<Reg8>, 3<Reg8>
+[@ 143] Call3 3<Reg8>, 5<Reg8>, 6<Reg8>, 4<Reg8>, 3<Reg8>
+[@ 149] Jmp 21<Addr8>
+[@ 151] Catch 3<Reg8>
+[@ 153] GetGlobalObject 3<Reg8>
+[@ 155] TryGetById 4<Reg8>, 3<Reg8>, 6<UInt8>, 21<UInt16>
+[@ 161] LoadConstString 3<Reg8>, 4<UInt16>
+[@ 165] Call2 3<Reg8>, 4<Reg8>, 2<Reg8>, 3<Reg8>
+[@ 170] CompleteGenerator
+[@ 171] Ret 2<Reg8>
+[@ 173] CompleteGenerator
+[@ 174] Ret 1<Reg8>
+[@ 176] CompleteGenerator
+[@ 177] Ret 0<Reg8>
+
+Exception Handlers:
+0: start = 30, end = 50, target = 52
+1: start = 30, end = 71, target = 73
+2: start = 75, end = 149, target = 151
+
+Function<ze>6(1 params, 12 registers, 1 symbols):
+Offset in debug table: source 0x00dd, lexical 0x0000
+[@ 0] CreateEnvironment 3<Reg8>
+[@ 2] LoadConstUndefined 0<Reg8>
+[@ 4] GetGlobalObject 1<Reg8>
+[@ 6] TryGetById 4<Reg8>, 1<Reg8>, 1<UInt8>, 30<UInt16>
+[@ 12] GetByIdShort 2<Reg8>, 4<Reg8>, 2<UInt8>, 22<UInt8>
+[@ 17] Call1 2<Reg8>, 2<Reg8>, 4<Reg8>
+[@ 21] JmpTrue 9<Addr8>, 2<Reg8>
+[@ 24] StoreNPToEnvironment 3<Reg8>, 0<UInt8>, 0<Reg8>
+[@ 28] Jmp 24<Addr8>
+[@ 30] CreateClosure 2<Reg8>, 3<Reg8>, 7<UInt16>
+[@ 35] StoreToEnvironment 3<Reg8>, 0<UInt8>, 2<Reg8>
+[@ 39] Call1 2<Reg8>, 2<Reg8>, 0<Reg8>
+[@ 43] GetByIdShort 1<Reg8>, 1<Reg8>, 3<UInt8>, 25<UInt8>
+[@ 48] Call1 1<Reg8>, 1<Reg8>, 0<Reg8>
+[@ 52] Ret 0<Reg8>
+
+Function<zb>7(1 params, 9 registers, 0 symbols):
+Offset in debug table: source 0x00f3, lexical 0x0000
+[@ 0] GetGlobalObject 0<Reg8>
+[@ 2] TryGetById 1<Reg8>, 0<Reg8>, 1<UInt8>, 28<UInt16>
+[@ 8] GetByIdShort 0<Reg8>, 1<Reg8>, 2<UInt8>, 31<UInt8>
+[@ 13] Call1 0<Reg8>, 0<Reg8>, 1<Reg8>
+[@ 17] JmpFalse 16<Addr8>, 0<Reg8>
+[@ 20] GetEnvironment 0<Reg8>, 0<UInt8>
+[@ 23] LoadFromEnvironment 1<Reg8>, 0<Reg8>, 0<UInt8>
+[@ 27] LoadConstUndefined 0<Reg8>
+[@ 29] Call1 0<Reg8>, 1<Reg8>, 0<Reg8>
+[@ 33] LoadConstUndefined 0<Reg8>
+[@ 35] Ret 0<Reg8>
 
 RegExp Bytecodes:
 0: /dkooDD JPOD D09D\n\\  @ .\r\n\t@ \x00 D+D  /gmi
@@ -153,18 +277,38 @@ Debug file table:
 
 Debug source table:
   0x0000  function idx 0, starts at line 7 col 1
-    bc 19: line 7 col 1
-    bc 30: line 7 col 1
-    bc 50: line 19 col 7
-    bc 56: line 20 col 1
-    bc 62: line 20 col 12
-    bc 67: line 20 col 13
-    bc 73: line 20 col 23
-    bc 82: line 20 col 23
-    bc 87: line 20 col 12
-  0x001f  function idx 1, starts at line 7 col 1
+    bc 24: line 7 col 1
+    bc 35: line 7 col 1
+    bc 46: line 7 col 1
+    bc 52: line 52 col 1
+    bc 58: line 52 col 17
+    bc 63: line 52 col 15
+    bc 69: line 53 col 1
+    bc 76: line 53 col 3
+    bc 94: line 55 col 7
+    bc 100: line 56 col 1
+    bc 106: line 56 col 12
+    bc 111: line 56 col 13
+    bc 117: line 56 col 23
+    bc 126: line 56 col 23
+    bc 131: line 56 col 12
+    bc 136: line 58 col 1
+    bc 142: line 58 col 12
+    bc 147: line 58 col 18
+    bc 152: line 58 col 21
+    bc 156: line 58 col 28
+    bc 161: line 58 col 28
+    bc 169: line 58 col 12
+    bc 175: line 59 col 1
+    bc 181: line 59 col 12
+    bc 186: line 59 col 18
+    bc 209: line 59 col 23
+    bc 214: line 59 col 40
+    bc 219: line 59 col 40
+    bc 227: line 59 col 12
+  0x005c  function idx 1, starts at line 7 col 1
     bc 21: line 7 col 1
-  0x0026  function idx 3, starts at line 7 col 1
+  0x0063  function idx 3, starts at line 7 col 1
     bc 9: line 8 col 11
     bc 14: line 8 col 51
     bc 31: line 8 col 17
@@ -177,12 +321,46 @@ Debug source table:
     bc 65: line 10 col 5
     bc 71: line 12 col 5
     bc 77: line 12 col 16
-    bc 82: line 12 col 17
-    bc 88: line 12 col 16
-  0x0054  function idx 5, starts at line 15 col 1
-    bc 10: line 16 col 5
-    bc 14: line 16 col 5
-  0x005e  end of debug source table
+    bc 85: line 12 col 16
+    bc 90: line 13 col 5
+    bc 96: line 13 col 16
+    bc 101: line 13 col 17
+    bc 107: line 13 col 16
+  0x009a  function idx 5, starts at line 16 col 1
+    bc 17: line 17 col 5
+    bc 21: line 17 col 5
+    bc 32: line 20 col 13
+    bc 37: line 20 col 16
+    bc 41: line 20 col 23
+    bc 46: line 20 col 23
+    bc 50: line 21 col 9
+    bc 52: line 22 col 9
+    bc 56: line 23 col 13
+    bc 66: line 23 col 18
+    bc 71: line 25 col 5
+    bc 73: line 26 col 5
+    bc 104: line 29 col 17
+    bc 110: line 29 col 28
+    bc 122: line 29 col 29
+    bc 132: line 29 col 48
+    bc 143: line 29 col 28
+    bc 149: line 31 col 9
+    bc 151: line 32 col 9
+    bc 155: line 33 col 13
+    bc 165: line 33 col 18
+  0x00dd  function idx 6, starts at line 39 col 1
+    bc 6: line 41 col 8
+    bc 12: line 41 col 19
+    bc 17: line 41 col 19
+    bc 39: line 48 col 11
+    bc 43: line 48 col 17
+    bc 48: line 48 col 19
+  0x00f3  function idx 7, starts at line 42 col 18
+    bc 2: line 43 col 16
+    bc 8: line 43 col 24
+    bc 13: line 43 col 24
+    bc 29: line 44 col 19
+  0x0103  end of debug source table
 
 Debug lexical table:
   0x0000  lexical parent: none, variable count: 0

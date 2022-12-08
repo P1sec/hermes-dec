@@ -3,7 +3,7 @@
 from typing import List, Tuple, Dict, Set, Sequence, Union, Optional, Any
 from os.path import dirname, realpath
 
-from defs import HermesDecompiler, DecompiledFunctionBody, TokenString, LeftParenthesisToken, RightParenthesisToken, LeftHandRegToken, AssignmentToken, DotAccessorToken, CatchBlockStart, RightHandRegToken, GetEnvironmentToken, StoreToEnvironment, SwitchImm, LoadFromEnvironmentToken, ReturnDirective, ResumeGenerator, SaveGenerator, StartGenerator, NewEnvironmentToken, JumpCondition, JumpNotCondition, FunctionTableIndex, ForInLoopInit, ForInLoopNextIter, ThrowDirective, ReturnDirective, RawToken
+from defs import HermesDecompiler, DecompiledFunctionBody, TokenString, LeftParenthesisToken, RightParenthesisToken, LeftHandRegToken, AssignmentToken, DotAccessorToken, CatchBlockStart, RightHandRegToken, GetEnvironmentToken, StoreToEnvironment, BindToken, SwitchImm, LoadFromEnvironmentToken, ReturnDirective, ResumeGenerator, SaveGenerator, StartGenerator, NewEnvironmentToken, JumpCondition, JumpNotCondition, FunctionTableIndex, ForInLoopInit, ForInLoopNextIter, ThrowDirective, ReturnDirective, RawToken
 from serialized_literal_parser import unpack_slp_array, SLPArray, SLPValue, TagType
 
 class Pass2MakeAtomicFlow:
@@ -13,6 +13,7 @@ class Pass2MakeAtomicFlow:
         TS = TokenString
         
         RD = ReturnDirective
+        BIND = BindToken
         
         RG = ResumeGenerator
         SG = SaveGenerator
@@ -104,7 +105,7 @@ class Pass2MakeAtomicFlow:
                         function_header.frameSize - 7)):
                         args += [RHRT(register), RT(', ')]
                     lines.append(TS([LHRT(op1), AT(),
-                            RHRT(function_header.frameSize - 7), DAT(), RHRT(op2),
+                            RHRT(function_header.frameSize - 7), RT('['), RHRT(op2), RT(']'),
                             LPT(), *args[:-1], RPT()],
                         assembly = [instruction]))
                 elif instruction.inst.name in ('Call1', 'Call2', 'Call3', 'Call4'):
@@ -112,7 +113,7 @@ class Pass2MakeAtomicFlow:
                     for arg_count in range(1, int(instruction.inst.name[-1])):
                         args += [RHRT([op4, op5, op6][arg_count - 1]), RT(', ')]
                     lines.append(TS([LHRT(op1), AT(),
-                            RHRT(op3), DAT(), RHRT(op2),
+                            RHRT(op2), BIND(op3),
                             LPT(), *args[:-1], RPT()],
                         assembly = [instruction]))
                 elif instruction.inst.name in ('CallDirect', 'CallDirectLongIndex'):
@@ -122,7 +123,7 @@ class Pass2MakeAtomicFlow:
                         function_header.frameSize - 7)):
                         args += [RHRT(register), RT(', ')]
                     lines.append(TS([LHRT(op1), AT(),
-                            RHRT(function_header.frameSize - 7), DAT(), FTI(op3, state),
+                            DAT(), FTI(op3, state), BIND(function_header.frameSize - 7),
                             LPT(), *args[:-1], RPT()],
                         assembly = [instruction]))
                 elif instruction.inst.name in ('CallBuiltin', 'CallBuiltinLong'):
@@ -148,7 +149,7 @@ class Pass2MakeAtomicFlow:
                         function_header.frameSize - 7)):
                         args += [RHRT(register), RT(', ')]
                     lines.append(TS([LHRT(op1), AT(),
-                            RT('new '), RHRT(function_header.frameSize - 7), DAT(), RHRT(op2),
+                            RT('new '), RHRT(function_header.frameSize - 7), RT('['), RHRT(op2), RT(']'),
                             LPT(), *args[:-1], RPT()],
                         assembly = [instruction]))
                 elif instruction.inst.name in ('CreateAsyncClosure', 'CreateAsyncClosureLongIndex'):
@@ -200,7 +201,7 @@ class Pass2MakeAtomicFlow:
                     lines.append(TS([LHRT(op1), AT(), RT('delete '), RHRT(op2), DAT(), RT(prop_string)],
                         assembly = [instruction]))
                 elif instruction.inst.name == 'DelByVal':
-                    lines.append(TS([LHRT(op1), AT(), RT('delete '), RHRT(op2), DAT(), RHRT(op3)],
+                    lines.append(TS([LHRT(op1), AT(), RT('delete '), RHRT(op2), RT('['), RHRT(op3), RT(']')],
                         assembly = [instruction]))
                 elif instruction.inst.name == 'DirectEval':
                     lines.append(TS([LHRT(op1), AT(), RT('eval'), LPT(), RHRT(op2), RPT()],
@@ -221,9 +222,8 @@ class Pass2MakeAtomicFlow:
                     lines.append(TS([LHRT(op1), AT(), RT('arguments.length')],
                         assembly = [instruction]))
                 elif instruction.inst.name == 'GetArgumentsPropByVal':
-                    lines.append(TS([LHRT(op1), AT(), RT('arguments'), DAT(), RHRT(op2)],
+                    lines.append(TS([LHRT(op1), AT(), RT('arguments'), RT('['), RHRT(op2), RT(']')],
                         assembly = [instruction]))
-                    # WIP .. ?
                 elif instruction.inst.name == 'GetBuiltinClosure':
                     lines.append(TS([LHRT(op1), AT(), FTI(op2, state, is_builtin = True, is_closure = True)],
                         assembly = [instruction]))
@@ -234,7 +234,7 @@ class Pass2MakeAtomicFlow:
                     lines.append(TS([LHRT(op1), AT(), RHRT(op2), DAT(), RT(string)],
                         assembly = [instruction]))
                 elif instruction.inst.name == 'GetByVal':
-                    lines.append(TS([LHRT(op1), AT(), RHRT(op2), DAT(), RHRT(op3)],
+                    lines.append(TS([LHRT(op1), AT(), RHRT(op2), RT('['), RHRT(op3), RT(']')],
                         assembly = [instruction]))
                 elif instruction.inst.name == 'GetEnvironment':
                     lines.append(TS([GET(op1, op2)], assembly = [instruction]))
@@ -427,8 +427,13 @@ class Pass2MakeAtomicFlow:
                     lines.append(TS([LHRT(op1), AT(), LFET(op2, op3)],
                         assembly = [instruction]))
                 elif instruction.inst.name in ('LoadParam', 'LoadParamLong'):
-                    lines.append(TS([LHRT(op1), AT(), RT('this' if not op2
-                        else 'arguments[%d]' % (op2 - 1))],
+                    if not op2:
+                        arg_name = 'this'
+                    elif op2 < function_body.function_object.paramCount:
+                        arg_name = 'a' + str(op2 - 1)
+                    else:
+                        arg_name = 'arguments[%d]' % (op2 - 1)
+                    lines.append(TS([LHRT(op1), AT(), RT(arg_name)],
                             assembly = [instruction]))
                 elif instruction.inst.name == 'LoadThisNS':
                     lines.append(TS([LHRT(op1), AT(), RT('this')],
@@ -500,11 +505,11 @@ class Pass2MakeAtomicFlow:
                     # TODO: Are non-enumerable values set correctly?
                     # When are these used if they are used?
                 elif instruction.inst.name == 'PutByVal':
-                    lines.append(TS([LHRT(op1), DAT(), RHRT(op2), AT(), RHRT(op3)],
+                    lines.append(TS([LHRT(op1), RT('['), RHRT(op2), RT(']'), AT(), RHRT(op3)],
                         assembly = [instruction]))
                 elif instruction.inst.name == 'PutOwnByVal':
                     if op4: # Is the property enumerable?
-                        lines.append(TS([LHRT(op1), DAT(), RHRT(op3), AT(), RHRT(op2)],
+                        lines.append(TS([LHRT(op1), RT('['), RHRT(op3), RT(']'), AT(), RHRT(op2)],
                             assembly = [instruction]))
                     else:
                         lines.append(TS([RT('Object.defineProperty'), LPT(),

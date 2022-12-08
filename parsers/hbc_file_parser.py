@@ -76,6 +76,8 @@ class HBCReader:
     header : object
     function_headers : List[object]
     function_ops : List[List[ParsedInstruction]]
+    function_id_to_exc_handlers : Dict[int, List['HBCExceptionHandlerInfo']]
+    function_id_to_debug_offsets : Dict[int, 'DebugOffsets']
     string_kinds : List[StringKind]
     identifier_hashes : List[int]
     
@@ -399,6 +401,29 @@ class HBCReader:
         
         return CTypesReader
     
+    def get_exception_handler_info_reader(self) -> type:
+        
+        class CTypesReader(LittleEndianStructure):
+            _pack_ = True
+            _fields_ = [
+                ('start', c_uint32),
+                ('end', c_uint32),
+                ('target', c_uint32)
+            ]
+        
+        return CTypesReader
+    
+    def get_debug_offsets_reader(self) -> type:
+        
+        class CTypesReader(LittleEndianStructure):
+            _pack_ = True
+            _fields_= [
+                ('source_locations', c_uint32),
+                ('lexical_data', c_uint32)
+            ]
+        
+        return CTypesReader
+    
     def align_over_padding(self, padding_amount = 4):
         
         # Each bytecode segment should be padded over
@@ -449,6 +474,9 @@ class HBCReader:
         self.function_headers = []
         self.function_ops = []
         
+        self.function_id_to_exc_handlers = {}
+        self.function_id_to_debug_offsets = {}
+        
         self.align_over_padding()
         
         reader = self.get_small_func_header_reader()
@@ -460,32 +488,46 @@ class HBCReader:
             
             self.file_buffer.readinto(function_header)
             
+            before_pos = self.file_buffer.tell()
+            
+            # Read the overflowed header, if any:
             if function_header.overflowed:
-                
                 new_offset = (function_header.infoOffset << 16) | function_header.offset
                 function_header = reader_large()
                 
-                before_pos = self.file_buffer.tell()
                 self.file_buffer.seek(new_offset)
                 
                 self.file_buffer.readinto(function_header)
-                
-                self.file_buffer.seek(before_pos)
             
+            else:
+                self.file_buffer.seek(function_header.infoOffset)
             
             self.function_headers.append(function_header)
             
-            # Disassemble the function bytecode instructions
-            # after having read the small/large function
-            # headers:
+            # Read the exception handler information, if any
+             
+            if function_header.hasExceptionHandler:
+                self.align_over_padding()
+                
+                exc_headers_count = int.from_bytes(self.file_buffer.read(4), 'little')
+                exc_headers = (self.get_exception_handler_info_reader() * exc_headers_count)()
+                self.file_buffer.readinto(exc_headers)
+                
+                self.function_id_to_exc_handlers[function_count] = exc_headers
+                
+            # Read the debug information, if any
             
-            # print()
-            # print('DEBUG: Reading function code at %08x (%d bytes)' % (
-            #     function_header.offset,
-            #     function_header.bytecodeSizeInBytes
-            # ))
+            if function_header.hasDebugInfo:
+                self.align_over_padding()
+                
+                debug_header = self.get_debug_offsets_reader()()
+                self.file_buffer.readinto(debug_header)
+                
+                self.function_id_to_debug_offsets[function_count] = debug_header
             
-            before_pos = self.file_buffer.tell()
+            # Read and parse the actual bytecode (+ switch tables) using
+            # the "hbc_bytecode_parser.py" file:
+            
             self.file_buffer.seek(function_header.offset)
             
             data = self.file_buffer.read(function_header.bytecodeSizeInBytes)

@@ -36,7 +36,7 @@ def do_decompilation(state : HermesDecompiler):
         
     for function_id, function_body in state.function_id_to_body.items():
         
-        if function_body.is_closure:
+        if (function_body.is_closure or function_body.is_generator):
             continue
             # Everything except global (function_id=0) actually
             # seems to be a closure, so if in nested mode etc.
