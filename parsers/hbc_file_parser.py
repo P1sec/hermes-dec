@@ -605,6 +605,7 @@ class HBCReader:
             self.string_storage.seek(offset)
             string = self.string_storage.read(length)
             assert len(string) == length
+            # print(string_count, '=>', repr(string), ' // DEBUG')
             if is_utf_16:
                 string = string.decode('utf-16')
             else:
@@ -738,7 +739,8 @@ class HBCReader:
         
         self.read_cjs_modules() # Defines self.cjs_modules
         
-        self.read_function_sources() # Defines self.function_sources
+        if self.header.version >= 84:
+            self.read_function_sources() # Defines self.function_sources
         
         self.read_debug_info() # Defines self.debug_info_header, self.debug_string_table, ...
         
@@ -837,7 +839,7 @@ if __name__ == '__main__':
             hbc_reader.regexp_storage.seek(regexp.offset)
             regexp_data = hbc_reader.regexp_storage.read(regexp.length)
             print('=> Regexp #%d: %s' % (regexp_count, regexp_data.hex()))
-            print('  => Decompiled: ', decompile_regex(parse_regex(84, BytesIO(regexp_data))))
+            # print('  => Decompiled: ', decompile_regex(parse_regex(84, BytesIO(regexp_data))))
         
         print()
         for cjs_module_count, cjs_module in enumerate(hbc_reader.cjs_modules):
@@ -846,11 +848,12 @@ if __name__ == '__main__':
                 cjs_module.offset
             ))
         
-        for function_source_count, function_source in enumerate(hbc_reader.function_sources):
-            print("=> Function source #%d: functionId %d = string @ %08x" % (function_source_count,
-                function_source.function_id,
-                function_source.string_id
-            ))
+        if getattr(hbc_reader, 'function_sources', None):
+            for function_source_count, function_source in enumerate(hbc_reader.function_sources):
+                print("=> Function source #%d: functionId %d = string @ %08x" % (function_source_count,
+                    function_source.function_id,
+                    function_source.string_id
+                ))
         
         print()
         print('=> Debug data:')
