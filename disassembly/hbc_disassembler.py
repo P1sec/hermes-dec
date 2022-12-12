@@ -25,6 +25,7 @@ def do_disassemble(input_file : str):
 
         hbc_reader.read_whole_file(file_descriptor)
         
+        """
         output_json_data : Dict[int, dict] = {}
         
         identifier_count = 0
@@ -48,6 +49,7 @@ def do_disassemble(input_file : str):
             for key, value in sorted(output_json_data.items())
         ))
         print('}')
+        """
         # WIP ..²
         
         # TODO : Print the JSON data generated above, one line per entry I guess?
