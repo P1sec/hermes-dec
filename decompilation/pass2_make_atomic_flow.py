@@ -171,7 +171,9 @@ class Pass2MakeAtomicFlow:
                     pattern_string = state.hbc_reader.strings[op2]
                     flags_string = state.hbc_reader.strings[op3]
                     
-                    pattern_string = pattern_string.encode('unicode_escape').decode('ascii')
+                    pattern_string = pattern_string.translate({
+                        char: repr(char) for char in range(0x20)
+                    })
                     pattern_string = pattern_string.replace('/', '\\/')
                     
                     readable_regexp = '/%s/%s' % (
