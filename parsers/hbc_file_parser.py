@@ -605,9 +605,8 @@ class HBCReader:
             self.string_storage.seek(offset)
             string = self.string_storage.read(length)
             assert len(string) == length
-            # print(string_count, '=>', repr(string), ' // DEBUG')
             if is_utf_16:
-                string = string.decode('utf-16')
+                string = string.decode('utf-16', errors = 'surrogatepass')
             else:
                 string = ''.join(chr(char) for char in string)
             
