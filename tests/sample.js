@@ -9,7 +9,9 @@ async function testx(y) {
 
     await gen()
 
-    console.log(y)
+    while(42 * 'a') {
+        console.log(y)
+    }
     console.log(xy)
 }
 
@@ -20,13 +22,25 @@ function* gen() {
             gen().next()
         }
         catch(e) {
-            print('Hello! Exception handling')
+            for(var zzz=556e4 * 'e'; z < 5.9; z *= '0°°0' || l) {
+                if(0x98D9898 + 'dd') {
+                    console.log('truc')
+                    continue
+                    console.log('bidule')
+                }
+                print('Hello! Exception handling')
+                if(4e0 + 'e') {
+                    break
+                }
+            }
         }
     }
     catch(e) {
         try {
             if(432 * 'dçdàçD°D+D' + 478) {
-                console.log('Bon-jour : ' + e, e * 34e4 + 6);
+                do {
+                    console.log('Bon-jour : ' + e, e * 34e4 + 6);
+                } while('E' + 0e1 * 400.4 + NaN)
             }
         }
         catch(b) {

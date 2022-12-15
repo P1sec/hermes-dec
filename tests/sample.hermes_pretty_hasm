@@ -1,8 +1,8 @@
 hbcdump> Bytecode File Information:
   Bytecode version number: 84
-  Source hash: a692192bdc8ee6f7b2b9918faf18a64db39587c8
+  Source hash: 7d3cab69b7ad65f16fb641ed5475e66f83eb866d
   Function count: 8
-  String count: 34
+  String count: 41
   String Kind Entry count: 2
   RegExp count: 1
   Segment ID: 0
@@ -18,36 +18,43 @@ s0[ASCII, 0..-1]:
 s1[ASCII, 0..20]: ?anon_0_?anon_0_testx
 s2[ASCII, 8..20]: ?anon_0_testx
 s3[ASCII, 22..32]: ?anon_0_gen
-s4[ASCII, 36..43]: AAAAAAAA
-s5[ASCII, 44..54]: Bon-jour : 
-s6[ASCII, 55..79]: Hello! Exception handling
-s7[ASCII, 79..84]: global
-s8[ASCII, 83..83]: a
-s9[ASCII, 88..89]: zb
-s10[ASCII, 89..89]: b
-s11[ASCII, 89..95]: bonjour
-s12[ASCII, 106..148]: dkooDD JPOD D09D\n\\  @ .\r\n\t@ \x00 D+D  
-s13[ASCII, 151..153]: gmi
-s14[ASCII, 163..164]: le
-s15[UTF-16, 190..209]: \x64\x00\xE7\x00\x64\x00\xE0\x00\xE7\x00\x44\x00\xB0\x00\x44\x00\x2B\x00\x44\x00
-s16[UTF-16, 204..237]: \x44\x00\x2B\x00\x44\x00\x20\x00\x2B\x00\x44\x00\x2F\x20\x2B\x00\x44\x00\x20\x00\x2B\x00\x0A\x00\x44\x00\x2B\x00\xC9\x00\x44\x00\x20\x00
-i17[ASCII, 16..20] #13923238: testx
-i18[ASCII, 20..21] #07BD3EB3: xy
-i19[ASCII, 30..32] #CC293D73: gen
-i20[ASCII, 32..35] #C62208C8: next
-i21[ASCII, 83..87] #D037DAB6: alert
-i22[ASCII, 95..100] #50223B1A: random
-i23[ASCII, 101..106] #663E95F4: onload
-i24[ASCII, 149..151] #1C35E808: log
-i25[ASCII, 154..155] #07DDFB81: ze
-i26[ASCII, 155..158] #B0F82D55: exec
-i27[ASCII, 158..164] #629A2BFD: console
-i28[ASCII, 165..168] #CD347266: Date
-i29[ASCII, 167..171] #13935E65: test2
-i30[ASCII, 172..175] #1C182460: Math
-i31[ASCII, 176..178] #9D97125E: now
-i32[ASCII, 178..183] #4F138803: window
-i33[ASCII, 184..188] #A689F65B: print
+s4[ASCII, 31..31]: e
+s5[ASCII, 36..43]: AAAAAAAA
+s6[ASCII, 44..54]: Bon-jour : 
+s7[ASCII, 55..55]: E
+s8[ASCII, 56..80]: Hello! Exception handling
+s9[ASCII, 80..85]: global
+s10[ASCII, 84..84]: a
+s11[ASCII, 88..91]: truc
+s12[ASCII, 96..97]: le
+s13[ASCII, 101..102]: zb
+s14[ASCII, 102..102]: b
+s15[ASCII, 102..108]: bonjour
+s16[ASCII, 119..120]: dd
+s17[ASCII, 120..162]: dkooDD JPOD D09D\n\\  @ .\r\n\t@ \x00 D+D  
+s18[ASCII, 165..167]: gmi
+s19[UTF-16, 198..205]: \x30\x00\xB0\x00\xB0\x00\x30\x00
+s20[UTF-16, 206..225]: \x64\x00\xE7\x00\x64\x00\xE0\x00\xE7\x00\x44\x00\xB0\x00\x44\x00\x2B\x00\x44\x00
+s21[UTF-16, 220..253]: \x44\x00\x2B\x00\x44\x00\x20\x00\x2B\x00\x44\x00\x2F\x20\x2B\x00\x44\x00\x20\x00\x2B\x00\x0A\x00\x44\x00\x2B\x00\xC9\x00\x44\x00\x20\x00
+i22[ASCII, 16..20] #13923238: testx
+i23[ASCII, 20..21] #07BD3EB3: xy
+i24[ASCII, 30..32] #CC293D73: gen
+i25[ASCII, 32..35] #C62208C8: next
+i26[ASCII, 84..88] #D037DAB6: alert
+i27[ASCII, 91..97] #629A2BFD: console
+i28[ASCII, 97..100] #B0F82D55: exec
+i29[ASCII, 101..101] #0001EFDB: z
+i30[ASCII, 108..113] #50223B1A: random
+i31[ASCII, 114..119] #663E95F4: onload
+i32[ASCII, 163..165] #1C35E808: log
+i33[ASCII, 168..171] #CD347266: Date
+i34[ASCII, 170..174] #13935E65: test2
+i35[ASCII, 175..178] #1C182460: Math
+i36[ASCII, 179..181] #9DF55CF6: NaN
+i37[ASCII, 182..184] #9D97125E: now
+i38[ASCII, 184..189] #4F138803: window
+i39[ASCII, 190..194] #A689F65B: print
+i40[ASCII, 195..196] #07DDFB81: ze
 
 Function Source Table:
   Function ID 3 -> s0
@@ -122,18 +129,19 @@ NCFunction<?anon_0_testx>2(2 params, 1 registers, 0 symbols):
     CreateGenerator   r0, r0, 3
     Ret               r0
 
-Function<?anon_0_?anon_0_testx>3(2 params, 16 registers, 0 symbols):
+Function<?anon_0_?anon_0_testx>3(2 params, 17 registers, 0 symbols):
 Offset in debug table: source 0x0063, lexical 0x0000
 sample.js[7:1]
     StartGenerator   
-    ResumeGenerator   r0, r1
-    JmpTrue           L1, r1
+    LoadParam         r6, 1
     GetGlobalObject   r4
+    ResumeGenerator   r0, r1
+    JmpTrueLong       L1, r1
     GetByIdShort      r2, r4, 1, "testx"
     TryGetById        r3, r4, 2, "test2"
-    LoadConstUInt8    r5, 42
+    LoadConstUInt8    r7, 42
     LoadConstString   r1, "D+D +D\u202f+D"
-    Add               r1, r5, r1
+    Add               r1, r7, r1
     Add               r1, r1, r3
     LoadConstUndefined r3
     Call2             r1, r2, r3, r1
@@ -151,10 +159,17 @@ L4:
 sample.js[10:5]
     ResumeGenerator   r2, r5
     JmpTrue           L5, r5
-    TryGetById        r7, r4, 4, "console"
-    GetByIdShort      r6, r7, 5, "log"
-    LoadParam         r5, 1
-    Call2             r5, r6, r7, r5
+    LoadConstString   r5, "a"
+    Mul               r5, r7, r5
+    JmpFalse          L6, r5
+L7:
+sample.js[13:9]
+    TryGetById        r8, r4, 4, "console"
+    GetByIdShort      r7, r8, 5, "log"
+    Call2             r7, r7, r8, r6
+    JmpTrue           L7, r5
+L6:
+sample.js[15:5]
     TryGetById        r6, r4, 4, "console"
     GetByIdShort      r5, r6, 5, "log"
     TryGetById        r4, r4, 6, "xy"
@@ -162,15 +177,15 @@ sample.js[10:5]
     CompleteGenerator
     Ret               r3
 L5:
-sample.js[13:16]
+sample.js[15:16]
     CompleteGenerator
     Ret               r2
 L3:
-sample.js[13:16]
+sample.js[15:16]
     CompleteGenerator
     Ret               r1
 L1:
-sample.js[13:16]
+sample.js[15:16]
     CompleteGenerator
     Ret               r0
 
@@ -179,94 +194,127 @@ NCFunction<gen>4(1 params, 1 registers, 0 symbols):
     CreateGenerator   r0, r0, 5
     Ret               r0
 
-Function<?anon_0_gen>5(1 params, 17 registers, 0 symbols):
+Function<?anon_0_gen>5(1 params, 25 registers, 0 symbols):
 Offset in debug table: source 0x009a, lexical 0x0000
-sample.js[16:1]
+sample.js[18:1]
     StartGenerator   
+    GetGlobalObject   r3
+    LoadConstString   r14, "0\u00b0"
+    LoadConstDouble   r13, 5.9
+    LoadConstString   r12, "truc"
     LoadConstUndefined r2
-    LoadConstUndefined r3
+    LoadConstString   r11, "Hello! Exception "...
+    LoadConstString   r9, "Bon-jour : "
+    LoadConstInt      r8, 340000
+    LoadConstUInt8    r7, 6
+    LoadConstUndefined r6
     ResumeGenerator   r0, r1
     JmpTrueLong       L1, r1
     LoadConstUInt8    r1, 42
     SaveGenerator     L2
     Ret               r1
 L2:
-sample.js[17:5]
+sample.js[19:5]
     ResumeGenerator   r1, r4
     JmpTrueLong       L3, r4
-L11:
-sample.js[17:5]
-    GetGlobalObject   r4
-    GetByIdShort      r4, r4, 1, "gen"
+L15:
+sample.js[22:13]
+    GetByIdShort      r4, r3, 1, "gen"
     Call1             r5, r4, r2
     GetByIdShort      r4, r5, 2, "next"
     Call1             r4, r4, r5
-L12:
-sample.js[21:9]
+L16:
+sample.js[23:9]
     Jmp               L5
 L4:
-sample.js[22:9]
+sample.js[24:9]
     Catch             r4
-    GetGlobalObject   r4
-    TryGetById        r5, r4, 3, "print"
-    LoadConstString   r4, "Hello! Exception "...
-    Call2             r4, r5, r2, r4
-L5:
-sample.js[25:5]
+    TryGetById        r4, r3, 3, "z"
+    LoadConstUInt8    r10, 4
+    LoadConstString   r5, "e"
+    Add               r10, r10, r5
+    LoadConstInt      r15, 160274584
+    LoadConstString   r5, "dd"
+    Add               r5, r15, r5
+    JNotLess          L5, r4, r13
+L8:
+sample.js[25:13]
+    JmpTrue           L6, r5
+    TryGetById        r4, r3, 4, "print"
+    Call2             r4, r4, r2, r11
+    JmpTrue           L5, r10
     Jmp               L7
 L6:
-sample.js[26:5]
-    Catch             r3
-L13:
-sample.js[26:5]
-    LoadConstInt      r5, 432
-    LoadConstString   r4, "d\u00e7d\u00e0\u00e7"
-    Mul               r5, r5, r4
-    LoadConstInt      r4, 478
-    AddN              r4, r5, r4
-    JmpFalse          L8, r4
-    GetGlobalObject   r4
-    TryGetById        r6, r4, 4, "console"
-    GetByIdShort      r5, r6, 5, "log"
-    Mov               r7, r3
-    LoadConstString   r3, "Bon-jour : "
-    Add               r4, r3, r7
-    LoadConstInt      r3, 340000
-    Mul               r7, r7, r3
-    LoadConstUInt8    r3, 6
-    AddN              r3, r7, r3
-    Call3             r3, r5, r6, r4, r3
-L8:
-sample.js[31:9]
-    Jmp               L7
+sample.js[27:21]
+    TryGetById        r15, r3, 5, "console"
+    GetByIdShort      r4, r15, 6, "log"
+    Call2             r4, r4, r15, r12
+L7:
+sample.js[25:47]
+    TryGetById        r4, r3, 3, "z"
+    Mul               r4, r4, r14
+    PutById           r3, r4, 1, "z"
+    TryGetById        r4, r3, 3, "z"
+    JLess             L8, r4, r13
+L5:
+sample.js[37:5]
+    Jmp               L10
 L9:
-sample.js[32:9]
-    Catch             r3
-    GetGlobalObject   r3
-    TryGetById        r4, r3, 6, "alert"
+sample.js[38:5]
+    Catch             r6
+L17:
+sample.js[38:5]
+    LoadConstString   r5, "E"
+    LoadConstZero     r4
+    Add               r5, r5, r4
+    LoadConstInt      r10, 432
+    LoadConstString   r4, "d\u00e7d\u00e0\u00e7"
+    Mul               r10, r10, r4
+    LoadConstInt      r4, 478
+    AddN              r4, r10, r4
+    JmpFalse          L11, r4
+L12:
+sample.js[42:21]
+    TryGetById        r12, r3, 5, "console"
+    GetByIdShort      r11, r12, 6, "log"
+    Mov               r4, r6
+    Add               r10, r9, r4
+    Mul               r4, r4, r8
+    AddN              r4, r4, r7
+    Call3             r4, r11, r12, r10, r4
+    TryGetById        r4, r3, 7, "NaN"
+    Add               r4, r5, r4
+    JmpTrue           L12, r4
+L11:
+sample.js[45:9]
+    Jmp               L10
+L13:
+sample.js[46:9]
+    Catch             r4
+    TryGetById        r4, r3, 8, "alert"
     LoadConstString   r3, "AAAAAAAA"
     Call2             r3, r4, r2, r3
-L7:
-sample.js[33:18]
+L10:
+sample.js[47:18]
     CompleteGenerator
     Ret               r2
 L3:
-sample.js[33:18]
+sample.js[47:18]
     CompleteGenerator
     Ret               r1
 L1:
-sample.js[33:18]
+sample.js[47:18]
     CompleteGenerator
     Ret               r0
 
 Exception Handlers:
-0: start = L11, end = L12, target = L4
-1: start = L11, end = L5, target = L6
-2: start = L13, end = L8, target = L9
+0: start = L15, end = L16, target = L4
+1: start = L15, end = L5, target = L9
+2: start = L17, end = L11, target = L13
 
 Function<ze>6(1 params, 12 registers, 1 symbols):
-Offset in debug table: source 0x00dd, lexical 0x0000
-sample.js[39:1]
+Offset in debug table: source 0x0101, lexical 0x0000
+sample.js[53:1]
     CreateEnvironment r3
     LoadConstUndefined r0
     GetGlobalObject   r1
@@ -277,19 +325,19 @@ sample.js[39:1]
     StoreNPToEnvironment r3, 0, r0
     Jmp               L2
 L1:
-sample.js[41:19]
+sample.js[55:19]
     CreateClosure     r2, r3, 7
     StoreToEnvironment r3, 0, r2
     Call1             r2, r2, r0
     GetByIdShort      r1, r1, 3, "ze"
     Call1             r1, r1, r0
 L2:
-sample.js[48:19]
+sample.js[62:19]
     Ret               r0
 
 Function<zb>7(1 params, 9 registers, 0 symbols):
-Offset in debug table: source 0x00f3, lexical 0x0000
-sample.js[42:18]
+Offset in debug table: source 0x0117, lexical 0x0000
+sample.js[56:18]
     GetGlobalObject   r0
     TryGetById        r1, r0, 1, "Date"
     GetByIdShort      r0, r1, 2, "now"
@@ -300,7 +348,7 @@ sample.js[42:18]
     LoadConstUndefined r0
     Call1             r0, r1, r0
 L1:
-sample.js[44:19]
+sample.js[58:19]
     LoadConstUndefined r0
     Ret               r0
 
@@ -326,87 +374,99 @@ Debug source table:
     bc 24: line 7 col 1
     bc 35: line 7 col 1
     bc 46: line 7 col 1
-    bc 52: line 52 col 1
-    bc 58: line 52 col 17
-    bc 63: line 52 col 15
-    bc 69: line 53 col 1
-    bc 76: line 53 col 3
-    bc 94: line 55 col 7
-    bc 100: line 56 col 1
-    bc 106: line 56 col 12
-    bc 111: line 56 col 13
-    bc 117: line 56 col 23
-    bc 126: line 56 col 23
-    bc 131: line 56 col 12
-    bc 136: line 58 col 1
-    bc 142: line 58 col 12
-    bc 147: line 58 col 18
-    bc 152: line 58 col 21
-    bc 156: line 58 col 28
-    bc 161: line 58 col 28
-    bc 169: line 58 col 12
-    bc 175: line 59 col 1
-    bc 181: line 59 col 12
-    bc 186: line 59 col 18
-    bc 209: line 59 col 23
-    bc 214: line 59 col 40
-    bc 219: line 59 col 40
-    bc 227: line 59 col 12
+    bc 52: line 66 col 1
+    bc 58: line 66 col 17
+    bc 63: line 66 col 15
+    bc 69: line 67 col 1
+    bc 76: line 67 col 3
+    bc 94: line 69 col 7
+    bc 100: line 70 col 1
+    bc 106: line 70 col 12
+    bc 111: line 70 col 13
+    bc 117: line 70 col 23
+    bc 126: line 70 col 23
+    bc 131: line 70 col 12
+    bc 136: line 72 col 1
+    bc 142: line 72 col 12
+    bc 147: line 72 col 18
+    bc 152: line 72 col 21
+    bc 156: line 72 col 28
+    bc 161: line 72 col 28
+    bc 169: line 72 col 12
+    bc 175: line 73 col 1
+    bc 181: line 73 col 12
+    bc 186: line 73 col 18
+    bc 209: line 73 col 23
+    bc 214: line 73 col 40
+    bc 219: line 73 col 40
+    bc 227: line 73 col 12
   0x005c  function idx 1, starts at line 7 col 1
     bc 21: line 7 col 1
   0x0063  function idx 3, starts at line 7 col 1
-    bc 9: line 8 col 11
-    bc 14: line 8 col 51
-    bc 31: line 8 col 17
-    bc 37: line 8 col 16
-    bc 42: line 8 col 5
-    bc 46: line 8 col 5
-    bc 52: line 10 col 11
-    bc 57: line 10 col 14
-    bc 61: line 10 col 5
-    bc 65: line 10 col 5
-    bc 71: line 12 col 5
-    bc 77: line 12 col 16
-    bc 85: line 12 col 16
-    bc 90: line 13 col 5
-    bc 96: line 13 col 16
-    bc 101: line 13 col 17
-    bc 107: line 13 col 16
-  0x009a  function idx 5, starts at line 16 col 1
-    bc 17: line 17 col 5
-    bc 21: line 17 col 5
-    bc 32: line 20 col 13
-    bc 37: line 20 col 16
-    bc 41: line 20 col 23
-    bc 46: line 20 col 23
-    bc 50: line 21 col 9
-    bc 52: line 22 col 9
-    bc 56: line 23 col 13
-    bc 66: line 23 col 18
-    bc 71: line 25 col 5
-    bc 73: line 26 col 5
-    bc 104: line 29 col 17
-    bc 110: line 29 col 28
-    bc 122: line 29 col 29
-    bc 132: line 29 col 48
-    bc 143: line 29 col 28
-    bc 149: line 31 col 9
-    bc 151: line 32 col 9
-    bc 155: line 33 col 13
-    bc 165: line 33 col 18
-  0x00dd  function idx 6, starts at line 39 col 1
-    bc 6: line 41 col 8
-    bc 12: line 41 col 19
-    bc 17: line 41 col 19
-    bc 39: line 48 col 11
-    bc 43: line 48 col 17
-    bc 48: line 48 col 19
-  0x00f3  function idx 7, starts at line 42 col 18
-    bc 2: line 43 col 16
-    bc 8: line 43 col 24
-    bc 13: line 43 col 24
-    bc 29: line 44 col 19
-  0x0103  end of debug source table
+    bc 15: line 8 col 11
+    bc 20: line 8 col 51
+    bc 37: line 8 col 17
+    bc 43: line 8 col 16
+    bc 48: line 8 col 5
+    bc 52: line 8 col 5
+    bc 58: line 10 col 11
+    bc 63: line 10 col 14
+    bc 67: line 10 col 5
+    bc 71: line 10 col 5
+    bc 88: line 13 col 9
+    bc 94: line 13 col 20
+    bc 99: line 13 col 20
+    bc 107: line 15 col 5
+    bc 113: line 15 col 16
+    bc 118: line 15 col 17
+    bc 124: line 15 col 16
+  0x009a  function idx 5, starts at line 18 col 1
+    bc 54: line 19 col 5
+    bc 58: line 19 col 5
+    bc 67: line 22 col 13
+    bc 72: line 22 col 16
+    bc 76: line 22 col 23
+    bc 81: line 22 col 23
+    bc 85: line 23 col 9
+    bc 87: line 24 col 9
+    bc 89: line 25 col 38
+    bc 120: line 25 col 13
+    bc 127: line 31 col 17
+    bc 133: line 31 col 22
+    bc 143: line 27 col 21
+    bc 149: line 27 col 32
+    bc 154: line 27 col 32
+    bc 159: line 25 col 47
+    bc 165: line 25 col 49
+    bc 169: line 25 col 49
+    bc 175: line 25 col 38
+    bc 181: line 25 col 13
+    bc 185: line 37 col 5
+    bc 187: line 38 col 5
+    bc 226: line 42 col 21
+    bc 232: line 42 col 32
+    bc 240: line 42 col 33
+    bc 244: line 42 col 52
+    bc 252: line 42 col 32
+    bc 258: line 43 col 45
+    bc 264: line 43 col 25
+    bc 271: line 45 col 9
+    bc 273: line 46 col 9
+    bc 275: line 47 col 13
+    bc 285: line 47 col 18
+  0x0101  function idx 6, starts at line 53 col 1
+    bc 6: line 55 col 8
+    bc 12: line 55 col 19
+    bc 17: line 55 col 19
+    bc 39: line 62 col 11
+    bc 43: line 62 col 17
+    bc 48: line 62 col 19
+  0x0117  function idx 7, starts at line 56 col 18
+    bc 2: line 57 col 16
+    bc 8: line 57 col 24
+    bc 13: line 57 col 24
+    bc 29: line 58 col 19
+  0x0127  end of debug source table
 
 Debug lexical table:
   0x0000  lexical parent: none, variable count: 0

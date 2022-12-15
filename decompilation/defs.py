@@ -27,15 +27,82 @@ class HermesDecompiler:
     
     function_id_to_body : Dict[int, 'DecompiledFunctionBody']
 
-# This will store information related to the curly braces that
-# will encompass a loop, a condition, a switch...
-#
-# At a latter stage of decompilation, the latter basic blocks
-# should be checked for non-overlap (TODO)
-@dataclass
+# This will provide the ability to construct a graph of 
+# the basic assembly blocks in the disassembled/decompiled
+# output 
 class BasicBlock:
     start_address : int
     end_address : int
+    
+    # These flags should indicate whether we have
+    # encountered cycling in
+    # "graph_traversers/step2_visite_code_paths.py"
+    # (which indicates the presence of a loop):
+    may_be_cycling_anchor : bool = False
+    may_be_cycling_target : bool = False
+    
+    # These flags delimite blocks that will markSans titre
+    # the code not continue into something
+    # whichsoever
+    is_unconditional_throw_anchor : bool = False
+    is_unconditional_return_end : bool = False
+
+    # These flags delimite blocks that have the
+    # code to continue somewhere else
+    is_unconditional_jump_anchor : bool = False
+    is_yield_action_anchor : bool = False
+    
+    # These flags delimite blocks that
+    # should have more than one branching
+    # end
+    is_conditional_jump_anchor : bool = False
+    if_switch_action_anchor : bool = False
+
+    anchor_instruction : Optional[ParsedInstruction] = None
+    jump_targets_for_anchor : Optional[List[int]] = None
+
+    # These attributes will be used to build
+    # the decompiler's graph structure
+    
+    child_nodes : List['BasicBlock']
+    parent_nodes : List['BasicBlock']
+    
+    error_handling_child_nodes : List['BasicBlock']
+    error_handling_parent_nodes : List['BasicBlock']
+    
+    # These attributes should be added at steps 3+
+    # of the graph traversal process (using
+    # instruction pattern maching, etc)
+    
+    do_expr_at_begin : Optional['XXX_TODO']
+    if_expr_at_begin : Optional['XXX_TODO']
+    else_if_expr_at_begin : Optional['XXX_TODO']
+    else_expr_at_begin : Optional['XXX_TODO']
+    switch_expr_at_begin : Optional['XXX_TODO']
+    while_expr_at_begin : Optional['XXX_TODO']
+    for_expr_at_begin : Optional['XXX_TODO']
+    while_expr_at_end_matching_block : Optional['XXX_TODO']
+    closing_brace_at_end_matching_block : Optional['XXX_TODO']
+    
+
+"""
+# Don't know if will use it:
+class CodePathComponent:
+    
+    basic_block : BasicBlock
+    
+    choice_jump : bool = False # Will be the first represented choice in the flattened graph in case of any non-switch jump
+    choice_fallthrough : bool = False # Will be the first represented in the flattened graph case otherwise, and exept in case of switch jump
+    choice_switch_default : bool = False 
+    choice_switch_nondefault : Optional[int] = None
+"""
+
+class CodePath:
+    
+    components : List[BasicBlock]
+    
+    is_cyclic_end : bool = False
+    is_return_end : bool = False
 
 class DecompiledFunctionBody:
     
@@ -43,10 +110,23 @@ class DecompiledFunctionBody:
     function_name : str
     function_object : object
     
-    try_starts : Dict[int, List[str]]
-    try_ends : Dict[int, List[str]]
-    catch_targets : Dict[int, List[str]]
+    addr_to_instruction : Dict[int, ParsedInstruction]
     
+    # The following structures will be used to
+    # mark the boundaries of the basic block
+    # of the code using the addresses they
+    # store are integers:
+    try_starts : Dict[int, List[str]] # Boundary address associated with a text label
+    try_ends : Dict[int, List[str]] # Boundary address associated with a text label
+    catch_targets : Dict[int, List[str]] # Boundary address associated with a text label
+    
+    jump_anchors : Dict[int, ParsedInstruction] # Non-jump address associated with a jump/switch/yield instruction
+    ret_anchors : Dict[int, ParsedInstruction] # Unreacheable address associated with a return instruction
+    throw_anchors : Dict[int, ParsedInstruction] # Unreacheable address associated with a jump instruction
+    jump_targets : Set[int] # Jump target address
+    
+    # The following flags correspond to general
+    # observed properties of the current function:
     is_closure : bool = False
     is_async : bool = False
     is_generator : bool = False
@@ -55,7 +135,7 @@ class DecompiledFunctionBody:
     
     basic_blocks : List[BasicBlock]
     
-    jump_targets : Set[int]
+    possible_code_paths : List[CodePath]
     
     statements : List['TokenString']
     
@@ -91,6 +171,7 @@ class DecompiledFunctionBody:
             output += '\n'
             state.indent_level += 1
         
+        basic_blocks_copy = list(self.basic_blocks)
         basic_block_starts = [basic_block.start_address
             for basic_block in self.basic_blocks]
         basic_block_ends = [basic_block.end_address
@@ -119,8 +200,27 @@ class DecompiledFunctionBody:
                     output += 'label_%d:\n' % pos
                 
                 while pos in basic_block_starts:
+                    basic_block = basic_blocks_copy.pop(basic_block_starts.index(pos))
                     basic_block_starts.pop(basic_block_starts.index(pos))
-                    output += (' ' * (state.indent_level * 4)) + '{\n'
+                    output += (' ' * (state.indent_level * 4)) + '{ //%s\n' % (
+                        (' Node %d' % pos) +
+                        (' - (Cycling point)' if basic_block.may_be_cycling_target else '') +
+                        (' - Child nodes: ' + ' '.join(
+                            '%d' % other_basic_block.start_address
+                            for other_basic_block in basic_block.child_nodes
+                        ) if basic_block.child_nodes else '') +
+                        (' - Parent nodes: ' + ' '.join(
+                            '%d' % other_basic_block.start_address
+                            for other_basic_block in basic_block.parent_nodes
+                        ) if basic_block.parent_nodes else '') +
+                        (' - EH handlers: ' + ' '.join(
+                            '%d' % other_basic_block.start_address
+                            for other_basic_block in basic_block.error_handling_child_nodes
+                        ) if basic_block.error_handling_child_nodes else '') +
+                        (' - EH anchors: ' + ' '.join(
+                            '%d' % other_basic_block.start_address
+                            for other_basic_block in basic_block.error_handling_parent_nodes
+                        ) if basic_block.error_handling_parent_nodes else ''))
                     state.indent_level += 1
                 
                 # print('===> ', statement)
@@ -131,6 +231,11 @@ class DecompiledFunctionBody:
                     output += '\n'
                 else:
                     output += ';\n'
+        
+        while len(basic_block_ends) > len(basic_block_starts):
+            basic_block_ends.pop(0)
+            state.indent_level -= 1
+            output += (' ' * (state.indent_level * 4)) + '}\n'
     
         if self.function_id != global_function_index:
             state.indent_level -= 1
@@ -262,15 +367,27 @@ class ForInLoopNextIter(Token):
     iter_index_register : int
     iter_size_register : int
 
-# Used to mark backward jumps (used in loops)
+# Used to mark conditions expressed in a jump-choice case (opposite
+# to a fallthrough-choice case), hence negated compared with the
+# assembly expression
+# Located before the jump-choice case within the abstract
+# decompiler IR stream.
 @dataclass
 class JumpCondition(Token):
     target_address : int
 
-# Used to mark forward jumps
+# Used to mark conditions in a fallthrough-choice case
+# (opposite to a jump-choice case), hence negated
+# compared with the assembly expression
+# Located after the corresponding JC tag and expression
+# within the abstract decompiler IR stream, and before
+# the fallthrough-choice conditional expression content
+# within the abstract decompiler IR stream.
 @dataclass
 class JumpNotCondition(Token):
-    target_address : int
+    def __str__(self):
+        
+        return ' // Negative variant: '
 
 @dataclass
 class FunctionTableIndex(Token):

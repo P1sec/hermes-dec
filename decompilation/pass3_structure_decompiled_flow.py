@@ -111,13 +111,6 @@ class Pass3StructureDecompiledFlow:
                     
                     #print('EEEEE ([. DEBUG]', lines[index], ':///', lines[index + 1], '/D/D+', lines[other_index], '/D+D+D', lines[other_index + 1])
                     
-                    function_body.basic_blocks.append(
-                        BasicBlock(
-                            begin_address,
-                            end_address
-                        )
-                    )
-                    
                     line.tokens = [RT('for'), LPT(), LHRT(lines[other_index].tokens[0].next_value_register),
                      RT(' in '), RHRT(line.tokens[0].obj_register), RPT()]
                     lines[index + 1].tokens = []
@@ -189,4 +182,4 @@ class Pass3StructureDecompiledFlow:
         global_function = state.function_id_to_body[state.hbc_reader.header.globalCodeIndex]
         
         recursively_name_non_locale_closure_variables(global_function, None)
-
+    

@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 #-*- encoding: Utf-8 -*-
-from ctypes import LittleEndianStructure, _SimpleCData, c_double, c_int8, c_int32, c_uint8, c_uint16, c_uint32
+from ctypes import LittleEndianStructure, _SimpleCData, sizeof, c_double, c_int8, c_int32, c_uint8, c_uint16, c_uint32
 from typing import List, Dict, Sequence, Set, Tuple, Optional, Union, Any
 from dataclasses import dataclass
 from enum import Enum
@@ -36,6 +36,7 @@ class Instruction:
     opcode : int
     operands : List[Operand]
     structure : LittleEndianStructure
+    binary_size : int
     has_ret_target : bool
     
     def __init__(self, name : str, opcode : int, args : List[OperandType], module_ref : 'module'):
@@ -54,3 +55,5 @@ class Instruction:
                 for pos, operand in enumerate(args)
             ]
         ))
+        
+        self.binary_size = 1 + sizeof(self.structure)

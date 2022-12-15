@@ -281,116 +281,68 @@ class Pass2MakeAtomicFlow:
                     lines.append(TS([RHRT(op1), DAT(), RT('return'), LPT(), RPT()],
                         assembly = [instruction]))
                 elif instruction.inst.name in ('JEqual', 'JEqualLong'):
-                    if op1 > 0:
-                        lines.append(TS([JNC(instruction.original_pos + op1), RHRT(op2), RT(' != '), RHRT(op3)],
-                            assembly = [instruction]))
-                    else:
-                        lines.append(TS([JC(instruction.original_pos + op1), RHRT(op2), RT(' == '), RHRT(op3)],
+                    lines.append(TS([JC(instruction.original_pos + op1), RHRT(op2), RT(' == '), RHRT(op3),
+                        JNC(), RHRT(op2), RT(' != '), RHRT(op3)],
                             assembly = [instruction]))
                 elif instruction.inst.name in ('JGreater', 'JGreaterN', 'JGreaterLong', 'JGreaterNLong'):
-                    if op1 > 0:
-                        lines.append(TS([JNC(instruction.original_pos + op1), RT('!'), LPT(), RHRT(op2), RT(' > '), RHRT(op3), RPT()],
-                            assembly = [instruction]))
-                    else:
-                        lines.append(TS([JC(instruction.original_pos + op1), RHRT(op2), RT(' > '), RHRT(op3)],
+                    lines.append(TS([JC(instruction.original_pos + op1), RHRT(op2), RT(' > '), RHRT(op3),
+                        JNC(), RT('!'), LPT(), RHRT(op2), RT(' > '), RHRT(op3), RPT()],
                             assembly = [instruction]))
                 elif instruction.inst.name in ('JNotGreater', 'JNotGreaterN', 'JNotGreaterLong', 'JNotGreaterNLong'):
-                    if op1 > 0:
-                        lines.append(TS([JNC(instruction.original_pos + op1), RHRT(op2), RT(' > '), RHRT(op3)],
-                            assembly = [instruction]))
-                    else:
-                        lines.append(TS([JC(instruction.original_pos + op1), RT('!'), LPT(), RHRT(op2), RT(' > '), RHRT(op3), RPT()],
+                    lines.append(TS([JC(instruction.original_pos + op1), RT('!'), LPT(), RHRT(op2), RT(' > '), RHRT(op3), RPT(),
+                        JNC(), RHRT(op2), RT(' > '), RHRT(op3)],
                             assembly = [instruction]))
                 elif instruction.inst.name in ('JGreaterEqual', 'JGreaterEqualN', 'JGreaterEqualLong', 'JGreaterEqualNLong'):
-                    if op1 > 0:
-                        lines.append(TS([JNC(instruction.original_pos + op1), RT('!'), LPT(), RHRT(op2), RT(' >= '), RHRT(op3), RPT()],
-                            assembly = [instruction]))
-                    else:
-                        lines.append(TS([JC(instruction.original_pos + op1), RHRT(op2), RT(' >= '), RHRT(op3)],
+                    lines.append(TS([JC(), RHRT(op2), RT(' >= '), RHRT(op3),
+                        JNC(instruction.original_pos + op1), RT('!'), LPT(), RHRT(op2), RT(' >= '), RHRT(op3), RPT()],
                             assembly = [instruction]))
                 elif instruction.inst.name in ('JNotGreaterEqual', 'JNotGreaterEqualN', 'JNotGreaterEqualLong', 'JNotGreaterEqualNLong'):
-                    if op1 > 0:
-                        lines.append(TS([JNC(instruction.original_pos + op1), RHRT(op2), RT(' >= '), RHRT(op3)],
-                            assembly = [instruction]))
-                    else:
-                        lines.append(TS([JC(instruction.original_pos + op1), RT('!'), LPT(), RHRT(op2), RT(' >= '), RHRT(op3), RPT()],
+                    lines.append(TS([JC(instruction.original_pos + op1), RT('!'), LPT(), RHRT(op2), RT(' >= '), RHRT(op3), RPT(),
+                        JNC(), RHRT(op2), RT(' >= '), RHRT(op3)],
                             assembly = [instruction]))
                 elif instruction.inst.name in ('JLess', 'JLessN', 'JLessLong', 'JLessNLong'):
-                    if op1 > 0:
-                        lines.append(TS([JNC(instruction.original_pos + op1), RT('!'), LPT(), RHRT(op2), RT(' < '), RHRT(op3), RPT()],
-                            assembly = [instruction]))
-                    else:
-                        lines.append(TS([JC(instruction.original_pos + op1), RHRT(op2), RT(' < '), RHRT(op3)],
+                    lines.append(TS([JC(instruction.original_pos + op1), RHRT(op2), RT(' < '), RHRT(op3),
+                        JNC(), RT('!'), LPT(), RHRT(op2), RT(' < '), RHRT(op3), RPT()],
                             assembly = [instruction]))
                 elif instruction.inst.name in ('JNotLess', 'JNotLessN', 'JNotLessLong', 'JNotLessNLong'):
-                    if op1 > 0:
-                        lines.append(TS([JNC(instruction.original_pos + op1), RHRT(op2), RT(' < '), RHRT(op3)],
-                            assembly = [instruction]))
-                    else:
-                        lines.append(TS([JC(instruction.original_pos + op1), RT('!'), LPT(), RHRT(op2), RT(' < '), RHRT(op3), RPT()],
+                    lines.append(TS([JC(instruction.original_pos + op1), RT('!'), LPT(), RHRT(op2), RT(' < '), RHRT(op3), RPT(),
+                        JNC(), RHRT(op2), RT(' < '), RHRT(op3)],
                             assembly = [instruction]))
                 elif instruction.inst.name in ('JLessEqual', 'JLessEqualN', 'JLessEqualLong', 'JLessEqualNLong'):
-                    if op1 > 0:
-                        lines.append(TS([JNC(instruction.original_pos + op1), RT('!'), LPT(), RHRT(op2), RT(' <= '), RHRT(op3), RPT()],
-                            assembly = [instruction]))
-                    else:
-                        lines.append(TS([JC(instruction.original_pos + op1), RHRT(op2), RT(' <= '), RHRT(op3)],
+                    lines.append(TS([JC(instruction.original_pos + op1), RHRT(op2), RT(' <= '), RHRT(op3),
+                        JNC(), RT('!'), LPT(), RHRT(op2), RT(' <= '), RHRT(op3), RPT()],
                             assembly = [instruction]))
                 elif instruction.inst.name in ('JNotLessEqual', 'JNotLessEqualN', 'JNotLessEqualLong', 'JNotLessEqualNLong'):
-                    if op1 > 0:
-                        lines.append(TS([JNC(instruction.original_pos + op1), RHRT(op2), RT(' <= '), RHRT(op3)],
-                            assembly = [instruction]))
-                    else:
-                        lines.append(TS([JC(instruction.original_pos + op1), RT('!'), LPT(), RHRT(op2), RT(' <= '), RHRT(op3), RPT()],
+                    lines.append(TS([JC(instruction.original_pos + op1), RT('!'), LPT(), RHRT(op2), RT(' <= '), RHRT(op3), RPT(),
+                        JNC(), RHRT(op2), RT(' <= '), RHRT(op3)],
                             assembly = [instruction]))
                 elif instruction.inst.name in ('JNotEqual', 'JNotEqualLong'):
-                    if op1 > 0:
-                        lines.append(TS([JNC(instruction.original_pos + op1), RHRT(op2), RT(' == '), RHRT(op3)],
-                            assembly = [instruction]))
-                    else:
-                        lines.append(TS([JC(instruction.original_pos + op1), RHRT(op2), RT(' != '), RHRT(op3)],
+                    lines.append(TS([JC(instruction.original_pos + op1), RHRT(op2), RT(' != '), RHRT(op3),
+                        JNC(), RHRT(op2), RT(' == '), RHRT(op3)],
                             assembly = [instruction]))
                 elif instruction.inst.name in ('JStrictEqual', 'JStrictEqualLong'):
-                    if op1 > 0:
-                        lines.append(TS([JNC(instruction.original_pos + op1), RHRT(op2), RT(' !== '), RHRT(op3)],
-                            assembly = [instruction]))
-                    else:
-                        lines.append(TS([JC(instruction.original_pos + op1), RHRT(op2), RT(' === '), RHRT(op3)],
+                    lines.append(TS([JC(instruction.original_pos + op1), RHRT(op2), RT(' === '), RHRT(op3),
+                        JNC(), RHRT(op2), RT(' !== '), RHRT(op3)],
                             assembly = [instruction]))
                 elif instruction.inst.name in ('JStrictNotEqual', 'JStrictNotEqualLong'):
-                    if op1 > 0:
-                        lines.append(TS([JNC(instruction.original_pos + op1), RHRT(op2), RT(' === '), RHRT(op3)],
-                            assembly = [instruction]))
-                    else:
-                        lines.append(TS([JC(instruction.original_pos + op1), RHRT(op2), RT(' !== '), RHRT(op3)],
+                    lines.append(TS([JC(instruction.original_pos + op1), RHRT(op2), RT(' !== '), RHRT(op3),
+                        JNC(), RHRT(op2), RT(' === '), RHRT(op3)],
                             assembly = [instruction]))
                 elif instruction.inst.name in ('Jmp', 'JmpLong'):
-                    if op1 > 0:
-                        lines.append(TS([JNC(instruction.original_pos + op1), RT('false')],
-                            assembly = [instruction]))
-                    else:
-                        lines.append(TS([JC(instruction.original_pos + op1), RT('true')],
+                    lines.append(TS([JC(instruction.original_pos + op1), RT('true'),
+                        JNC(), RT('false')],
                             assembly = [instruction]))
                 elif instruction.inst.name in ('JmpFalse', 'JmpFalseLong'):
-                    if op1 > 0:
-                        lines.append(TS([JNC(instruction.original_pos + op1), RHRT(op2)],
-                            assembly = [instruction]))
-                    else:
-                        lines.append(TS([JC(instruction.original_pos + op1), RT('!'), RHRT(op2)],
+                    lines.append(TS([JC(instruction.original_pos + op1), RT('!'), RHRT(op2),
+                        JNC(), RHRT(op2)],
                             assembly = [instruction]))
                 elif instruction.inst.name in ('JmpTrue', 'JmpTrueLong'):
-                    if op1 > 0:
-                        lines.append(TS([JNC(instruction.original_pos + op1), RT('!'), RHRT(op2)],
-                            assembly = [instruction]))
-                    else:
-                        lines.append(TS([JC(instruction.original_pos + op1), RHRT(op2)],
+                    lines.append(TS([JC(instruction.original_pos + op1), RHRT(op2),
+                        JNC(), RT('!'), RHRT(op2)],
                             assembly = [instruction]))
                 elif instruction.inst.name in ('JmpUndefined', 'JmpUndefinedLong'):
-                    if op1 > 0:
-                        lines.append(TS([JNC(instruction.original_pos + op1), RHRT(op2), RT(' !== undefined')],
-                            assembly = [instruction]))
-                    else:
-                        lines.append(TS([JC(instruction.original_pos + op1), RHRT(op2), RT(' === undefined')],
+                    lines.append(TS([JC(instruction.original_pos + op1), RHRT(op2), RT(' === undefined'),
+                        JNC(), RHRT(op2), RT(' !== undefined')],
                             assembly = [instruction]))
                 elif instruction.inst.name == 'LShift':
                     lines.append(TS([LHRT(op1), AT(), RHRT(op2), RT(' << '), RHRT(op3)],

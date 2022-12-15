@@ -1,205 +1,330 @@
 [DEBUG] => Number of closures in the JS document: 7
 => DEBUG: [Intermediary representation of the decompiled code]
 
-=> Decompiling function #0 "global" (at address 0x00000320):
+=> Decompiling function #0 "global" (at address 0x00000354):
 
 _____________________________________
 
-testx = undefined;
-gen = undefined;
-ze = undefined;
-r2 = async function(a0) { // Original name: testx, environment: r1
-    r4 = undefined;
-    r0 = undefined;
-    r0 = arguments;
-    r3 = r0;
-    r2 = spawnAsync;
-    r1 = function* (a0) { // Original name: ?anon_0_testx, environment: r0
-        r0 = function* (a0) { // Original name: ?anon_0_?anon_0_testx, environment: r0
-            StartGenerator();
-            ResumeGenerator(result_out_reg=0, return_bool_out_reg=1);
-            JumpNotCondition(target_address=121)!r1;
-            r4 = global;
-            r2 = r4.testx;
-            r3 = r4.test2;
-            r5 = 42;
-            r1 = 'D+D +D\u202f+D +\nD+ÉD ';
-            r1 = r5 + r1;
-            r1 = r1 + r3;
-            r3 = undefined;
-            r1 = r2.bind(r3)(r1);
-            SaveGenerator(address=46);
-            return r1;
-label_46:
-            ResumeGenerator(result_out_reg=1, return_bool_out_reg=2);
-            JumpNotCondition(target_address=118)!r2;
-            r2 = r4.gen;
-            r2 = r2.bind(r3)();
-            SaveGenerator(address=65);
-            return r2;
-label_65:
-            ResumeGenerator(result_out_reg=2, return_bool_out_reg=5);
-            JumpNotCondition(target_address=115)!r5;
-            r7 = r4.console;
-            r6 = r7.log;
-            r5 = a0;
-            r5 = r6.bind(r7)(r5);
-            r6 = r4.console;
-            r5 = r6.log;
-            r4 = r4.xy;
-            r4 = r5.bind(r6)(r4);
-            return r3;
-label_115:
-            return r2;
-label_118:
-            return r1;
-label_121:
-            return r0;
-        };
-        return r0;
-    };
-    r0 = this;
-    r0 = r2.bind(r4)(r1, r0, r3);
-    return r0;
-};
-r0 = global;
-r0['testx'] = r2;
-r2 = function* () { // Original name: gen, environment: r1
-    r0 = function* () { // Original name: ?anon_0_gen, environment: r0
-        StartGenerator();
-        r2 = undefined;
-        r3 = undefined;
-        ResumeGenerator(result_out_reg=0, return_bool_out_reg=1);
-        JumpNotCondition(target_address=176)!r1;
-        r1 = 42;
-        SaveGenerator(address=21);
-        return r1;
-label_21:
-        ResumeGenerator(result_out_reg=1, return_bool_out_reg=4);
-        JumpNotCondition(target_address=173)!r4;
-try_start_0:
-try_start_1:
-        r4 = global;
-        r4 = r4.gen;
-        r5 = r4.bind(r2)();
-        r4 = r5.next;
-        r4 = r4.bind(r5)();
-try_end0:
-        JumpNotCondition(target_address=71)false;
-catch_target0:
-        CatchBlockStart(arg_register=4);
-        r4 = global;
-        r5 = r4.print;
-        r4 = 'Hello! Exception handling';
-        r4 = r5.bind(r2)(r4);
-try_end1:
-label_71:
-        JumpNotCondition(target_address=170)false;
-catch_target1:
-        CatchBlockStart(arg_register=3);
-try_start_2:
-        r5 = 432;
-        r4 = 'dçdàçD°D+D';
-        r5 = r5 * r4;
-        r4 = 478;
-        r4 = r5 + r4;
-        JumpNotCondition(target_address=149)r4;
-        r4 = global;
-        r6 = r4.console;
-        r5 = r6.log;
-        r7 = r3;
-        r3 = 'Bon-jour : ';
-        r4 = r3 + r7;
-        r3 = 340000;
-        r7 = r7 * r3;
-        r3 = 6;
-        r3 = r7 + r3;
-        r3 = r5.bind(r6)(r4, r3);
-try_end2:
-label_149:
-        JumpNotCondition(target_address=170)false;
-catch_target2:
-        CatchBlockStart(arg_register=3);
-        r3 = global;
-        r4 = r3.alert;
-        r3 = 'AAAAAAAA';
-        r3 = r4.bind(r2)(r3);
-label_170:
-        return r2;
-label_173:
-        return r1;
-label_176:
-        return r0;
-    };
-    return r0;
-};
-r0['gen'] = r2;
-r1 = function() { // Original name: ze, environment: r1
-    r0 = undefined;
-    r1 = global;
-    r4 = r1.Math;
-    r2 = r4.random;
-    r2 = r2.bind(r4)();
-    JumpNotCondition(target_address=30)!r2;
-    var _closure1_slot0 = r0;
-    JumpNotCondition(target_address=52)false;
-label_30:
-    r2 = function() { // Original name: zb, environment: r3
-        r0 = global;
-        r1 = r0.Date;
-        r0 = r1.now;
-        r0 = r0.bind(r1)();
-        JumpNotCondition(target_address=33)r0;
-        r1 = _closure1_slot0;
-        r0 = undefined;
-        r0 = r1.bind(r0)();
-label_33:
-        r0 = undefined;
-        return r0;
-    };
-    _closure1_slot0 = r2;
-    r2 = r2.bind(r0)();
-    r1 = r1.ze;
-    r1 = r1.bind(r0)();
+{ // Node 0
+    testx = undefined;
+    gen = undefined;
+    ze = undefined;
+    r2 = async function(a0) { // Original name: testx, environment: r1
+        { // Node 0
+            r4 = undefined;
+            r0 = undefined;
+            r0 = arguments;
+            r3 = r0;
+            r2 = spawnAsync;
+            r1 = function* (a0) { // Original name: ?anon_0_testx, environment: r0
+                { // Node 0
+                    r0 = function* (a0) { // Original name: ?anon_0_?anon_0_testx, environment: r0
+                        { // Node 0 - Child nodes: 15 138
+                            StartGenerator();
+                            r6 = a0;
+                            r4 = global;
+                            ResumeGenerator(result_out_reg=0, return_bool_out_reg=1);
+                            JumpCondition(target_address=138)r1 // Negative variant: !r1;
+                        }
+                        { // Node 15 - Child nodes: 50 52 - Parent nodes: 0
+                            r2 = r4.testx;
+                            r3 = r4.test2;
+                            r7 = 42;
+                            r1 = 'D+D +D\u202f+D +\nD+ÉD ';
+                            r1 = r7 + r1;
+                            r1 = r1 + r3;
+                            r3 = undefined;
+                            r1 = r2.bind(r3)(r1);
+                            SaveGenerator(address=52);
+                        }
+                        { // Node 50 - Parent nodes: 15
+                            return r1;
+                        }
 label_52:
+                        { // Node 52 - Child nodes: 58 135 - Parent nodes: 15
+                            ResumeGenerator(result_out_reg=1, return_bool_out_reg=2);
+                            JumpCondition(target_address=135)r2 // Negative variant: !r2;
+                        }
+                        { // Node 58 - Child nodes: 69 71 - Parent nodes: 52
+                            r2 = r4.gen;
+                            r2 = r2.bind(r3)();
+                            SaveGenerator(address=71);
+                        }
+                        { // Node 69 - Parent nodes: 58
+                            return r2;
+                        }
+label_71:
+                        { // Node 71 - Child nodes: 77 132 - Parent nodes: 58
+                            ResumeGenerator(result_out_reg=2, return_bool_out_reg=5);
+                            JumpCondition(target_address=132)r5 // Negative variant: !r5;
+                        }
+                        { // Node 77 - Child nodes: 88 107 - Parent nodes: 71
+                            r5 = 'a';
+                            r5 = r7 * r5;
+                            JumpCondition(target_address=107)!r5 // Negative variant: r5;
+                        }
+label_88:
+                        { // Node 88 - (Cycling point) - Child nodes: 107 88 - Parent nodes: 77 88
+                            r8 = r4.console;
+                            r7 = r8.log;
+                            r7 = r7.bind(r8)(r6);
+                            JumpCondition(target_address=88)r5 // Negative variant: !r5;
+                        }
+label_107:
+                        { // Node 107 - Parent nodes: 88 77
+                            r6 = r4.console;
+                            r5 = r6.log;
+                            r4 = r4.xy;
+                            r4 = r5.bind(r6)(r4);
+                            return r3;
+                        }
+label_132:
+                        { // Node 132 - Parent nodes: 71
+                            return r2;
+                        }
+label_135:
+                        { // Node 135 - Parent nodes: 52
+                            return r1;
+                        }
+label_138:
+                        { // Node 138 - Parent nodes: 0
+                            return r0;
+                        }
+                    };
+                    return r0;
+                }
+            };
+            r0 = this;
+            r0 = r2.bind(r4)(r1, r0, r3);
+            return r0;
+        }
+    };
+    r0 = global;
+    r0['testx'] = r2;
+    r2 = function* () { // Original name: gen, environment: r1
+        { // Node 0
+            r0 = function* () { // Original name: ?anon_0_gen, environment: r0
+                { // Node 0 - Child nodes: 51 296
+                    StartGenerator();
+                    r3 = global;
+                    r14 = '0°°0';
+                    r13 = 5.9;
+                    r12 = 'truc';
+                    r2 = undefined;
+                    r11 = 'Hello! Exception handling';
+                    r9 = 'Bon-jour : ';
+                    r8 = 340000;
+                    r7 = 6;
+                    r6 = undefined;
+                    ResumeGenerator(result_out_reg=0, return_bool_out_reg=1);
+                    JumpCondition(target_address=296)r1 // Negative variant: !r1;
+                }
+                { // Node 51 - Child nodes: 56 58 - Parent nodes: 0
+                    r1 = 42;
+                    SaveGenerator(address=58);
+                }
+                { // Node 56 - Parent nodes: 51
+                    return r1;
+                }
+label_58:
+                { // Node 58 - Child nodes: 67 293 - Parent nodes: 51
+                    ResumeGenerator(result_out_reg=1, return_bool_out_reg=4);
+                    JumpCondition(target_address=293)r4 // Negative variant: !r4;
+                }
+try_start0:
+try_start1:
+                { // Node 67 - Child nodes: 85 - Parent nodes: 58 - EH handlers: 87 187
+                    r4 = r3.gen;
+                    r5 = r4.bind(r2)();
+                    r4 = r5.next;
+                    r4 = r4.bind(r5)();
+                }
+try_end0:
+                { // Node 85 - Child nodes: 185 - Parent nodes: 67
+                    JumpCondition(target_address=185)true // Negative variant: false;
+                }
+catch_target0:
+                { // Node 87 - Child nodes: 124 185 - EH anchors: 67
+                    CatchBlockStart(arg_register=4);
+                    r4 = r3.z;
+                    r10 = 4;
+                    r5 = 'e';
+                    r10 = r10 + r5;
+                    r15 = 160274584;
+                    r5 = 'dd';
+                    r5 = r15 + r5;
+                    JumpCondition(target_address=185)!(r4 < r13) // Negative variant: r4 < r13;
+                }
+label_124:
+                { // Node 124 - (Cycling point) - Child nodes: 127 143 - Parent nodes: 87 159
+                    JumpCondition(target_address=143)r5 // Negative variant: !r5;
+                }
+                { // Node 127 - Child nodes: 141 185 - Parent nodes: 124
+                    r4 = r3.print;
+                    r4 = r4.bind(r2)(r11);
+                    JumpCondition(target_address=185)r10 // Negative variant: !r10;
+                }
+                { // Node 141 - Child nodes: 159 - Parent nodes: 127
+                    JumpCondition(target_address=159)true // Negative variant: false;
+                }
+label_143:
+                { // Node 143 - Child nodes: 159 - Parent nodes: 124
+                    r15 = r3.console;
+                    r4 = r15.log;
+                    r4 = r4.bind(r15)(r12);
+                }
+label_159:
+                { // Node 159 - Child nodes: 185 124 - Parent nodes: 143 141 - EH handlers: 187
+                    r4 = r3.z;
+                    r4 = r4 * r14;
+                    r3['z'] = r4;
+                    r4 = r3.z;
+                    JumpCondition(target_address=124)r4 < r13 // Negative variant: !(r4 < r13);
+                }
+try_end1:
+label_185:
+                { // Node 185 - Child nodes: 290 - Parent nodes: 159 85 87 127
+                    JumpCondition(target_address=290)true // Negative variant: false;
+                }
+catch_target1:
+                { // Node 187 - Child nodes: 189 - EH anchors: 67 159
+                    CatchBlockStart(arg_register=6);
+                }
+try_start2:
+                { // Node 189 - Child nodes: 226 271 - Parent nodes: 187 - EH handlers: 273
+                    r5 = 'E';
+                    r4 = 0;
+                    r5 = r5 + r4;
+                    r10 = 432;
+                    r4 = 'dçdàçD°D+D';
+                    r10 = r10 * r4;
+                    r4 = 478;
+                    r4 = r10 + r4;
+                    JumpCondition(target_address=271)!r4 // Negative variant: r4;
+                }
+label_226:
+                { // Node 226 - (Cycling point) - Child nodes: 271 226 - Parent nodes: 189 226 - EH handlers: 273
+                    r12 = r3.console;
+                    r11 = r12.log;
+                    r4 = r6;
+                    r10 = r9 + r4;
+                    r4 = r4 * r8;
+                    r4 = r4 + r7;
+                    r4 = r11.bind(r12)(r10, r4);
+                    r4 = r3.NaN;
+                    r4 = r5 + r4;
+                    JumpCondition(target_address=226)r4 // Negative variant: !r4;
+                }
+try_end2:
+label_271:
+                { // Node 271 - Child nodes: 290 - Parent nodes: 226 189
+                    JumpCondition(target_address=290)true // Negative variant: false;
+                }
+catch_target2:
+                { // Node 273 - Child nodes: 290 - EH anchors: 189 226
+                    CatchBlockStart(arg_register=4);
+                    r4 = r3.alert;
+                    r3 = 'AAAAAAAA';
+                    r3 = r4.bind(r2)(r3);
+                }
+label_290:
+                { // Node 290 - Parent nodes: 273 185 271
+                    return r2;
+                }
+label_293:
+                { // Node 293 - Parent nodes: 58
+                    return r1;
+                }
+label_296:
+                { // Node 296 - Parent nodes: 0
+                    return r0;
+                }
+            };
+            return r0;
+        }
+    };
+    r0['gen'] = r2;
+    r1 = function() { // Original name: ze, environment: r1
+        { // Node 0 - Child nodes: 24 30
+            r0 = undefined;
+            r1 = global;
+            r4 = r1.Math;
+            r2 = r4.random;
+            r2 = r2.bind(r4)();
+            JumpCondition(target_address=30)r2 // Negative variant: !r2;
+        }
+        { // Node 24 - Child nodes: 52 - Parent nodes: 0
+            var _closure1_slot0 = r0;
+            JumpCondition(target_address=52)true // Negative variant: false;
+        }
+label_30:
+        { // Node 30 - Child nodes: 52 - Parent nodes: 0
+            r2 = function() { // Original name: zb, environment: r3
+                { // Node 0 - Child nodes: 20 33
+                    r0 = global;
+                    r1 = r0.Date;
+                    r0 = r1.now;
+                    r0 = r0.bind(r1)();
+                    JumpCondition(target_address=33)!r0 // Negative variant: r0;
+                }
+                { // Node 20 - Child nodes: 33 - Parent nodes: 0
+                    r1 = _closure1_slot0;
+                    r0 = undefined;
+                    r0 = r1.bind(r0)();
+                }
+label_33:
+                { // Node 33 - Parent nodes: 20 0
+                    r0 = undefined;
+                    return r0;
+                }
+            };
+            _closure1_slot0 = r2;
+            r2 = r2.bind(r0)();
+            r1 = r1.ze;
+            r1 = r1.bind(r0)();
+        }
+label_52:
+        { // Node 52 - Parent nodes: 30 24
+            return r0;
+        }
+    };
+    r0['ze'] = r1;
+    r2 = r0.window;
+    r1 = r0.ze;
+    r2['onload'] = r1;
+    r1 = r0.ze;
+    r4 = undefined;
+    r1 = r1.bind(r4)();
+    r1 = /dkooDD JPOD D09D\n\\  @ .\r\n\t@ \x00 D+D  /gmi;
+    r0['test2'] = r1;
+    r3 = r0.console;
+    r2 = r3.log;
+    r6 = r0.test2;
+    r5 = r6.exec;
+    r1 = 'bonjour';
+    r1 = r5.bind(r6)(r1);
+    r1 = r2.bind(r3)(r1);
+    r5 = r0.console;
+    r3 = r5.log;
+    r1 = r0.gen;
+    r2 = r1.bind(r4)();
+    r1 = r2.next;
+    r2 = r1.bind(r2)();
+    r1 = 'a';
+    r1 = r3.bind(r5)(r1, r2);
+    r3 = r0.console;
+    r2 = r3.log;
+    r1 = r0.testx;
+    r5 = 7.3;
+    r0 = 'le';
+    r0 = r5 + r0;
+    r1 = r1.bind(r4)(r0);
+    r0 = r1.next;
+    r1 = r0.bind(r1)();
+    r0 = 'b';
+    r0 = r2.bind(r3)(r0, r1);
     return r0;
-};
-r0['ze'] = r1;
-r2 = r0.window;
-r1 = r0.ze;
-r2['onload'] = r1;
-r1 = r0.ze;
-r4 = undefined;
-r1 = r1.bind(r4)();
-r1 = /dkooDD JPOD D09D\\n\\\\  @ .\\r\\n\\t@ \\x00 D+D  /gmi;
-r0['test2'] = r1;
-r3 = r0.console;
-r2 = r3.log;
-r6 = r0.test2;
-r5 = r6.exec;
-r1 = 'bonjour';
-r1 = r5.bind(r6)(r1);
-r1 = r2.bind(r3)(r1);
-r5 = r0.console;
-r3 = r5.log;
-r1 = r0.gen;
-r2 = r1.bind(r4)();
-r1 = r2.next;
-r2 = r1.bind(r2)();
-r1 = 'a';
-r1 = r3.bind(r5)(r1, r2);
-r3 = r0.console;
-r2 = r3.log;
-r1 = r0.testx;
-r5 = 7.3;
-r0 = 'le';
-r0 = r5 + r0;
-r1 = r1.bind(r4)(r0);
-r0 = r1.next;
-r1 = r0.bind(r1)();
-r0 = 'b';
-r0 = r2.bind(r3)(r0, r1);
-return r0;
+}
 
 
 
