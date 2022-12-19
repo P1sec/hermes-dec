@@ -1,4 +1,6 @@
-This is a work-in-progress decoder/disassembler/decompiler for the .HBC (Hermes JavaScript bytecode) files, the Hermes VM being a C++-written JavaScript virtual machine used in various React Native-based applications, processing JavaScript files serialized in a binary format.
+`hermes-dec` is a reverse-engineering tool which can be used for disassembling and decompiling React Native files compiled into the Hermes VM bytecode (HBC) format.
+
+For a wider presentation of its purpose, please see our [presentation blog post](https://labs.p1sec.com/?p=2070).
 
 ## Background
 
@@ -29,4 +31,45 @@ Certain internal development utilities may however require to install `libclang`
 
 ```
 sudo apt install python3-clang-12
+```
+
+## Usage
+
+You can download the tool using the following command on Linux:
+
+```
+$ git clone git@github.com:P1sec/hermes-dec.git
+$ cd hermes-dec/
+```
+
+For an Android application, you should extract the Hermes bundle file from the .APK file through using your favorite unzipping tool (an .APK file is a renamed .ZIP archive):
+
+```
+$ 7z x my_application.apk
+$ cd my_application
+```
+
+And check the type of the `assets/index.android.bundle` React Native bundle file which, in the case of a React Native-based application, should be either a plain-text minified JavaScript bundle file or an Hermes bytecode file:
+
+```
+$ file assets/index.android.bundle
+assets/index.android.bundle: Hermes JavaScript bytecode, version 84
+```
+
+If the concerned file is indeed an Hermes JavaScript bytecode file, you may then decode most of its file headers using the following utility (which output may not be stable over time):
+
+```
+~/hermes-dec/parsers/hbc_file_parser.py assets/index.android.bundle
+```
+
+You may then disassemble the contents of the React Native bytecode file to the `/tmp/my_output_file.hasm` output file using the following command (leave out the second parameter in order to send the disassembled content to the standard output):
+
+```
+~/hermes-dec/disassembly/hbc_disassembler.py assets/index.android.bundle /tmp/my_output_file.hasm
+```
+
+And perform the decompilation to pseudo-code (with limits regarding valid JavaScript) using the following command:
+
+```
+~/hermes-dec/decompiler/hbc_decompiler.py assets/index.android.bundle /tmp/my_output_file.js
 ```
