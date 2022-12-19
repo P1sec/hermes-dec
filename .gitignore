@@ -3,6 +3,8 @@
 __pycache__/
 config.py
 build/
+notes/
+tests/*real*
 .~lock.*
 *.glade#
 *~
