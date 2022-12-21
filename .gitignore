@@ -5,6 +5,7 @@ config.py
 build/
 notes/
 tests/*real*
+tests/assets/*di*
 .~lock.*
 *.glade#
 *~
