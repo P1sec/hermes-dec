@@ -73,3 +73,9 @@ And perform the decompilation to pseudo-code (which is not valid JavaScript yet 
 ```
 ~/hermes-dec/decompiler/hbc_decompiler.py assets/index.android.bundle /tmp/my_output_file.js
 ```
+
+## Extra documentation
+
+You can find auto-generated documentation for the Hermes VM opcodes [here](https://p1sec.github.io/hermes-dec/opcodes_table.html).
+
+This is an useful tool to understand the generated assembly code.

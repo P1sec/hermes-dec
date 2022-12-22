@@ -301,6 +301,9 @@ out_source = '''<!DOCTYPE html>
         </style>
     </head>
     <body>
+        <h1>Opcodes of the Hermes virtual machine</h1>
+        <p>With the opcode byte value indicated respective to each stable version of the React Native Hermes VM bytecode format, as well as the auto-generated documentation from the "BytecodeList.def" file from the Hermes VM source tree.</p>
+        <p>This list of opcodes is used by the <a href="https://github.com/P1sec/hermes-dec" target="_blank">hermes-dec</a> open-source reverse engineering project.</p>
         <table>
             <thead>
                 <tr>
