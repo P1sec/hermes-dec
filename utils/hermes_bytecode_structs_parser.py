@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+    #!/usr/bin/python3
 #-*- encoding: Utf-8 -*-
 from re import search, match, findall, sub, finditer, MULTILINE, DOTALL
 from typing import List, Dict, Set, Sequence, Union, Optional, Any
@@ -139,7 +139,7 @@ _name_to_instruction : Dict[str, Instruction] = {v.name: v for v in _instruction
 ''' % ',\n    '.join(repr(string)
     for string in builtin_function_names)
 
-    with open(OUTPUT_FILE_NAME, 'w') as fd:
+    with open(OUTPUT_FILE_NAME, 'w', encoding='utf-8') as fd:
         fd.write(out_source)
 
 

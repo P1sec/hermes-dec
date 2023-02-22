@@ -346,7 +346,7 @@ out_source += '''    </body>
 </html>
 '''
 
-with open(OUTPUT_FILE_NAME, 'w') as file_handle:
+with open(OUTPUT_FILE_NAME, 'w', encoding='utf-8') as file_handle:
     
     file_handle.write(out_source)
 

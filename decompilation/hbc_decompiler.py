@@ -78,7 +78,7 @@ if __name__ == '__main__':
     
     if state.output_file:
         stdout = sys.stdout
-        with open(state.output_file, 'w') as sys.stdout:
+        with open(state.output_file, 'w', encoding='utf-8') as sys.stdout:
             do_decompilation(state)
         sys.stdout = stdout
         
@@ -86,6 +86,7 @@ if __name__ == '__main__':
         print('[+] Decompiled output wrote to "%s"' % state.output_file)
         print()
     else:
+        sys.stdout.reconfigure(encoding='utf-8')
         do_decompilation(state)
 
     

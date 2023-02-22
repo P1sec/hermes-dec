@@ -118,7 +118,7 @@ if __name__ == '__main__':
 
     if args.output_file:
         stdout = sys.stdout
-        with open(args.output_file, 'w') as sys.stdout:
+        with open(args.output_file, 'w', encoding='utf-8') as sys.stdout:
             do_disassemble(args.input_file)
         sys.stdout = stdout
     
@@ -127,5 +127,6 @@ if __name__ == '__main__':
         print()
     
     else:
+        sys.stdout.reconfigure(encoding='utf-8')
         do_disassemble(args.input_file)
         
