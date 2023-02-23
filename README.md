@@ -71,7 +71,7 @@ You may then disassemble the contents of the React Native bytecode file to the `
 And perform the decompilation to pseudo-code (which is not valid JavaScript yet as it does not retranscribe loop/conditional structures) using the following command:
 
 ```
-~/hermes-dec/decompiler/hbc_decompiler.py assets/index.android.bundle /tmp/my_output_file.js
+~/hermes-dec/decompilation/hbc_decompiler.py assets/index.android.bundle /tmp/my_output_file.js
 ```
 
 ## Extra documentation
