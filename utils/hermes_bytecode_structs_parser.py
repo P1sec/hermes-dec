@@ -1,17 +1,22 @@
-    #!/usr/bin/python3
+#!/usr/bin/python3
 #-*- encoding: Utf-8 -*-
 from re import search, match, findall, sub, finditer, MULTILINE, DOTALL
 from typing import List, Dict, Set, Sequence, Union, Optional, Any
 from os.path import dirname, realpath
 from dataclasses import dataclass
+from os import listdir
 
 TOOLS_DIR = dirname(realpath(__file__))
 ROOT_DIR = realpath(TOOLS_DIR + '/..')
 PARSERS_DIR = realpath(ROOT_DIR + '/parsers')
 
-GIT_TAGS = 'v0.0.1 v0.0.2 v0.0.3 v0.1.0 v0.1.1 v0.2.1 v0.3.0 v0.4.0 v0.4.1 v0.4.3 v0.4.4 v0.5.0 v0.5.1 v0.5.3 v0.6.0 v0.7.0 v0.7.1 v0.7.2 v0.8.0 v0.8.1 v0.9.0 v0.10.0 v0.11.0 v0.12.0'.split(' ')
+git_tags = sorted(
+    file_name.split('-')[1].split('.def')[0]
+    for file_name in listdir(PARSERS_DIR + '/original_function_builtins_c_src/')
+    if file_name.endswith('.def')
+)
 
-for git_tag in GIT_TAGS:
+for git_tag in git_tags:
 
     INPUT_FILE_NAME = PARSERS_DIR + '/original_hermes_bytecode_c_src/BytecodeList-%s.def' % git_tag
 

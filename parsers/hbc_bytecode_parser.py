@@ -4,7 +4,7 @@ from typing import List, Dict, Set, Sequence, Union, Optional, Any
 from io import BytesIO
 
 # Imports relative to the current directory:
-from hbc_opcodes import hbc51, hbc59, hbc60, hbc62, hbc71, hbc74, hbc76, hbc83, hbc84, hbc89
+from hbc_opcodes import hbc51, hbc59, hbc60, hbc62, hbc71, hbc74, hbc76, hbc83, hbc84, hbc85, hbc86, hbc87, hbc88, hbc89
 from serialized_literal_parser import unpack_slp_array, SLPArray, SLPValue, TagType
 from hbc_opcodes.def_classes import OperandMeaning, Instruction
 
@@ -90,6 +90,10 @@ def get_parser(bytecode_version : int) -> 'module':
         76: hbc76,
         83: hbc83,
         84: hbc84,
+        85: hbc85,
+        86: hbc86,
+        87: hbc87,
+        88: hbc88,
         89: hbc89
     }
     
