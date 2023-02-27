@@ -105,9 +105,9 @@ def get_parser(bytecode_version : int) -> 'module':
             'is not supported.')
 
     elif bytecode_version not in parser_module_tbl:
-        warning('Bytecode version %d corresponds to a development or ' +
+        warning(('Bytecode version %d corresponds to a development or ' +
             'recent version of the Hermes bytecode and is not ' +
-            'formally supported by the current tool.' % bytecode_version)
+            'formally supported by the current tool.') % bytecode_version)
 
     for min_version in reversed(sorted(parser_module_tbl)):
         if bytecode_version >= min_version:
