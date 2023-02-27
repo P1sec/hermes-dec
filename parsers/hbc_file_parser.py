@@ -9,7 +9,7 @@ from enum import IntEnum, IntFlag
 from hashlib import sha1
 
 # The following imports are made from the current directory:
-from hbc_bytecode_parser import parse_hbc_bytecode, ParsedInstruction
+from hbc_bytecode_parser import parse_hbc_bytecode, get_parser, ParsedInstruction
 from regexp_bytecode_parser import decompile_regex, parse_regex
 from pretty_print import pretty_print_structure
 from debug_info_parser import print_debug_info
@@ -86,6 +86,7 @@ class HBCReader:
     string_storage : BytesIO
     strings : List[str]
     
+    parser_module : 'module'
     file_buffer : BufferedReader
     
     # The following bytes can be sliced and decoded to "SLPArray"
@@ -446,8 +447,7 @@ class HBCReader:
             raise ValueError('This file does not have the magic header for a Hermes bytecode file.')
         
         version = int.from_bytes(self.file_buffer.read(4), 'little')
-        if version > LATEST_BYTECODE_VERSION:
-            warn('Note: Bytecode version %d is currently not formally supported by this application.' % version)
+        self.parser_module = get_parser(version)
         
         # Check the SHA-1 footer located at the end of the .HBC
         # bytecode file (the single-field BytecodeFileFooter structure)

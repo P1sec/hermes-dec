@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 #-*- encoding: Utf-8 -*-
 from typing import List, Dict, Set, Sequence, Union, Optional, Any
+from logging import warning
 from io import BytesIO
 
 # Imports relative to the current directory:
@@ -71,7 +72,7 @@ class ParsedInstruction:
             )
         elif self.inst.name in ('CallBuiltin', 'CallBuiltinLong', 'GetBuiltinClosure'):
             builtin_number = self.arg2
-            builtin_functions = get_builtin_functions(self.hbc_reader.header.version)
+            builtin_functions = get_builtin_functions(self.hbc_reader.parser_module)
             comment += '  # Built-in function: [#%d %s]' % (builtin_number, builtin_functions[builtin_number])
         elif self.inst.name == 'SwitchImm':
             comment += '  # Jump table: [%s]' % ', '.join('%08x' % value for value in
@@ -97,6 +98,15 @@ def get_parser(bytecode_version : int) -> 'module':
         89: hbc89
     }
     
+    if bytecode_version < 51:
+        warning('This file uses an ancient Hermes bytecode format, which ' +
+            'is not supported.')
+
+    elif bytecode_version not in parser_module_tbl:
+        warning('Bytecode version %d corresponds to a development or ' +
+            'recent version of the Hermes bytecode and is not ' +
+            'formally supported by the current tool.' % bytecode_version)
+
     for min_version in reversed(sorted(parser_module_tbl)):
         if bytecode_version >= min_version:
             parser_module = parser_module_tbl[min_version]
@@ -104,15 +114,13 @@ def get_parser(bytecode_version : int) -> 'module':
     
     return parser_module
 
-def get_builtin_functions(bytecode_version : int) -> List[str]:
+def get_builtin_functions(parser_module : 'module') -> List[str]:
     
-    return get_parser(bytecode_version)._builtin_function_names
+    return parser_module._builtin_function_names
 
 def parse_hbc_bytecode(buf : BytesIO, file_offset : int, bytecode_version : int, hbc_reader: 'HBCReader') -> List[Instruction]:
     
     output_instructions : List['Instruction'] = []
-    
-    parser_module = get_parser(bytecode_version)
     
     while True:
         original_pos = buf.tell()
@@ -122,7 +130,7 @@ def parse_hbc_bytecode(buf : BytesIO, file_offset : int, bytecode_version : int,
             break
         opcode = opcode[0]
         
-        inst = parser_module._opcode_to_instruction.get(opcode)
+        inst = hbc_reader.parser_module._opcode_to_instruction.get(opcode)
         if not inst:
             raise NotImplementedError('Opcode "0x%02x" is currently not implemented within hermes-dec.' % opcode)
             

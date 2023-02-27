@@ -311,7 +311,7 @@ class FunctionTableIndex(Token):
     def _name_if_any(self) -> Optional[str]:
         
         if self.is_builtin:
-            builtin_functions = get_builtin_functions(self.state.hbc_reader.header.version)
+            builtin_functions = get_builtin_functions(self.state.hbc_reader.parser_module)
             return builtin_functions[self.function_id]
         
         else:
