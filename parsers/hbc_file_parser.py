@@ -110,6 +110,8 @@ class HBCReader:
     debug_file_regions : List[object]
     sources_data_storage : BytesIO
     lexical_data_storage : BytesIO
+    textified_data_storage : BytesIO
+    string_table_storage : BytesIO
 
     def get_header_reader(self, bytecode_version : int = LATEST_BYTECODE_VERSION) -> type:
         
@@ -380,13 +382,30 @@ class HBCReader:
         
         class CTypesReader(LittleEndianStructure):
             _pack_ = True
-            _fields_ = [
+        
+        if self.header.version >= 91:
+            
+            fields = [
+                ('filename_count', c_uint32),
+                ('filename_storage_size', c_uint32),
+                ('file_region_count', c_uint32),
+                ('lexical_data_offset', c_uint32),
+                ('textified_data_offset', c_uint32),
+                ('string_table_offset', c_uint32),
+                ('debug_data_size', c_uint32)
+            ]
+        
+        else:
+        
+            fields = [
                 ('filename_count', c_uint32),
                 ('filename_storage_size', c_uint32),
                 ('file_region_count', c_uint32),
                 ('lexical_data_offset', c_uint32),
                 ('debug_data_size', c_uint32)
             ]
+        
+        CTypesReader._fields_ = fields
         
         return CTypesReader
     
@@ -418,10 +437,21 @@ class HBCReader:
         
         class CTypesReader(LittleEndianStructure):
             _pack_ = True
-            _fields_= [
+        
+        if self.header.version >= 91:
+            fields = [
+                ('source_locations', c_uint32),
+                ('lexical_data', c_uint32),
+                ('textified_callees', c_uint32)
+            ]
+        
+        else:
+            fields = [
                 ('source_locations', c_uint32),
                 ('lexical_data', c_uint32)
             ]
+        
+        CTypesReader._fields_ = fields
         
         return CTypesReader
     
@@ -694,8 +724,12 @@ class HBCReader:
         
         self.sources_data_storage = BytesIO(self.file_buffer.read(self.debug_info_header.debug_data_size - (self.debug_info_header.debug_data_size - self.debug_info_header.lexical_data_offset)))
         self.lexical_data_storage = BytesIO(self.file_buffer.read(self.debug_info_header.debug_data_size - self.debug_info_header.lexical_data_offset))
+        if self.header.version >= 91:
+            self.textified_data_storage = BytesIO(self.file_buffer.read(self.debug_info_header.debug_data_size - (self.debug_info_header.debug_data_size - self.debug_info_header.textified_data_offset)))
+            self.string_table_storage = BytesIO(self.file_buffer.read(self.debug_info_header.debug_data_size - (self.debug_info_header.debug_data_size - self.debug_info_header.string_table_offset)))
         
-        # WIP ..
+        # TODO: Improve debug information parsing with recent versions
+        # of Hermes (bytecode versions >= 91)?
 
     def read_whole_file(self, file_buffer : BufferedReader):
         
@@ -743,7 +777,7 @@ class HBCReader:
         
         self.read_debug_info() # Defines self.debug_info_header, self.debug_string_table, ...
         
-        pass # WIP .. Read the bytecode here?
+        pass
 
 if __name__ == '__main__':
     
@@ -868,4 +902,7 @@ if __name__ == '__main__':
 
         print('  => Sources data:', hbc_reader.sources_data_storage.getvalue().hex())
         print('  => Lexical raw data:', hbc_reader.lexical_data_storage.getvalue().hex())
+        if hbc_reader.header.version >= 91:
+            print('  => Textified data:', hbc_reader.textified_data_storage.getvalue().hex())
+            print('  => Raw variables and callees data:', hbc_reader.string_table_storage.get_value().hex())
 

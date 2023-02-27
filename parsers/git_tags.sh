@@ -36,6 +36,11 @@ GIT_TAGS=(
     '41752c6' # Bytecode version 87 - Jul 9, 2022
     '2a55135' # Bytecode version 88 - Jul 9, 2022
     'v0.12.0' # Bytecode version 89 - Bumped Jul 14, 2022, stable release Aug 24, 2022
+    '0763eee' # Bytecode version 90 - Oct 7, 2022
+    '4985960' # Bytecode version 91 - Dec 18, 2022
+    # Bytecode version 92 contains a change that was reverted from the main source
+    # tree after three days (Feb 14-17, 2023).
+    # Bytecode version 93 is similar to bytecode version 91.
 )
 
 declare -A TAG_TO_VERSION=(
@@ -43,4 +48,6 @@ declare -A TAG_TO_VERSION=(
     [b823515]='hbc85'
     [41752c6]='hbc86'
     [2a55135]='hbc87'
+    [0763eee]='hbc90'
+    [4985960]='hbc91'
 )
