@@ -42,7 +42,6 @@ class ParsedInstruction:
                         self.hbc_reader.strings[operand_value],
                         self.hbc_reader.string_kinds[operand_value].name
                     )
-                    # WIP ..
                 elif operand.operand_meaning == OperandMeaning.bigint_id:
                     comment += '  # BigInt: %s' % (
                         self.hbc_reader.bigint_values[operand_value]

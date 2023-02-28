@@ -90,7 +90,7 @@ class HBCReader:
     file_buffer : BufferedReader
     
     # The following bytes can be sliced and decoded to "SLPArray"
-    # objects using the "unpack_slp_array" object of
+    # objects using the "unpack_slp_array" function of
     # "serialized_literal_parser.py":
     arrays : bytes
     object_keys : bytes

@@ -44,10 +44,10 @@ GIT_TAGS=(
 )
 
 declare -A TAG_TO_VERSION=(
-    [b74eb2d]='hbc84'
-    [b823515]='hbc85'
-    [41752c6]='hbc86'
-    [2a55135]='hbc87'
+    [b74eb2d]='hbc85'
+    [b823515]='hbc86'
+    [41752c6]='hbc87'
+    [2a55135]='hbc88'
     [0763eee]='hbc90'
     [4985960]='hbc91'
 )
