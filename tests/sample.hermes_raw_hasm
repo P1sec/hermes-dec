@@ -1,8 +1,9 @@
 hbcdump> Bytecode File Information:
-  Bytecode version number: 84
+  Bytecode version number: 93
   Source hash: a692192bdc8ee6f7b2b9918faf18a64db39587c8
   Function count: 8
   String count: 34
+  BigInt count: 0
   String Kind Entry count: 2
   RegExp count: 1
   Segment ID: 0
@@ -54,7 +55,7 @@ Function Source Table:
   Function ID 5 -> s0
 
 Function<global>0(1 params, 16 registers, 0 symbols):
-Offset in debug table: source 0x0000, lexical 0x0000
+Offset in debug table: source 0x0000, lexical 0x0000, textified callees 0x0000
 [@ 0] DeclareGlobalVar 17<UInt32>
 [@ 5] DeclareGlobalVar 19<UInt32>
 [@ 10] DeclareGlobalVar 25<UInt32>
@@ -103,12 +104,12 @@ Offset in debug table: source 0x0000, lexical 0x0000
 [@ 233] Ret 0<Reg8>
 
 NCFunction<testx>1(2 params, 15 registers, 0 symbols):
-Offset in debug table: source 0x005c, lexical 0x0000
+Offset in debug table: source 0x005c, lexical 0x0000, textified callees 0x0000
 [@ 0] LoadConstUndefined 4<Reg8>
 [@ 2] LoadConstUndefined 0<Reg8>
 [@ 4] ReifyArguments 0<Reg8>
 [@ 6] Mov 3<Reg8>, 0<Reg8>
-[@ 9] GetBuiltinClosure 2<Reg8>, 53<UInt8>
+[@ 9] GetBuiltinClosure 2<Reg8>, 51<UInt8>
 [@ 12] CreateEnvironment 0<Reg8>
 [@ 14] CreateGeneratorClosure 1<Reg8>, 0<Reg8>, 2<UInt16>
 [@ 19] LoadThisNS 0<Reg8>
@@ -121,7 +122,7 @@ NCFunction<?anon_0_testx>2(2 params, 1 registers, 0 symbols):
 [@ 7] Ret 0<Reg8>
 
 Function<?anon_0_?anon_0_testx>3(2 params, 16 registers, 0 symbols):
-Offset in debug table: source 0x0063, lexical 0x0000
+Offset in debug table: source 0x0063, lexical 0x0000, textified callees 0x0000
 [@ 0] StartGenerator
 [@ 1] ResumeGenerator 0<Reg8>, 1<Reg8>
 [@ 4] JmpTrue 117<Addr8>, 1<Reg8>
@@ -167,7 +168,7 @@ NCFunction<gen>4(1 params, 1 registers, 0 symbols):
 [@ 7] Ret 0<Reg8>
 
 Function<?anon_0_gen>5(1 params, 17 registers, 0 symbols):
-Offset in debug table: source 0x009a, lexical 0x0000
+Offset in debug table: source 0x009a, lexical 0x0000, textified callees 0x0000
 [@ 0] StartGenerator
 [@ 1] LoadConstUndefined 2<Reg8>
 [@ 3] LoadConstUndefined 3<Reg8>
@@ -227,9 +228,9 @@ Exception Handlers:
 2: start = 75, end = 149, target = 151
 
 Function<ze>6(1 params, 12 registers, 1 symbols):
-Offset in debug table: source 0x00dd, lexical 0x0000
-[@ 0] CreateEnvironment 3<Reg8>
-[@ 2] LoadConstUndefined 0<Reg8>
+Offset in debug table: source 0x00dd, lexical 0x0000, textified callees 0x0000
+[@ 0] LoadConstUndefined 0<Reg8>
+[@ 2] CreateEnvironment 3<Reg8>
 [@ 4] GetGlobalObject 1<Reg8>
 [@ 6] TryGetById 4<Reg8>, 1<Reg8>, 1<UInt8>, 30<UInt16>
 [@ 12] GetByIdShort 2<Reg8>, 4<Reg8>, 2<UInt8>, 22<UInt8>
@@ -245,7 +246,7 @@ Offset in debug table: source 0x00dd, lexical 0x0000
 [@ 52] Ret 0<Reg8>
 
 Function<zb>7(1 params, 9 registers, 0 symbols):
-Offset in debug table: source 0x00f3, lexical 0x0000
+Offset in debug table: source 0x00f3, lexical 0x0000, textified callees 0x0000
 [@ 0] GetGlobalObject 0<Reg8>
 [@ 2] TryGetById 1<Reg8>, 0<Reg8>, 1<UInt8>, 28<UInt16>
 [@ 8] GetByIdShort 0<Reg8>, 1<Reg8>, 2<UInt8>, 31<UInt8>
@@ -365,5 +366,12 @@ Debug source table:
 Debug lexical table:
   0x0000  lexical parent: none, variable count: 0
   0x0002  end of debug lexical table
+
+Textified callees table:
+  0x0000  entries: 0
+  0x0001  end of textified callees table
+
+Debug string table:
+  0x0000  end of debug string table
 
 hbcdump> 

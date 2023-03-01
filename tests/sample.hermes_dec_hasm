@@ -62,7 +62,7 @@ Bytecode listing:
 ==> 00000002: <LoadConstUndefined>: <Reg8: 0>
 ==> 00000004: <ReifyArguments>: <Reg8: 0>
 ==> 00000006: <Mov>: <Reg8: 3, Reg8: 0>
-==> 00000009: <GetBuiltinClosure>: <Reg8: 2, UInt8: 53>  # Built-in function: [#53 spawnAsync]
+==> 00000009: <GetBuiltinClosure>: <Reg8: 2, UInt8: 51>  # Built-in function: [#51 spawnAsync]
 ==> 0000000c: <CreateEnvironment>: <Reg8: 0>
 ==> 0000000e: <CreateGeneratorClosure>: <Reg8: 1, Reg8: 0, function_id: 2>  # Function: [#2 ?anon_0_testx of 9 bytes]: 2 params @ offset 0x00000429
 ==> 00000013: <LoadThisNS>: <Reg8: 0>
@@ -208,8 +208,8 @@ Bytecode listing:
 
 Bytecode listing:
 
-==> 00000000: <CreateEnvironment>: <Reg8: 3>
-==> 00000002: <LoadConstUndefined>: <Reg8: 0>
+==> 00000000: <LoadConstUndefined>: <Reg8: 0>
+==> 00000002: <CreateEnvironment>: <Reg8: 3>
 ==> 00000004: <GetGlobalObject>: <Reg8: 1>
 ==> 00000006: <TryGetById>: <Reg8: 4, Reg8: 1, UInt8: 1, string_id: 30>  # String: 'Math' (Identifier)
 ==> 0000000c: <GetByIdShort>: <Reg8: 2, Reg8: 4, UInt8: 2, string_id: 22>  # String: 'random' (Identifier)

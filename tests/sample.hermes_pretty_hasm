@@ -1,8 +1,9 @@
 hbcdump> Bytecode File Information:
-  Bytecode version number: 84
+  Bytecode version number: 93
   Source hash: a692192bdc8ee6f7b2b9918faf18a64db39587c8
   Function count: 8
   String count: 34
+  BigInt count: 0
   String Kind Entry count: 2
   RegExp count: 1
   Segment ID: 0
@@ -54,18 +55,18 @@ Function Source Table:
   Function ID 5 -> s0
 
 Function<global>0(1 params, 16 registers, 0 symbols):
-Offset in debug table: source 0x0000, lexical 0x0000
+Offset in debug table: source 0x0000, lexical 0x0000, textified callees 0x0000
 sample.js[7:1]
     DeclareGlobalVar  "testx"
     DeclareGlobalVar  "gen"
     DeclareGlobalVar  "ze"
     CreateEnvironment r1
-    CreateAsyncClosure r2, r1, 1
+    CreateAsyncClosure r2, r1, NCFunction<testx>1
     GetGlobalObject   r0
     PutById           r0, r2, 1, "testx"
-    CreateGeneratorClosure r2, r1, 4
+    CreateGeneratorClosure r2, r1, NCFunction<gen>4
     PutById           r0, r2, 2, "gen"
-    CreateClosure     r1, r1, 6
+    CreateClosure     r1, r1, Function<ze>6
     PutById           r0, r1, 3, "ze"
     TryGetById        r2, r0, 1, "window"
     GetByIdShort      r1, r0, 2, "ze"
@@ -104,7 +105,7 @@ sample.js[7:1]
     Ret               r0
 
 NCFunction<testx>1(2 params, 15 registers, 0 symbols):
-Offset in debug table: source 0x005c, lexical 0x0000
+Offset in debug table: source 0x005c, lexical 0x0000, textified callees 0x0000
 sample.js[7:1]
     LoadConstUndefined r4
     LoadConstUndefined r0
@@ -112,18 +113,18 @@ sample.js[7:1]
     Mov               r3, r0
     GetBuiltinClosure r2, "HermesBuiltin.spawnAsync"
     CreateEnvironment r0
-    CreateGeneratorClosure r1, r0, 2
+    CreateGeneratorClosure r1, r0, NCFunction<?anon_0_testx>2
     LoadThisNS        r0
     Call4             r0, r2, r4, r1, r0, r3
     Ret               r0
 
 NCFunction<?anon_0_testx>2(2 params, 1 registers, 0 symbols):
     CreateEnvironment r0
-    CreateGenerator   r0, r0, 3
+    CreateGenerator   r0, r0, Function<?anon_0_?anon_0_testx>3
     Ret               r0
 
 Function<?anon_0_?anon_0_testx>3(2 params, 16 registers, 0 symbols):
-Offset in debug table: source 0x0063, lexical 0x0000
+Offset in debug table: source 0x0063, lexical 0x0000, textified callees 0x0000
 sample.js[7:1]
     StartGenerator   
     ResumeGenerator   r0, r1
@@ -176,11 +177,11 @@ sample.js[13:16]
 
 NCFunction<gen>4(1 params, 1 registers, 0 symbols):
     CreateEnvironment r0
-    CreateGenerator   r0, r0, 5
+    CreateGenerator   r0, r0, Function<?anon_0_gen>5
     Ret               r0
 
 Function<?anon_0_gen>5(1 params, 17 registers, 0 symbols):
-Offset in debug table: source 0x009a, lexical 0x0000
+Offset in debug table: source 0x009a, lexical 0x0000, textified callees 0x0000
 sample.js[16:1]
     StartGenerator   
     LoadConstUndefined r2
@@ -265,10 +266,10 @@ Exception Handlers:
 2: start = L13, end = L8, target = L9
 
 Function<ze>6(1 params, 12 registers, 1 symbols):
-Offset in debug table: source 0x00dd, lexical 0x0000
+Offset in debug table: source 0x00dd, lexical 0x0000, textified callees 0x0000
 sample.js[39:1]
-    CreateEnvironment r3
     LoadConstUndefined r0
+    CreateEnvironment r3
     GetGlobalObject   r1
     TryGetById        r4, r1, 1, "Math"
     GetByIdShort      r2, r4, 2, "random"
@@ -278,7 +279,7 @@ sample.js[39:1]
     Jmp               L2
 L1:
 sample.js[41:19]
-    CreateClosure     r2, r3, 7
+    CreateClosure     r2, r3, Function<zb>7
     StoreToEnvironment r3, 0, r2
     Call1             r2, r2, r0
     GetByIdShort      r1, r1, 3, "ze"
@@ -288,7 +289,7 @@ sample.js[48:19]
     Ret               r0
 
 Function<zb>7(1 params, 9 registers, 0 symbols):
-Offset in debug table: source 0x00f3, lexical 0x0000
+Offset in debug table: source 0x00f3, lexical 0x0000, textified callees 0x0000
 sample.js[42:18]
     GetGlobalObject   r0
     TryGetById        r1, r0, 1, "Date"
@@ -411,5 +412,12 @@ Debug source table:
 Debug lexical table:
   0x0000  lexical parent: none, variable count: 0
   0x0002  end of debug lexical table
+
+Textified callees table:
+  0x0000  entries: 0
+  0x0001  end of textified callees table
+
+Debug string table:
+  0x0000  end of debug string table
 
 hbcdump> 

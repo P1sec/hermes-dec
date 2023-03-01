@@ -123,7 +123,7 @@ def get_opcodes_enum(bytecode_version : int):
     return Opcodes
 
 # The following structures have originally been generated
-# by the "../code_parsers/bytecode_structs_parser.py"
+# by the "../utils/bytecode_structs_parser.py"
 
 
 class GoalInsn(LittleEndianStructure):

@@ -96,7 +96,12 @@ def get_parser(bytecode_version : int) -> 'module':
         88: hbc88,
         89: hbc89,
         90: hbc90,
-        91: hbc91
+        91: hbc91,
+        # The changes introduced in Hermes bytecode version 92
+        # were reverted to the state of version 91 after a few
+        # days from their introduction in the Git tree, into a
+        # new version 93.
+        93: hbc91
     }
     
     if bytecode_version < 51:
