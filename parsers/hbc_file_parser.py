@@ -479,12 +479,16 @@ class HBCReader:
         version = int.from_bytes(self.file_buffer.read(4), 'little')
         self.parser_module = get_parser(version)
         
+        self.file_buffer.read(SHA1_NUM_BYTES) # Skip file hash
+        
+        file_size = int.from_bytes(self.file_buffer.read(4), 'little')
+        
         # Check the SHA-1 footer located at the end of the .HBC
         # bytecode file (the single-field BytecodeFileFooter structure)
         
         if version >= 75:
             self.file_buffer.seek(0)
-            file_data = self.file_buffer.read()
+            file_data = self.file_buffer.read(file_size)
             assert sha1(file_data[:-SHA1_NUM_BYTES]).digest() == file_data[-SHA1_NUM_BYTES:]
         
         # Decode the BytecodeFileHeader structure and
