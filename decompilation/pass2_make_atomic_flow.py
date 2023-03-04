@@ -91,7 +91,7 @@ class Pass2MakeAtomicFlow:
                 elif instruction.inst.name == 'BitXor':
                     lines.append(TS([LHRT(op1), AT(), RHRT(op2), RT(' ^ '), RHRT(op3)],
                         assembly = [instruction]))
-                # Note: It should be checker lather whether the implementation of
+                # Note: It should be checked later whether the implementation of
                 # parsing the "Call*" opcodes present below matches the difference
                 # between the function_header.frameSize and the latest frame
                 # register index across all version of the Hermes bytecode VM,
@@ -129,8 +129,8 @@ class Pass2MakeAtomicFlow:
                 elif instruction.inst.name in ('CallBuiltin', 'CallBuiltinLong'):
                     args = []
                     for register in reversed(range(
-                        function_header.frameSize - 6 - op3,
-                        function_header.frameSize - 6)):
+                        function_header.frameSize - 7 - (op3 - 1),
+                        function_header.frameSize - 7)):
                         args += [RHRT(register), RT(', ')]
                     lines.append(TS([LHRT(op1), AT(), FTI(op2, state, is_builtin = True), LPT(), *args[:-1], RPT()],
                         assembly = [instruction]))
