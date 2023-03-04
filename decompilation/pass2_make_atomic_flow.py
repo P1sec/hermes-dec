@@ -132,7 +132,7 @@ class Pass2MakeAtomicFlow:
                         function_header.frameSize - 6 - op3,
                         function_header.frameSize - 6)):
                         args += [RHRT(register), RT(', ')]
-                    lines.append(TS([LHRT(op1), AT(), FTI(op2, is_builtin = True), LPT(), *args[:-1], RPT()],
+                    lines.append(TS([LHRT(op1), AT(), FTI(op2, state, is_builtin = True), LPT(), *args[:-1], RPT()],
                         assembly = [instruction]))
                 elif instruction.inst.name == 'Catch':
                     lines.append(TS([CBS(op1)],
