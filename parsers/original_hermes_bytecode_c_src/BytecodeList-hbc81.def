@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Meta Platforms, Inc. and affiliates.
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -67,10 +67,6 @@ DEFINE_OPERAND_TYPE(Addr8, int8_t)
 DEFINE_OPERAND_TYPE(Addr32, int32_t)
 DEFINE_OPERAND_TYPE(Imm32, int32_t)
 DEFINE_OPERAND_TYPE(Double, double)
-
-/// Unreachable opcode for stubs and similar. This is first so that it has the
-/// value zero.
-DEFINE_OPCODE_0(Unreachable)
 
 /// Create an object from a static map of values, as for var={'a': 3}.
 /// Any non-constant elements can be set afterwards with PutOwnByInd.
@@ -193,12 +189,6 @@ DEFINE_OPCODE_3(BitXor, Reg8, Reg8, Reg8)
 
 /// Arg1 = Arg2 | Arg3 (JS bitwise OR)
 DEFINE_OPCODE_3(BitOr, Reg8, Reg8, Reg8)
-
-/// Arg1 = Arg2 + 1 (JS increment, skips number check)
-DEFINE_OPCODE_2(Inc, Reg8, Reg8)
-
-/// Arg1 = Arg2 - 1 (JS decrement, skips number check)
-DEFINE_OPCODE_2(Dec, Reg8, Reg8)
 
 /// Check whether Arg2 contains Arg3 in its prototype chain.
 /// Note that this is not the same as JS instanceof.
@@ -485,11 +475,6 @@ DEFINE_OPCODE_3(CallBuiltin, Reg8, UInt8, UInt8)
 /// thisArg is set to "undefined".
 DEFINE_OPCODE_3(CallBuiltinLong, Reg8, UInt8, UInt32)
 
-/// Get a closure from a builtin function.
-/// Arg1 is the destination of the return value.
-/// Arg2 is the builtin number.
-DEFINE_OPCODE_2(GetBuiltinClosure, Reg8, UInt8)
-
 ///
 ///!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -510,6 +495,9 @@ DEFINE_OPCODE_2(DirectEval, Reg8, Reg8)
 /// throw Arg1;
 DEFINE_OPCODE_1(Throw, Reg8)
 
+/// Throw ReferenceError if the operand is HermesValue::undefined
+DEFINE_OPCODE_1(ThrowIfUndefinedInst, Reg8)
+
 /// If Arg2 is Empty, throw ReferenceError, otherwise move it into Arg1.
 /// Arg1 is the destination of the return value
 /// Arg2 is the value to check
@@ -527,6 +515,9 @@ DEFINE_OPCODE_0(AsyncBreakCheck)
 /// all the overflowed profile points have index zero.
 DEFINE_OPCODE_1(ProfilePoint, UInt16)
 
+/// Unreachable opcode for stubs and similar.
+DEFINE_OPCODE_0(Unreachable)
+
 /// Create a closure.
 /// Arg1 is the register in which to store the closure.
 /// Arg2 is the current environment as loaded by GetEnvironment 0.
@@ -540,13 +531,6 @@ DEFINE_OPCODE_3(CreateClosureLongIndex, Reg8, Reg8, UInt32)
 /// Arg3 is index in the function table.
 DEFINE_OPCODE_3(CreateGeneratorClosure, Reg8, Reg8, UInt16)
 DEFINE_OPCODE_3(CreateGeneratorClosureLongIndex, Reg8, Reg8, UInt32)
-
-/// Create a closure for an AsyncFunction.
-/// Arg1 is the register in which to store the closure.
-/// Arg2 is the current environment as loaded by GetEnvironment 0.
-/// Arg3 is index in the function table.
-DEFINE_OPCODE_3(CreateAsyncClosure, Reg8, Reg8, UInt16)
-DEFINE_OPCODE_3(CreateAsyncClosureLongIndex, Reg8, Reg8, UInt32)
 
 /// Allocate an empty, uninitialized object (immediately before a constructor).
 /// Arg1 is the destination register.
@@ -777,39 +761,6 @@ DEFINE_JUMP_3(JEqual)
 DEFINE_JUMP_3(JNotEqual)
 DEFINE_JUMP_3(JStrictEqual)
 DEFINE_JUMP_3(JStrictNotEqual)
-
-#ifdef HERMES_RUN_WASM
-/// Arg1 = Arg2 + Arg3 (32-bit integer addition)
-DEFINE_OPCODE_3(Add32, Reg8, Reg8, Reg8)
-/// Arg1 = Arg2 - Arg3 (32-bit integer subtraction)
-DEFINE_OPCODE_3(Sub32, Reg8, Reg8, Reg8)
-/// Arg1 = Arg2 * Arg3 (32-bit integer multiplication)
-DEFINE_OPCODE_3(Mul32, Reg8, Reg8, Reg8)
-/// Arg1 = Arg2 / Arg3 (32-bit signed integer division)
-DEFINE_OPCODE_3(Divi32, Reg8, Reg8, Reg8)
-/// Arg1 = Arg2 / Arg3 (32-bit unsigned integer division)
-DEFINE_OPCODE_3(Divu32, Reg8, Reg8, Reg8)
-
-/// Arg1 = HEAP8[Arg3] (load signed 8-bit integer)
-DEFINE_OPCODE_3(Loadi8, Reg8, Reg8, Reg8)
-/// Arg1 = HEAPU8[Arg3] (load unsigned 8-bit integer)
-DEFINE_OPCODE_3(Loadu8, Reg8, Reg8, Reg8)
-/// Arg1 = HEAP16[Arg3 >> 1] (load signed 16-bit integer)
-DEFINE_OPCODE_3(Loadi16, Reg8, Reg8, Reg8)
-/// Arg1 = HEAPU16[Arg3 >> 1] (load unsigned 16-bit integer)
-DEFINE_OPCODE_3(Loadu16, Reg8, Reg8, Reg8)
-/// Arg1 = HEAP32[Arg3 >> 2] (load signed 32-bit integer)
-DEFINE_OPCODE_3(Loadi32, Reg8, Reg8, Reg8)
-/// Arg1 = HEAPU32[Arg3 >> 2] (load unsigned 32-bit integer)
-DEFINE_OPCODE_3(Loadu32, Reg8, Reg8, Reg8)
-
-/// HEAP8[Arg2] = Arg3 (store signed or unsigned 8-bit integer)
-DEFINE_OPCODE_3(Store8, Reg8, Reg8, Reg8)
-/// HEAP16[Arg2] = Arg3 (store signed or unsigned 16-bit integer)
-DEFINE_OPCODE_3(Store16, Reg8, Reg8, Reg8)
-/// HEAP32[Arg2] = Arg3 (store signed or unsigned 32-bit integer)
-DEFINE_OPCODE_3(Store32, Reg8, Reg8, Reg8)
-#endif
 
 // Implementations can rely on the following pairs of instructions having the
 // same number and type of operands.

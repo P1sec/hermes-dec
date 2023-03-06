@@ -239,172 +239,188 @@ CallDirectLongIndex.has_ret_target = True
 
 CallBuiltin = Instruction('CallBuiltin', 84, [Reg8, UInt8, UInt8], globals())
 
-Ret = Instruction('Ret', 85, [Reg8], globals())
+CallBuiltinLong = Instruction('CallBuiltinLong', 85, [Reg8, UInt8, UInt32], globals())
 
-Catch = Instruction('Catch', 86, [Reg8], globals())
+GetBuiltinClosure = Instruction('GetBuiltinClosure', 86, [Reg8, UInt8], globals())
 
-DirectEval = Instruction('DirectEval', 87, [Reg8, Reg8], globals())
+Ret = Instruction('Ret', 87, [Reg8], globals())
 
-Throw = Instruction('Throw', 88, [Reg8], globals())
+Catch = Instruction('Catch', 88, [Reg8], globals())
 
-ThrowIfUndefinedInst = Instruction('ThrowIfUndefinedInst', 89, [Reg8], globals())
+DirectEval = Instruction('DirectEval', 89, [Reg8, Reg8], globals())
 
-Debugger = Instruction('Debugger', 90, [], globals())
+Throw = Instruction('Throw', 90, [Reg8], globals())
 
-DebuggerCheckBreak = Instruction('DebuggerCheckBreak', 91, [], globals())
+ThrowIfEmpty = Instruction('ThrowIfEmpty', 91, [Reg8, Reg8], globals())
 
-ProfilePoint = Instruction('ProfilePoint', 92, [UInt16], globals())
+Debugger = Instruction('Debugger', 92, [], globals())
 
-Unreachable = Instruction('Unreachable', 93, [], globals())
+AsyncBreakCheck = Instruction('AsyncBreakCheck', 93, [], globals())
 
-CreateClosure = Instruction('CreateClosure', 94, [Reg8, Reg8, UInt16], globals())
+ProfilePoint = Instruction('ProfilePoint', 94, [UInt16], globals())
 
-CreateClosureLongIndex = Instruction('CreateClosureLongIndex', 95, [Reg8, Reg8, UInt32], globals())
+Unreachable = Instruction('Unreachable', 95, [], globals())
 
-CreateGeneratorClosure = Instruction('CreateGeneratorClosure', 96, [Reg8, Reg8, UInt16], globals())
+CreateClosure = Instruction('CreateClosure', 96, [Reg8, Reg8, UInt16], globals())
 
-CreateGeneratorClosureLongIndex = Instruction('CreateGeneratorClosureLongIndex', 97, [Reg8, Reg8, UInt32], globals())
+CreateClosureLongIndex = Instruction('CreateClosureLongIndex', 97, [Reg8, Reg8, UInt32], globals())
 
-CreateThis = Instruction('CreateThis', 98, [Reg8, Reg8, Reg8], globals())
+CreateGeneratorClosure = Instruction('CreateGeneratorClosure', 98, [Reg8, Reg8, UInt16], globals())
 
-SelectObject = Instruction('SelectObject', 99, [Reg8, Reg8, Reg8], globals())
+CreateGeneratorClosureLongIndex = Instruction('CreateGeneratorClosureLongIndex', 99, [Reg8, Reg8, UInt32], globals())
 
-LoadParam = Instruction('LoadParam', 100, [Reg8, UInt8], globals())
+CreateAsyncClosure = Instruction('CreateAsyncClosure', 100, [Reg8, Reg8, UInt16], globals())
 
-LoadParamLong = Instruction('LoadParamLong', 101, [Reg8, UInt32], globals())
+CreateAsyncClosureLongIndex = Instruction('CreateAsyncClosureLongIndex', 101, [Reg8, Reg8, UInt32], globals())
 
-LoadConstUInt8 = Instruction('LoadConstUInt8', 102, [Reg8, UInt8], globals())
+CreateThis = Instruction('CreateThis', 102, [Reg8, Reg8, Reg8], globals())
 
-LoadConstInt = Instruction('LoadConstInt', 103, [Reg8, Imm32], globals())
+SelectObject = Instruction('SelectObject', 103, [Reg8, Reg8, Reg8], globals())
 
-LoadConstDouble = Instruction('LoadConstDouble', 104, [Reg8, Double], globals())
+LoadParam = Instruction('LoadParam', 104, [Reg8, UInt8], globals())
 
-LoadConstString = Instruction('LoadConstString', 105, [Reg8, UInt16], globals())
+LoadParamLong = Instruction('LoadParamLong', 105, [Reg8, UInt32], globals())
 
-LoadConstStringLongIndex = Instruction('LoadConstStringLongIndex', 106, [Reg8, UInt32], globals())
+LoadConstUInt8 = Instruction('LoadConstUInt8', 106, [Reg8, UInt8], globals())
+
+LoadConstInt = Instruction('LoadConstInt', 107, [Reg8, Imm32], globals())
+
+LoadConstDouble = Instruction('LoadConstDouble', 108, [Reg8, Double], globals())
+
+LoadConstString = Instruction('LoadConstString', 109, [Reg8, UInt16], globals())
+
+LoadConstStringLongIndex = Instruction('LoadConstStringLongIndex', 110, [Reg8, UInt32], globals())
 
 LoadConstString.operands[1].operand_meaning = OperandMeaning.string_id
 
 LoadConstStringLongIndex.operands[1].operand_meaning = OperandMeaning.string_id
 
-LoadConstUndefined = Instruction('LoadConstUndefined', 107, [Reg8], globals())
+LoadConstEmpty = Instruction('LoadConstEmpty', 111, [Reg8], globals())
 
-LoadConstNull = Instruction('LoadConstNull', 108, [Reg8], globals())
+LoadConstUndefined = Instruction('LoadConstUndefined', 112, [Reg8], globals())
 
-LoadConstTrue = Instruction('LoadConstTrue', 109, [Reg8], globals())
+LoadConstNull = Instruction('LoadConstNull', 113, [Reg8], globals())
 
-LoadConstFalse = Instruction('LoadConstFalse', 110, [Reg8], globals())
+LoadConstTrue = Instruction('LoadConstTrue', 114, [Reg8], globals())
 
-LoadConstZero = Instruction('LoadConstZero', 111, [Reg8], globals())
+LoadConstFalse = Instruction('LoadConstFalse', 115, [Reg8], globals())
 
-CoerceThisNS = Instruction('CoerceThisNS', 112, [Reg8, Reg8], globals())
+LoadConstZero = Instruction('LoadConstZero', 116, [Reg8], globals())
 
-LoadThisNS = Instruction('LoadThisNS', 113, [Reg8], globals())
+CoerceThisNS = Instruction('CoerceThisNS', 117, [Reg8, Reg8], globals())
 
-ToNumber = Instruction('ToNumber', 114, [Reg8, Reg8], globals())
+LoadThisNS = Instruction('LoadThisNS', 118, [Reg8], globals())
 
-ToInt32 = Instruction('ToInt32', 115, [Reg8, Reg8], globals())
+ToNumber = Instruction('ToNumber', 119, [Reg8, Reg8], globals())
 
-AddEmptyString = Instruction('AddEmptyString', 116, [Reg8, Reg8], globals())
+ToInt32 = Instruction('ToInt32', 120, [Reg8, Reg8], globals())
 
-GetArgumentsPropByVal = Instruction('GetArgumentsPropByVal', 117, [Reg8, Reg8, Reg8], globals())
+AddEmptyString = Instruction('AddEmptyString', 121, [Reg8, Reg8], globals())
 
-GetArgumentsLength = Instruction('GetArgumentsLength', 118, [Reg8, Reg8], globals())
+GetArgumentsPropByVal = Instruction('GetArgumentsPropByVal', 122, [Reg8, Reg8, Reg8], globals())
 
-ReifyArguments = Instruction('ReifyArguments', 119, [Reg8], globals())
+GetArgumentsLength = Instruction('GetArgumentsLength', 123, [Reg8, Reg8], globals())
 
-CreateRegExp = Instruction('CreateRegExp', 120, [Reg8, UInt32, UInt32, UInt32], globals())
+ReifyArguments = Instruction('ReifyArguments', 124, [Reg8], globals())
+
+CreateRegExp = Instruction('CreateRegExp', 125, [Reg8, UInt32, UInt32, UInt32], globals())
 
 CreateRegExp.operands[1].operand_meaning = OperandMeaning.string_id
 
 CreateRegExp.operands[2].operand_meaning = OperandMeaning.string_id
 
-SwitchImm = Instruction('SwitchImm', 121, [Reg8, UInt32, Addr32, UInt32, UInt32], globals())
+SwitchImm = Instruction('SwitchImm', 126, [Reg8, UInt32, Addr32, UInt32, UInt32], globals())
 
-StartGenerator = Instruction('StartGenerator', 122, [], globals())
+StartGenerator = Instruction('StartGenerator', 127, [], globals())
 
-ResumeGenerator = Instruction('ResumeGenerator', 123, [Reg8, Reg8], globals())
+ResumeGenerator = Instruction('ResumeGenerator', 128, [Reg8, Reg8], globals())
 
-CompleteGenerator = Instruction('CompleteGenerator', 124, [], globals())
+CompleteGenerator = Instruction('CompleteGenerator', 129, [], globals())
 
-CreateGenerator = Instruction('CreateGenerator', 125, [Reg8, Reg8, UInt16], globals())
+CreateGenerator = Instruction('CreateGenerator', 130, [Reg8, Reg8, UInt16], globals())
 
-CreateGeneratorLongIndex = Instruction('CreateGeneratorLongIndex', 126, [Reg8, Reg8, UInt32], globals())
+CreateGeneratorLongIndex = Instruction('CreateGeneratorLongIndex', 131, [Reg8, Reg8, UInt32], globals())
 
-Jmp = Instruction('Jmp', 127, [Addr8], globals())
-JmpLong = Instruction('JmpLong', 128, [Addr32], globals())
+IteratorBegin = Instruction('IteratorBegin', 132, [Reg8, Reg8], globals())
 
-JmpTrue = Instruction('JmpTrue', 129, [Addr8, Reg8], globals())
-JmpTrueLong = Instruction('JmpTrueLong', 130, [Addr32, Reg8], globals())
+IteratorNext = Instruction('IteratorNext', 133, [Reg8, Reg8, Reg8], globals())
 
-JmpFalse = Instruction('JmpFalse', 131, [Addr8, Reg8], globals())
-JmpFalseLong = Instruction('JmpFalseLong', 132, [Addr32, Reg8], globals())
+IteratorClose = Instruction('IteratorClose', 134, [Reg8, UInt8], globals())
 
-JmpUndefined = Instruction('JmpUndefined', 133, [Addr8, Reg8], globals())
-JmpUndefinedLong = Instruction('JmpUndefinedLong', 134, [Addr32, Reg8], globals())
+Jmp = Instruction('Jmp', 135, [Addr8], globals())
+JmpLong = Instruction('JmpLong', 136, [Addr32], globals())
 
-SaveGenerator = Instruction('SaveGenerator', 135, [Addr8], globals())
-SaveGeneratorLong = Instruction('SaveGeneratorLong', 136, [Addr32], globals())
+JmpTrue = Instruction('JmpTrue', 137, [Addr8, Reg8], globals())
+JmpTrueLong = Instruction('JmpTrueLong', 138, [Addr32, Reg8], globals())
 
-JLess = Instruction('JLess', 137, [Addr8, Reg8, Reg8], globals())
-JLessLong = Instruction('JLessLong', 138, [Addr32, Reg8, Reg8], globals())
+JmpFalse = Instruction('JmpFalse', 139, [Addr8, Reg8], globals())
+JmpFalseLong = Instruction('JmpFalseLong', 140, [Addr32, Reg8], globals())
 
-JNotLess = Instruction('JNotLess', 139, [Addr8, Reg8, Reg8], globals())
-JNotLessLong = Instruction('JNotLessLong', 140, [Addr32, Reg8, Reg8], globals())
+JmpUndefined = Instruction('JmpUndefined', 141, [Addr8, Reg8], globals())
+JmpUndefinedLong = Instruction('JmpUndefinedLong', 142, [Addr32, Reg8], globals())
 
-JLessN = Instruction('JLessN', 141, [Addr8, Reg8, Reg8], globals())
-JLessNLong = Instruction('JLessNLong', 142, [Addr32, Reg8, Reg8], globals())
+SaveGenerator = Instruction('SaveGenerator', 143, [Addr8], globals())
+SaveGeneratorLong = Instruction('SaveGeneratorLong', 144, [Addr32], globals())
 
-JNotLessN = Instruction('JNotLessN', 143, [Addr8, Reg8, Reg8], globals())
-JNotLessNLong = Instruction('JNotLessNLong', 144, [Addr32, Reg8, Reg8], globals())
+JLess = Instruction('JLess', 145, [Addr8, Reg8, Reg8], globals())
+JLessLong = Instruction('JLessLong', 146, [Addr32, Reg8, Reg8], globals())
 
-JLessEqual = Instruction('JLessEqual', 145, [Addr8, Reg8, Reg8], globals())
-JLessEqualLong = Instruction('JLessEqualLong', 146, [Addr32, Reg8, Reg8], globals())
+JNotLess = Instruction('JNotLess', 147, [Addr8, Reg8, Reg8], globals())
+JNotLessLong = Instruction('JNotLessLong', 148, [Addr32, Reg8, Reg8], globals())
 
-JNotLessEqual = Instruction('JNotLessEqual', 147, [Addr8, Reg8, Reg8], globals())
-JNotLessEqualLong = Instruction('JNotLessEqualLong', 148, [Addr32, Reg8, Reg8], globals())
+JLessN = Instruction('JLessN', 149, [Addr8, Reg8, Reg8], globals())
+JLessNLong = Instruction('JLessNLong', 150, [Addr32, Reg8, Reg8], globals())
 
-JLessEqualN = Instruction('JLessEqualN', 149, [Addr8, Reg8, Reg8], globals())
-JLessEqualNLong = Instruction('JLessEqualNLong', 150, [Addr32, Reg8, Reg8], globals())
+JNotLessN = Instruction('JNotLessN', 151, [Addr8, Reg8, Reg8], globals())
+JNotLessNLong = Instruction('JNotLessNLong', 152, [Addr32, Reg8, Reg8], globals())
 
-JNotLessEqualN = Instruction('JNotLessEqualN', 151, [Addr8, Reg8, Reg8], globals())
-JNotLessEqualNLong = Instruction('JNotLessEqualNLong', 152, [Addr32, Reg8, Reg8], globals())
+JLessEqual = Instruction('JLessEqual', 153, [Addr8, Reg8, Reg8], globals())
+JLessEqualLong = Instruction('JLessEqualLong', 154, [Addr32, Reg8, Reg8], globals())
 
-JGreater = Instruction('JGreater', 153, [Addr8, Reg8, Reg8], globals())
-JGreaterLong = Instruction('JGreaterLong', 154, [Addr32, Reg8, Reg8], globals())
+JNotLessEqual = Instruction('JNotLessEqual', 155, [Addr8, Reg8, Reg8], globals())
+JNotLessEqualLong = Instruction('JNotLessEqualLong', 156, [Addr32, Reg8, Reg8], globals())
 
-JNotGreater = Instruction('JNotGreater', 155, [Addr8, Reg8, Reg8], globals())
-JNotGreaterLong = Instruction('JNotGreaterLong', 156, [Addr32, Reg8, Reg8], globals())
+JLessEqualN = Instruction('JLessEqualN', 157, [Addr8, Reg8, Reg8], globals())
+JLessEqualNLong = Instruction('JLessEqualNLong', 158, [Addr32, Reg8, Reg8], globals())
 
-JGreaterN = Instruction('JGreaterN', 157, [Addr8, Reg8, Reg8], globals())
-JGreaterNLong = Instruction('JGreaterNLong', 158, [Addr32, Reg8, Reg8], globals())
+JNotLessEqualN = Instruction('JNotLessEqualN', 159, [Addr8, Reg8, Reg8], globals())
+JNotLessEqualNLong = Instruction('JNotLessEqualNLong', 160, [Addr32, Reg8, Reg8], globals())
 
-JNotGreaterN = Instruction('JNotGreaterN', 159, [Addr8, Reg8, Reg8], globals())
-JNotGreaterNLong = Instruction('JNotGreaterNLong', 160, [Addr32, Reg8, Reg8], globals())
+JGreater = Instruction('JGreater', 161, [Addr8, Reg8, Reg8], globals())
+JGreaterLong = Instruction('JGreaterLong', 162, [Addr32, Reg8, Reg8], globals())
 
-JGreaterEqual = Instruction('JGreaterEqual', 161, [Addr8, Reg8, Reg8], globals())
-JGreaterEqualLong = Instruction('JGreaterEqualLong', 162, [Addr32, Reg8, Reg8], globals())
+JNotGreater = Instruction('JNotGreater', 163, [Addr8, Reg8, Reg8], globals())
+JNotGreaterLong = Instruction('JNotGreaterLong', 164, [Addr32, Reg8, Reg8], globals())
 
-JNotGreaterEqual = Instruction('JNotGreaterEqual', 163, [Addr8, Reg8, Reg8], globals())
-JNotGreaterEqualLong = Instruction('JNotGreaterEqualLong', 164, [Addr32, Reg8, Reg8], globals())
+JGreaterN = Instruction('JGreaterN', 165, [Addr8, Reg8, Reg8], globals())
+JGreaterNLong = Instruction('JGreaterNLong', 166, [Addr32, Reg8, Reg8], globals())
 
-JGreaterEqualN = Instruction('JGreaterEqualN', 165, [Addr8, Reg8, Reg8], globals())
-JGreaterEqualNLong = Instruction('JGreaterEqualNLong', 166, [Addr32, Reg8, Reg8], globals())
+JNotGreaterN = Instruction('JNotGreaterN', 167, [Addr8, Reg8, Reg8], globals())
+JNotGreaterNLong = Instruction('JNotGreaterNLong', 168, [Addr32, Reg8, Reg8], globals())
 
-JNotGreaterEqualN = Instruction('JNotGreaterEqualN', 167, [Addr8, Reg8, Reg8], globals())
-JNotGreaterEqualNLong = Instruction('JNotGreaterEqualNLong', 168, [Addr32, Reg8, Reg8], globals())
+JGreaterEqual = Instruction('JGreaterEqual', 169, [Addr8, Reg8, Reg8], globals())
+JGreaterEqualLong = Instruction('JGreaterEqualLong', 170, [Addr32, Reg8, Reg8], globals())
 
-JEqual = Instruction('JEqual', 169, [Addr8, Reg8, Reg8], globals())
-JEqualLong = Instruction('JEqualLong', 170, [Addr32, Reg8, Reg8], globals())
+JNotGreaterEqual = Instruction('JNotGreaterEqual', 171, [Addr8, Reg8, Reg8], globals())
+JNotGreaterEqualLong = Instruction('JNotGreaterEqualLong', 172, [Addr32, Reg8, Reg8], globals())
 
-JNotEqual = Instruction('JNotEqual', 171, [Addr8, Reg8, Reg8], globals())
-JNotEqualLong = Instruction('JNotEqualLong', 172, [Addr32, Reg8, Reg8], globals())
+JGreaterEqualN = Instruction('JGreaterEqualN', 173, [Addr8, Reg8, Reg8], globals())
+JGreaterEqualNLong = Instruction('JGreaterEqualNLong', 174, [Addr32, Reg8, Reg8], globals())
 
-JStrictEqual = Instruction('JStrictEqual', 173, [Addr8, Reg8, Reg8], globals())
-JStrictEqualLong = Instruction('JStrictEqualLong', 174, [Addr32, Reg8, Reg8], globals())
+JNotGreaterEqualN = Instruction('JNotGreaterEqualN', 175, [Addr8, Reg8, Reg8], globals())
+JNotGreaterEqualNLong = Instruction('JNotGreaterEqualNLong', 176, [Addr32, Reg8, Reg8], globals())
 
-JStrictNotEqual = Instruction('JStrictNotEqual', 175, [Addr8, Reg8, Reg8], globals())
-JStrictNotEqualLong = Instruction('JStrictNotEqualLong', 176, [Addr32, Reg8, Reg8], globals())
+JEqual = Instruction('JEqual', 177, [Addr8, Reg8, Reg8], globals())
+JEqualLong = Instruction('JEqualLong', 178, [Addr32, Reg8, Reg8], globals())
+
+JNotEqual = Instruction('JNotEqual', 179, [Addr8, Reg8, Reg8], globals())
+JNotEqualLong = Instruction('JNotEqualLong', 180, [Addr32, Reg8, Reg8], globals())
+
+JStrictEqual = Instruction('JStrictEqual', 181, [Addr8, Reg8, Reg8], globals())
+JStrictEqualLong = Instruction('JStrictEqualLong', 182, [Addr32, Reg8, Reg8], globals())
+
+JStrictNotEqual = Instruction('JStrictNotEqual', 183, [Addr8, Reg8, Reg8], globals())
+JStrictNotEqualLong = Instruction('JStrictNotEqualLong', 184, [Addr32, Reg8, Reg8], globals())
 
 CallDirect.operands[2].operand_meaning = OperandMeaning.function_id
 
@@ -420,6 +436,10 @@ CreateGenerator.operands[2].operand_meaning = OperandMeaning.function_id
 
 CreateGeneratorLongIndex.operands[2].operand_meaning = OperandMeaning.function_id
 
+CreateAsyncClosure.operands[2].operand_meaning = OperandMeaning.function_id
+
+CreateAsyncClosureLongIndex.operands[2].operand_meaning = OperandMeaning.function_id
+
 _opcode_to_instruction : Dict[int, Instruction] = {v.opcode: v for v in _instructions}
 _name_to_instruction : Dict[str, Instruction] = {v.name: v for v in _instructions}
 
@@ -429,14 +449,6 @@ _builtin_function_names : List[str] = [
     'Date.UTC',
     'Date.now',
     'Date.parse',
-    'HermesInternal.getEpilogues',
-    'HermesInternal.silentSetPrototypeOf',
-    'HermesInternal.requireFast',
-    'HermesInternal.getTemplateObject',
-    'HermesInternal.ensureObject',
-    'HermesInternal.copyDataProperties',
-    'HermesInternal.copyRestArgs',
-    'HermesInternal.exportAll',
     'JSON.parse',
     'JSON.stringify',
     'Math.abs',
@@ -471,6 +483,20 @@ _builtin_function_names : List[str] = [
     'Object.isFrozen',
     'Object.keys',
     'Object.seal',
-    'String.fromCharCode'
+    'String.fromCharCode',
+    'silentSetPrototypeOf',
+    'requireFast',
+    'getTemplateObject',
+    'ensureObject',
+    'getMethod',
+    'throwTypeError',
+    'generatorSetDelegated',
+    'copyDataProperties',
+    'copyRestArgs',
+    'arraySpread',
+    'apply',
+    'exportAll',
+    'exponentiationOperator',
+    'spawnAsync'
 ]
 

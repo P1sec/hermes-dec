@@ -29,7 +29,7 @@ for git_tag in ${GIT_TAGS[@]}; do
         fi
         wget "https://raw.githubusercontent.com/facebook/hermes/${git_tag}/include/hermes/BCGen/HBC/BytecodeList.def" -O "BytecodeList-${git_tag}.def"
     else
-        wget "https://raw.githubusercontent.com/facebook/hermes/${git_tag}/include/hermes/BCGen/HBC/BytecodeVersion.h" -O "BytecodeVersion-${hbc_version}.h"
+        wget "https://raw.githubusercontent.com/facebook/hermes/${git_tag}/include/hermes/BCGen/HBC/BytecodeVersion.h" -O "BytecodeVersion-${hbc_version}.h" || wget "https://raw.githubusercontent.com/facebook/hermes/${git_tag}/include/hermes/BCGen/HBC/BytecodeFileFormat.h" -O "BytecodeVersion-${hbc_version}.h"
         wget "https://raw.githubusercontent.com/facebook/hermes/${git_tag}/include/hermes/BCGen/HBC/BytecodeList.def" -O "BytecodeList-${hbc_version}.def"
     fi
 done

@@ -5,7 +5,7 @@ from logging import warning
 from io import BytesIO
 
 # Imports relative to the current directory:
-from hbc_opcodes import hbc51, hbc59, hbc60, hbc62, hbc71, hbc74, hbc76, hbc83, hbc84, hbc85, hbc86, hbc87, hbc88, hbc89, hbc90, hbc91
+from hbc_opcodes import hbc51, hbc59, hbc62, hbc71, hbc74, hbc76, hbc80, hbc81, hbc82, hbc83, hbc84, hbc85, hbc86, hbc87, hbc89, hbc90
 from serialized_literal_parser import unpack_slp_array, SLPArray, SLPValue, TagType
 from hbc_opcodes.def_classes import OperandMeaning, Instruction
 
@@ -83,25 +83,32 @@ def get_parser(bytecode_version : int) -> 'module':
     parser_module_tbl = {
         51: hbc51,
         59: hbc59,
-        60: hbc60,
+        60: hbc59,
         62: hbc62,
         71: hbc71,
         74: hbc74,
+        75: hbc74,
         76: hbc76,
+        77: hbc76,
+        78: hbc76,
+        79: hbc76,
+        80: hbc80,
+        81: hbc81,
+        82: hbc82,
         83: hbc83,
         84: hbc84,
         85: hbc85,
         86: hbc86,
         87: hbc87,
-        88: hbc88,
+        88: hbc87,
         89: hbc89,
         90: hbc90,
-        91: hbc91,
+        91: hbc90,
         # The changes introduced in Hermes bytecode version 92
         # were reverted to the state of version 91 after a few
         # days from their introduction in the Git tree, into a
         # new version 93.
-        93: hbc91
+        93: hbc90
     }
     
     if bytecode_version < 51:
