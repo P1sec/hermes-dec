@@ -695,10 +695,18 @@ class HBCReader:
         
         self.align_over_padding()
         
-        self.cjs_modules = (self.get_symbol_offset_pair_reader() *
-            self.header.cjsModuleCount)()
+        if (self.header.cjsModulesStaticallyResolved and
+            self.header.version < 77):
         
-        self.file_buffer.readinto(self.cjs_modules)
+            self.cjs_modules = [
+                int.from_bytes(self.file_buffer.read(4), 'little')
+                for module_count in range(self.header.cjsModuleCount)
+            ]
+        else:
+            self.cjs_modules = (self.get_symbol_offset_pair_reader() *
+                self.header.cjsModuleCount)()
+
+            self.file_buffer.readinto(self.cjs_modules)
     
     def read_function_sources(self):
         
@@ -892,10 +900,15 @@ if __name__ == '__main__':
         
         print()
         for cjs_module_count, cjs_module in enumerate(hbc_reader.cjs_modules):
-            print("=> CommonJS module #%d: %s @ %08x" % (cjs_module_count,
-                cjs_module.symbol_id,
-                cjs_module.offset
-            ))
+            if isinstance(cjs_module, int):
+                print("=> CommonJS module #%d: %d" % (cjs_module_count,
+                    cjs_module
+                ))
+            else:
+                print("=> CommonJS module #%d: %s @ %08x" % (cjs_module_count,
+                    cjs_module.symbol_id,
+                    cjs_module.offset
+                ))
         
         if getattr(hbc_reader, 'function_sources', None):
             for function_source_count, function_source in enumerate(hbc_reader.function_sources):
