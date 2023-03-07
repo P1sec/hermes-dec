@@ -14,7 +14,9 @@ GIT_TAGS=(
     'v0.1.0' # Bytecode version 59
     # 'v0.1.1' # Bytecode version 60 - No codegen change    
     'v0.2.1' # Bytecode version 62
-    'v0.3.0' # Bytecode version 71
+    'v0.3.0' # Bytecode version 71 - Bumped Oct 25, 2019, stable release Nov 11, 2019
+    'd1637f2' # Bytecode version 72 - Nov 26, 2019
+    'ecded4d' # Bytecode version 73 - Dec 19, 2019
     'v0.4.0' # Bytecode version 74 - Bumped Jan 6, 2020 (there was a reverted version 75)
     # 'v0.4.1' # Bytecode version 74
     # 'v0.4.3' # Bytecode version 74
@@ -52,6 +54,8 @@ GIT_TAGS=(
 )
 
 declare -A TAG_TO_VERSION=(
+    [d1637f2]='hbc72'
+    [ecded4d]='hbc73'
     [6871396]='hbc75'
     [701b9dd]='hbc77'
     [c57fde2]='hbc78'

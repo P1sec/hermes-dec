@@ -5,7 +5,7 @@ from logging import warning
 from io import BytesIO
 
 # Imports relative to the current directory:
-from hbc_opcodes import hbc51, hbc59, hbc62, hbc71, hbc74, hbc76, hbc80, hbc81, hbc82, hbc83, hbc84, hbc85, hbc86, hbc87, hbc89, hbc90
+from hbc_opcodes import hbc51, hbc59, hbc62, hbc71, hbc72, hbc73, hbc74, hbc76, hbc80, hbc81, hbc82, hbc83, hbc84, hbc85, hbc86, hbc87, hbc89, hbc90
 from serialized_literal_parser import unpack_slp_array, SLPArray, SLPValue, TagType
 from hbc_opcodes.def_classes import OperandMeaning, Instruction
 
@@ -86,6 +86,8 @@ def get_parser(bytecode_version : int) -> 'module':
         60: hbc59,
         62: hbc62,
         71: hbc71,
+        72: hbc72,
+        73: hbc73,
         74: hbc74,
         75: hbc74,
         76: hbc76,
