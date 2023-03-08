@@ -5,7 +5,7 @@ from logging import warning
 from io import BytesIO
 
 # Imports relative to the current directory:
-from hbc_opcodes import hbc51, hbc59, hbc62, hbc71, hbc72, hbc73, hbc74, hbc76, hbc80, hbc81, hbc82, hbc83, hbc84, hbc85, hbc86, hbc87, hbc89, hbc90
+from hbc_opcodes import hbc51, hbc58, hbc59, hbc61, hbc62, hbc68, hbc69, hbc70, hbc72, hbc73, hbc76, hbc80, hbc81, hbc82, hbc83, hbc84, hbc85, hbc86, hbc87, hbc89, hbc90
 from serialized_literal_parser import unpack_slp_array, SLPArray, SLPValue, TagType
 from hbc_opcodes.def_classes import OperandMeaning, Instruction
 
@@ -82,18 +82,19 @@ class ParsedInstruction:
 def get_parser(bytecode_version : int) -> 'module':
     parser_module_tbl = {
         51: hbc51,
+        58: hbc58,
         59: hbc59,
-        60: hbc59,
+        61: hbc61,
         62: hbc62,
-        71: hbc71,
+        68: hbc68,
+        69: hbc69,
+        70: hbc70,
+        # Before version 72/0.4.0, the bytecode format used predefined
+        # string identifiers (which were removed in commit 63fb517)
+        # These are not supported in the current code setup
         72: hbc72,
         73: hbc73,
-        74: hbc74,
-        75: hbc74,
         76: hbc76,
-        77: hbc76,
-        78: hbc76,
-        79: hbc76,
         80: hbc80,
         81: hbc81,
         82: hbc82,
@@ -102,7 +103,6 @@ def get_parser(bytecode_version : int) -> 'module':
         85: hbc85,
         86: hbc86,
         87: hbc87,
-        88: hbc87,
         89: hbc89,
         90: hbc90,
         91: hbc90,
@@ -113,11 +113,11 @@ def get_parser(bytecode_version : int) -> 'module':
         93: hbc90
     }
     
-    if bytecode_version < 51:
+    if bytecode_version < 72:
         warning('This file uses an ancient Hermes bytecode format, which ' +
             'is not supported.')
 
-    elif bytecode_version not in parser_module_tbl:
+    elif bytecode_version == 92 or bytecode_version > 93:
         warning(('Bytecode version %d corresponds to a development or ' +
             'recent version of the Hermes bytecode and is not ' +
             'formally supported by the current tool.') % bytecode_version)

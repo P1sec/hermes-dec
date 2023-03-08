@@ -331,86 +331,80 @@ CreateGenerator = Instruction('CreateGenerator', 125, [Reg8, Reg8, UInt16], glob
 
 CreateGeneratorLongIndex = Instruction('CreateGeneratorLongIndex', 126, [Reg8, Reg8, UInt32], globals())
 
-IteratorBegin = Instruction('IteratorBegin', 127, [Reg8, Reg8], globals())
+Jmp = Instruction('Jmp', 127, [Addr8], globals())
+JmpLong = Instruction('JmpLong', 128, [Addr32], globals())
 
-IteratorNext = Instruction('IteratorNext', 128, [Reg8, Reg8, Reg8], globals())
+JmpTrue = Instruction('JmpTrue', 129, [Addr8, Reg8], globals())
+JmpTrueLong = Instruction('JmpTrueLong', 130, [Addr32, Reg8], globals())
 
-IteratorClose = Instruction('IteratorClose', 129, [Reg8, UInt8], globals())
+JmpFalse = Instruction('JmpFalse', 131, [Addr8, Reg8], globals())
+JmpFalseLong = Instruction('JmpFalseLong', 132, [Addr32, Reg8], globals())
 
-Jmp = Instruction('Jmp', 130, [Addr8], globals())
-JmpLong = Instruction('JmpLong', 131, [Addr32], globals())
+JmpUndefined = Instruction('JmpUndefined', 133, [Addr8, Reg8], globals())
+JmpUndefinedLong = Instruction('JmpUndefinedLong', 134, [Addr32, Reg8], globals())
 
-JmpTrue = Instruction('JmpTrue', 132, [Addr8, Reg8], globals())
-JmpTrueLong = Instruction('JmpTrueLong', 133, [Addr32, Reg8], globals())
+SaveGenerator = Instruction('SaveGenerator', 135, [Addr8], globals())
+SaveGeneratorLong = Instruction('SaveGeneratorLong', 136, [Addr32], globals())
 
-JmpFalse = Instruction('JmpFalse', 134, [Addr8, Reg8], globals())
-JmpFalseLong = Instruction('JmpFalseLong', 135, [Addr32, Reg8], globals())
+JLess = Instruction('JLess', 137, [Addr8, Reg8, Reg8], globals())
+JLessLong = Instruction('JLessLong', 138, [Addr32, Reg8, Reg8], globals())
 
-JmpUndefined = Instruction('JmpUndefined', 136, [Addr8, Reg8], globals())
-JmpUndefinedLong = Instruction('JmpUndefinedLong', 137, [Addr32, Reg8], globals())
+JNotLess = Instruction('JNotLess', 139, [Addr8, Reg8, Reg8], globals())
+JNotLessLong = Instruction('JNotLessLong', 140, [Addr32, Reg8, Reg8], globals())
 
-SaveGenerator = Instruction('SaveGenerator', 138, [Addr8], globals())
-SaveGeneratorLong = Instruction('SaveGeneratorLong', 139, [Addr32], globals())
+JLessN = Instruction('JLessN', 141, [Addr8, Reg8, Reg8], globals())
+JLessNLong = Instruction('JLessNLong', 142, [Addr32, Reg8, Reg8], globals())
 
-JLess = Instruction('JLess', 140, [Addr8, Reg8, Reg8], globals())
-JLessLong = Instruction('JLessLong', 141, [Addr32, Reg8, Reg8], globals())
+JNotLessN = Instruction('JNotLessN', 143, [Addr8, Reg8, Reg8], globals())
+JNotLessNLong = Instruction('JNotLessNLong', 144, [Addr32, Reg8, Reg8], globals())
 
-JNotLess = Instruction('JNotLess', 142, [Addr8, Reg8, Reg8], globals())
-JNotLessLong = Instruction('JNotLessLong', 143, [Addr32, Reg8, Reg8], globals())
+JLessEqual = Instruction('JLessEqual', 145, [Addr8, Reg8, Reg8], globals())
+JLessEqualLong = Instruction('JLessEqualLong', 146, [Addr32, Reg8, Reg8], globals())
 
-JLessN = Instruction('JLessN', 144, [Addr8, Reg8, Reg8], globals())
-JLessNLong = Instruction('JLessNLong', 145, [Addr32, Reg8, Reg8], globals())
+JNotLessEqual = Instruction('JNotLessEqual', 147, [Addr8, Reg8, Reg8], globals())
+JNotLessEqualLong = Instruction('JNotLessEqualLong', 148, [Addr32, Reg8, Reg8], globals())
 
-JNotLessN = Instruction('JNotLessN', 146, [Addr8, Reg8, Reg8], globals())
-JNotLessNLong = Instruction('JNotLessNLong', 147, [Addr32, Reg8, Reg8], globals())
+JLessEqualN = Instruction('JLessEqualN', 149, [Addr8, Reg8, Reg8], globals())
+JLessEqualNLong = Instruction('JLessEqualNLong', 150, [Addr32, Reg8, Reg8], globals())
 
-JLessEqual = Instruction('JLessEqual', 148, [Addr8, Reg8, Reg8], globals())
-JLessEqualLong = Instruction('JLessEqualLong', 149, [Addr32, Reg8, Reg8], globals())
+JNotLessEqualN = Instruction('JNotLessEqualN', 151, [Addr8, Reg8, Reg8], globals())
+JNotLessEqualNLong = Instruction('JNotLessEqualNLong', 152, [Addr32, Reg8, Reg8], globals())
 
-JNotLessEqual = Instruction('JNotLessEqual', 150, [Addr8, Reg8, Reg8], globals())
-JNotLessEqualLong = Instruction('JNotLessEqualLong', 151, [Addr32, Reg8, Reg8], globals())
+JGreater = Instruction('JGreater', 153, [Addr8, Reg8, Reg8], globals())
+JGreaterLong = Instruction('JGreaterLong', 154, [Addr32, Reg8, Reg8], globals())
 
-JLessEqualN = Instruction('JLessEqualN', 152, [Addr8, Reg8, Reg8], globals())
-JLessEqualNLong = Instruction('JLessEqualNLong', 153, [Addr32, Reg8, Reg8], globals())
+JNotGreater = Instruction('JNotGreater', 155, [Addr8, Reg8, Reg8], globals())
+JNotGreaterLong = Instruction('JNotGreaterLong', 156, [Addr32, Reg8, Reg8], globals())
 
-JNotLessEqualN = Instruction('JNotLessEqualN', 154, [Addr8, Reg8, Reg8], globals())
-JNotLessEqualNLong = Instruction('JNotLessEqualNLong', 155, [Addr32, Reg8, Reg8], globals())
+JGreaterN = Instruction('JGreaterN', 157, [Addr8, Reg8, Reg8], globals())
+JGreaterNLong = Instruction('JGreaterNLong', 158, [Addr32, Reg8, Reg8], globals())
 
-JGreater = Instruction('JGreater', 156, [Addr8, Reg8, Reg8], globals())
-JGreaterLong = Instruction('JGreaterLong', 157, [Addr32, Reg8, Reg8], globals())
+JNotGreaterN = Instruction('JNotGreaterN', 159, [Addr8, Reg8, Reg8], globals())
+JNotGreaterNLong = Instruction('JNotGreaterNLong', 160, [Addr32, Reg8, Reg8], globals())
 
-JNotGreater = Instruction('JNotGreater', 158, [Addr8, Reg8, Reg8], globals())
-JNotGreaterLong = Instruction('JNotGreaterLong', 159, [Addr32, Reg8, Reg8], globals())
+JGreaterEqual = Instruction('JGreaterEqual', 161, [Addr8, Reg8, Reg8], globals())
+JGreaterEqualLong = Instruction('JGreaterEqualLong', 162, [Addr32, Reg8, Reg8], globals())
 
-JGreaterN = Instruction('JGreaterN', 160, [Addr8, Reg8, Reg8], globals())
-JGreaterNLong = Instruction('JGreaterNLong', 161, [Addr32, Reg8, Reg8], globals())
+JNotGreaterEqual = Instruction('JNotGreaterEqual', 163, [Addr8, Reg8, Reg8], globals())
+JNotGreaterEqualLong = Instruction('JNotGreaterEqualLong', 164, [Addr32, Reg8, Reg8], globals())
 
-JNotGreaterN = Instruction('JNotGreaterN', 162, [Addr8, Reg8, Reg8], globals())
-JNotGreaterNLong = Instruction('JNotGreaterNLong', 163, [Addr32, Reg8, Reg8], globals())
+JGreaterEqualN = Instruction('JGreaterEqualN', 165, [Addr8, Reg8, Reg8], globals())
+JGreaterEqualNLong = Instruction('JGreaterEqualNLong', 166, [Addr32, Reg8, Reg8], globals())
 
-JGreaterEqual = Instruction('JGreaterEqual', 164, [Addr8, Reg8, Reg8], globals())
-JGreaterEqualLong = Instruction('JGreaterEqualLong', 165, [Addr32, Reg8, Reg8], globals())
+JNotGreaterEqualN = Instruction('JNotGreaterEqualN', 167, [Addr8, Reg8, Reg8], globals())
+JNotGreaterEqualNLong = Instruction('JNotGreaterEqualNLong', 168, [Addr32, Reg8, Reg8], globals())
 
-JNotGreaterEqual = Instruction('JNotGreaterEqual', 166, [Addr8, Reg8, Reg8], globals())
-JNotGreaterEqualLong = Instruction('JNotGreaterEqualLong', 167, [Addr32, Reg8, Reg8], globals())
+JEqual = Instruction('JEqual', 169, [Addr8, Reg8, Reg8], globals())
+JEqualLong = Instruction('JEqualLong', 170, [Addr32, Reg8, Reg8], globals())
 
-JGreaterEqualN = Instruction('JGreaterEqualN', 168, [Addr8, Reg8, Reg8], globals())
-JGreaterEqualNLong = Instruction('JGreaterEqualNLong', 169, [Addr32, Reg8, Reg8], globals())
+JNotEqual = Instruction('JNotEqual', 171, [Addr8, Reg8, Reg8], globals())
+JNotEqualLong = Instruction('JNotEqualLong', 172, [Addr32, Reg8, Reg8], globals())
 
-JNotGreaterEqualN = Instruction('JNotGreaterEqualN', 170, [Addr8, Reg8, Reg8], globals())
-JNotGreaterEqualNLong = Instruction('JNotGreaterEqualNLong', 171, [Addr32, Reg8, Reg8], globals())
+JStrictEqual = Instruction('JStrictEqual', 173, [Addr8, Reg8, Reg8], globals())
+JStrictEqualLong = Instruction('JStrictEqualLong', 174, [Addr32, Reg8, Reg8], globals())
 
-JEqual = Instruction('JEqual', 172, [Addr8, Reg8, Reg8], globals())
-JEqualLong = Instruction('JEqualLong', 173, [Addr32, Reg8, Reg8], globals())
-
-JNotEqual = Instruction('JNotEqual', 174, [Addr8, Reg8, Reg8], globals())
-JNotEqualLong = Instruction('JNotEqualLong', 175, [Addr32, Reg8, Reg8], globals())
-
-JStrictEqual = Instruction('JStrictEqual', 176, [Addr8, Reg8, Reg8], globals())
-JStrictEqualLong = Instruction('JStrictEqualLong', 177, [Addr32, Reg8, Reg8], globals())
-
-JStrictNotEqual = Instruction('JStrictNotEqual', 178, [Addr8, Reg8, Reg8], globals())
-JStrictNotEqualLong = Instruction('JStrictNotEqualLong', 179, [Addr32, Reg8, Reg8], globals())
+JStrictNotEqual = Instruction('JStrictNotEqual', 175, [Addr8, Reg8, Reg8], globals())
+JStrictNotEqualLong = Instruction('JStrictNotEqualLong', 176, [Addr32, Reg8, Reg8], globals())
 
 CallDirect.operands[2].operand_meaning = OperandMeaning.function_id
 
@@ -435,6 +429,17 @@ _builtin_function_names : List[str] = [
     'Date.UTC',
     'Date.now',
     'Date.parse',
+    'HermesInternal.getEpilogues',
+    'HermesInternal.silentSetPrototypeOf',
+    'HermesInternal.requireFast',
+    'HermesInternal.getTemplateObject',
+    'HermesInternal.ensureObject',
+    'HermesInternal.throwTypeError',
+    'HermesInternal.generatorSetDelegated',
+    'HermesInternal.copyDataProperties',
+    'HermesInternal.copyRestArgs',
+    'HermesInternal.exportAll',
+    'HermesInternal.exponentiationOperator',
     'JSON.parse',
     'JSON.stringify',
     'Math.abs',
@@ -469,18 +474,6 @@ _builtin_function_names : List[str] = [
     'Object.isFrozen',
     'Object.keys',
     'Object.seal',
-    'String.fromCharCode',
-    'silentSetPrototypeOf',
-    'requireFast',
-    'getTemplateObject',
-    'ensureObject',
-    'throwTypeError',
-    'generatorSetDelegated',
-    'copyDataProperties',
-    'copyRestArgs',
-    'arraySpread',
-    'apply',
-    'exportAll',
-    'exponentiationOperator'
+    'String.fromCharCode'
 ]
 

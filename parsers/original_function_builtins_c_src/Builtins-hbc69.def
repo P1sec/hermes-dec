@@ -1,10 +1,9 @@
 /*
  * Copyright (c) Facebook, Inc. and its affiliates.
  *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
+ * This source code is licensed under the MIT license found in the LICENSE
+ * file in the root directory of this source tree.
  */
-
 ///===----------------------------------------------------------------------===
 /// \file
 /// Define global objects and methods which the compiler can assume have not
@@ -46,7 +45,6 @@ BUILTIN_METHOD(HermesInternal, generatorSetDelegated)
 BUILTIN_METHOD(HermesInternal, copyDataProperties)
 BUILTIN_METHOD(HermesInternal, copyRestArgs)
 BUILTIN_METHOD(HermesInternal, arraySpread)
-BUILTIN_METHOD(HermesInternal, apply)
 BUILTIN_METHOD(HermesInternal, exportAll)
 BUILTIN_METHOD(HermesInternal, exponentiationOperator)
 

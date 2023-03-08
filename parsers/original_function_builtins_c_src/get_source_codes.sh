@@ -28,6 +28,6 @@ for git_tag in ${GIT_TAGS[@]}; do
             wget "https://raw.githubusercontent.com/facebook/hermes/${git_tag}/include/hermes/FrontEndDefs/Builtins.def" -O "Builtins-${git_tag}.def"
         fi
     else
-        wget "https://raw.githubusercontent.com/facebook/hermes/${git_tag}/include/hermes/FrontEndDefs/Builtins.def" -O "Builtins-${hbc_version}.def"
+        wget "https://raw.githubusercontent.com/facebook/hermes/${git_tag}/include/hermes/FrontEndDefs/Builtins.def" -O "Builtins-${hbc_version}.def" || wget "https://raw.githubusercontent.com/facebook/hermes/${git_tag}/include/hermes/Inst/Builtins.def" -O "Builtins-${hbc_version}.def"
     fi
 done

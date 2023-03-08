@@ -12,12 +12,21 @@ GIT_TAGS=(
     # 'v0.0.2' # Bytecode version 51
     'v0.0.3' # Bytecode version 58
     'v0.1.0' # Bytecode version 59
-    # 'v0.1.1' # Bytecode version 60 - No codegen change    
-    'v0.2.1' # Bytecode version 62
-    'v0.3.0' # Bytecode version 71 - Bumped Oct 25, 2019, stable release Nov 11, 2019
+    # 'v0.1.1' # Bytecode version 60 - Bumped Jul 17, 2019 - No codegen change
+    'ee7a2db' # Bytecode version 61 - Aug 3, 2019
+    'v0.2.1' # Bytecode version 62 - Bumped Aug 29, 2019
+    # '8eb5923' # Bytecode version 63 - Sep 19, 2019
+    # '2d326de' # Bytecode version 64 - Oct 4, 2019
+    # '28436fb' # Bytecode version 65 - Oct 4, 2019
+    # '892bf2c' # Bytecode version 66 - Oct 4, 2019
+    # 'f9e263d' # Bytecode version 67 - Oct 11, 2019
+    '883eb4d' # Bytecode version 68 - Oct 15, 2019
+    '5a402ac' # Bytecode version 69 - Oct 15, 2019
+    '51969f2' # Bytecode version 70 - Oct 15, 2019
+    # 'v0.3.0' # Bytecode version 71 - Bumped Oct 25, 2019, stable release Nov 11, 2019 - No codegen change
     'd1637f2' # Bytecode version 72 - Nov 26, 2019
     'ecded4d' # Bytecode version 73 - Dec 19, 2019
-    'v0.4.0' # Bytecode version 74 - Bumped Jan 6, 2020 (there was a reverted version 75)
+    # 'v0.4.0' # Bytecode version 74 - Bumped Jan 6, 2020 (there was a reverted version 75) - No codegen change
     # 'v0.4.1' # Bytecode version 74
     # 'v0.4.3' # Bytecode version 74
     # 'v0.4.4' # Bytecode version 74
@@ -54,6 +63,15 @@ GIT_TAGS=(
 )
 
 declare -A TAG_TO_VERSION=(
+    [ee7a2db]='hbc61'
+    [8eb5923]='hbc63'
+    [2d326de]='hbc64'
+    [28436fb]='hbc65'
+    [892bf2c]='hbc66'
+    [f9e263d]='hbc67'
+    [883eb4d]='hbc68'
+    [5a402ac]='hbc69'
+    [51969f2]='hbc70'
     [d1637f2]='hbc72'
     [ecded4d]='hbc73'
     [6871396]='hbc75'

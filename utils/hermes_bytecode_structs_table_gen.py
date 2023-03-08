@@ -11,7 +11,7 @@ ROOT_DIR = realpath(TOOLS_DIR + '/..')
 DOCS_DIR = realpath(ROOT_DIR + '/docs')
 PARSERS_DIR = realpath(ROOT_DIR + '/parsers')
 
-GIT_TAGS = 'v0.0.1 v0.0.3 v0.1.0 v0.2.1 v0.3.0 v0.4.0 v0.7.0 v0.8.0 v0.8.1 v0.12.0'.split(' ')
+GIT_TAGS = 'v0.0.1 v0.0.3 v0.1.0 v0.2.1 hbc70 hbc73 v0.7.0 v0.8.0 v0.8.1 v0.12.0'.split(' ')
 
 OUTPUT_FILE_NAME = DOCS_DIR + '/opcodes_table.html'
 
