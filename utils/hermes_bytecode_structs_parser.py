@@ -6,23 +6,24 @@ from os.path import dirname, realpath
 from dataclasses import dataclass
 from os import listdir
 
-TOOLS_DIR = dirname(realpath(__file__))
-ROOT_DIR = realpath(TOOLS_DIR + '/..')
-PARSERS_DIR = realpath(ROOT_DIR + '/parsers')
+UTILS_DIR = dirname(realpath(__file__))
+ROOT_DIR = realpath(UTILS_DIR + '/..')
+SRC_DIR = realpath(ROOT_DIR + '/src')
+PARSERS_DIR = realpath(SRC_DIR + '/parsers')
 
 git_tags = sorted(
     file_name.split('-')[1].split('.def')[0]
-    for file_name in listdir(PARSERS_DIR + '/original_function_builtins_c_src/')
+    for file_name in listdir(UTILS_DIR + '/original_function_builtins_c_src/')
     if file_name.endswith('.def')
 )
 
 for git_tag in git_tags:
 
-    INPUT_FILE_NAME = PARSERS_DIR + '/original_hermes_bytecode_c_src/BytecodeList-%s.def' % git_tag
+    INPUT_FILE_NAME = UTILS_DIR + '/original_hermes_bytecode_c_src/BytecodeList-%s.def' % git_tag
 
-    INPUT_BUILTINS_FILE_NAMES = PARSERS_DIR + '/original_function_builtins_c_src/Builtins-%s.def' % git_tag
+    INPUT_BUILTINS_FILE_NAMES = UTILS_DIR + '/original_function_builtins_c_src/Builtins-%s.def' % git_tag
 
-    INPUT_VERSION_FILE_NAME = PARSERS_DIR + '/original_hermes_bytecode_c_src/BytecodeVersion-%s.h' % git_tag
+    INPUT_VERSION_FILE_NAME = UTILS_DIR + '/original_hermes_bytecode_c_src/BytecodeVersion-%s.h' % git_tag
 
     with open(INPUT_VERSION_FILE_NAME) as fd:
         version_file_contents = fd.read()

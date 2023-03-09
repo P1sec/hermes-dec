@@ -13,5 +13,5 @@ rm -f original_hermes_bytecode_c_src/*.h
 ./original_function_builtins_c_src/get_source_codes.sh
 # ./original_regex_bytecode_c_src/get_source_codes.sh
 
-../utils/hermes_bytecode_structs_parser.py
+./hermes_bytecode_structs_parser.py
 

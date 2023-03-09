@@ -1,11 +1,13 @@
 # The following is related to Python or miscellaneous
 *.pyc
+dist/
 __pycache__/
 config.py
 build/
 notes/
 tests/*real*
 tests/assets/*di*
+*.egg-info
 .~lock.*
 *.glade#
 *~

@@ -7,17 +7,16 @@ from os.path import dirname, realpath
 from argparse import ArgumentParser
 from enum import IntEnum, IntFlag
 from hashlib import sha1
+import sys
+
+PARSERS_DIR = dirname(realpath(__file__))
+sys.path.append(PARSERS_DIR)
 
 # The following imports are made from the current directory:
 from hbc_bytecode_parser import parse_hbc_bytecode, get_parser, ParsedInstruction
 from regexp_bytecode_parser import decompile_regex, parse_regex
 from pretty_print import pretty_print_structure
 from debug_info_parser import print_debug_info
-
-PARSERS_DIR = dirname(realpath(__file__))
-ROOT_DIR = realpath(PARSERS_DIR + '/..')
-TESTS_DIR = realpath(ROOT_DIR + '/tests')
-ASSETS_DIR = realpath(TESTS_DIR + '/assets')
 
 """
 
@@ -803,7 +802,7 @@ class HBCReader:
         
         pass
 
-if __name__ == '__main__':
+def main():
     
     args = ArgumentParser()
     
@@ -812,7 +811,6 @@ if __name__ == '__main__':
     args = args.parse_args()
     
     with open(args.input_file, 'rb') as file_descriptor:
-    # with open(ASSETS_DIR + '/index.android.bundle', 'rb') as file_descriptor:
 
         hbc_reader = HBCReader()
 
@@ -865,7 +863,7 @@ if __name__ == '__main__':
             # Safety checks:
             assert function_header.unused == 0 and function_header.paramCount < 100
         
-        # Comment, huge (and outdated)
+        # Commented, huge (and outdated)
         
         """
         print()
@@ -935,3 +933,6 @@ if __name__ == '__main__':
             print('  => Textified data:', hbc_reader.textified_data_storage.getvalue().hex())
             print('  => Raw variables and callees data:', hbc_reader.string_table_storage.getvalue().hex())
 
+if __name__ == '__main__':
+
+    main()

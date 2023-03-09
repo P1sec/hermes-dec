@@ -6,10 +6,9 @@ from os.path import dirname, realpath
 from dataclasses import dataclass
 from html import escape
 
-TOOLS_DIR = dirname(realpath(__file__))
-ROOT_DIR = realpath(TOOLS_DIR + '/..')
+UTILS_DIR = dirname(realpath(__file__))
+ROOT_DIR = realpath(UTILS_DIR + '/..')
 DOCS_DIR = realpath(ROOT_DIR + '/docs')
-PARSERS_DIR = realpath(ROOT_DIR + '/parsers')
 
 GIT_TAGS = 'v0.0.1 v0.0.3 v0.1.0 v0.2.1 hbc70 hbc73 v0.7.0 v0.8.0 v0.8.1 v0.12.0'.split(' ')
 
@@ -88,9 +87,9 @@ all_bytecode_versions : Set[int] = set()
 
 for git_tag in GIT_TAGS:
 
-    INPUT_FILE_NAME = PARSERS_DIR + '/original_hermes_bytecode_c_src/BytecodeList-%s.def' % git_tag
+    INPUT_FILE_NAME = UTILS_DIR + '/original_hermes_bytecode_c_src/BytecodeList-%s.def' % git_tag
 
-    INPUT_VERSION_FILE_NAME = PARSERS_DIR + '/original_hermes_bytecode_c_src/BytecodeVersion-%s.h' % git_tag
+    INPUT_VERSION_FILE_NAME = UTILS_DIR + '/original_hermes_bytecode_c_src/BytecodeVersion-%s.h' % git_tag
 
     with open(INPUT_VERSION_FILE_NAME) as fd:
         version_file_contents = fd.read()

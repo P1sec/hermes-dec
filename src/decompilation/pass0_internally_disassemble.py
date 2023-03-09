@@ -6,8 +6,6 @@ from sys import path
 SCRIPT_DIR = dirname(realpath(__file__))
 ROOT_DIR = realpath(SCRIPT_DIR + '/..')
 PARSERS_DIR = realpath(ROOT_DIR + '/parsers')
-TESTS_DIR = realpath(ROOT_DIR + '/tests')
-ASSETS_DIR = realpath(TESTS_DIR + '/assets')
 
 path.append(PARSERS_DIR)
 
@@ -22,7 +20,6 @@ class Pass0InternallyDisassemble:
         state.hbc_reader = hbc_reader
     
         with open(state.input_file, 'rb') as file_handle:
-        # with open(ASSETS_DIR + '/index.android.bundle', 'rb') as file_handle:
             state.hbc_reader.read_whole_file(file_handle)
         
         

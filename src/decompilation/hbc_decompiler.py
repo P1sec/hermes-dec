@@ -5,9 +5,7 @@ from argparse import ArgumentParser
 import sys
 
 SCRIPT_DIR = dirname(realpath(__file__))
-ROOT_DIR = realpath(SCRIPT_DIR + '/..')
-TESTS_DIR = realpath(ROOT_DIR + '/tests')
-ASSETS_DIR = realpath(TESTS_DIR + '/assets')
+sys.path.append(SCRIPT_DIR)
 
 from defs import HermesDecompiler, FunctionTableIndex
 from pass0_internally_disassemble import Pass0InternallyDisassemble
@@ -62,8 +60,8 @@ def do_decompilation(state : HermesDecompiler):
     
     # WIP ..
 
-if __name__ == '__main__':
-    
+def main():
+
     args = ArgumentParser()
     
     args.add_argument('input_file')
@@ -89,4 +87,6 @@ if __name__ == '__main__':
         sys.stdout.reconfigure(encoding='utf-8')
         do_decompilation(state)
 
-    
+if __name__ == '__main__':
+
+    main()    

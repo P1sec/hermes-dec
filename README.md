@@ -23,9 +23,16 @@ assets/index.android.bundle: Hermes JavaScript bytecode, version 84
 
 On non-Hermes based setups of React Native, this file usually contains minified/Webpacked JavaScript code.
 
-## Dependencies
+## Installation
 
 The application itself only relies on the Python 3.x standard library for now.
+
+You can install the tool through the following commands on Ubuntu 22.04:
+
+```
+sudo apt install -y python3-pip
+sudo pip3 install --upgrade git+https://github.com/P1sec/hermes-dec
+```
 
 Certain internal development utilities may however require to install `libclang` for Python:
 
@@ -35,7 +42,7 @@ sudo apt install python3-clang-12
 
 ## Usage
 
-You can download the tool using the following command on Linux:
+If you didn't install the tool system-wide using the command above, you can also download the source using this command and find the same utilities at the root:
 
 ```
 $ git clone git@github.com:P1sec/hermes-dec.git
@@ -59,19 +66,19 @@ assets/index.android.bundle: Hermes JavaScript bytecode, version 84
 If the concerned file is indeed an Hermes JavaScript bytecode file, you may then decode most of its file headers using the following utility (which output may not be stable over time):
 
 ```
-~/hermes-dec/parsers/hbc_file_parser.py assets/index.android.bundle
+hbc-file-parser assets/index.android.bundle
 ```
 
 You may then disassemble the contents of the React Native bytecode file to the `/tmp/my_output_file.hasm` output file using the following command (leave out the second parameter in order to send the disassembled content to the standard output):
 
 ```
-~/hermes-dec/disassembly/hbc_disassembler.py assets/index.android.bundle /tmp/my_output_file.hasm
+hbc-disassembler assets/index.android.bundle /tmp/my_output_file.hasm
 ```
 
 And perform the decompilation to pseudo-code (which is not valid JavaScript yet as it does not retranscribe loop/conditional structures) using the following command:
 
 ```
-~/hermes-dec/decompilation/hbc_decompiler.py assets/index.android.bundle /tmp/my_output_file.js
+hbc-decompiler assets/index.android.bundle /tmp/my_output_file.js
 ```
 
 ## Extra documentation
