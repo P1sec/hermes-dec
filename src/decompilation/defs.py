@@ -10,7 +10,7 @@ SCRIPT_DIR = dirname(realpath(__file__))
 ROOT_DIR = realpath(SCRIPT_DIR + '/..')
 PARSERS_DIR = realpath(ROOT_DIR + '/parsers')
 
-path.append(PARSERS_DIR)
+path.insert(0, PARSERS_DIR)
 
 from hbc_bytecode_parser import ParsedInstruction, get_builtin_functions
 from hbc_file_parser import HBCReader

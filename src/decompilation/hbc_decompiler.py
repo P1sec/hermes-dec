@@ -5,7 +5,7 @@ from argparse import ArgumentParser
 import sys
 
 SCRIPT_DIR = dirname(realpath(__file__))
-sys.path.append(SCRIPT_DIR)
+sys.path.insert(0, SCRIPT_DIR)
 
 from defs import HermesDecompiler, FunctionTableIndex
 from pass0_internally_disassemble import Pass0InternallyDisassemble

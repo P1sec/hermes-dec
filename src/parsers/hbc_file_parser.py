@@ -10,7 +10,7 @@ from hashlib import sha1
 import sys
 
 PARSERS_DIR = dirname(realpath(__file__))
-sys.path.append(PARSERS_DIR)
+sys.path.insert(0, PARSERS_DIR)
 
 # The following imports are made from the current directory:
 from hbc_bytecode_parser import parse_hbc_bytecode, get_parser, ParsedInstruction
@@ -82,7 +82,6 @@ class HBCReader:
     
     small_string_table : List[object]
     overflow_string_table : List[object]
-    string_storage : BytesIO
     strings : List[str]
     
     parser_module : 'module'
@@ -621,7 +620,7 @@ class HBCReader:
         
         self.align_over_padding()
         
-        self.string_storage = BytesIO(self.file_buffer.read(
+        string_storage = BytesIO(self.file_buffer.read(
             self.header.stringStorageSize))
         
         for string_count in range(self.header.stringCount):
@@ -635,8 +634,8 @@ class HBCReader:
             
             if is_utf_16:
                 length *= 2
-            self.string_storage.seek(offset)
-            string = self.string_storage.read(length)
+            string_storage.seek(offset)
+            string = string_storage.read(length)
             assert len(string) == length
             if is_utf_16:
                 string = string.decode('utf-16', errors = 'surrogatepass')

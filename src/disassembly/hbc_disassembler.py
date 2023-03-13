@@ -9,7 +9,7 @@ import sys
 DISASSEMBLY_DIR = dirname(realpath(__file__))
 ROOT_DIR = realpath(DISASSEMBLY_DIR + '/..')
 PARSERS_DIR = realpath(ROOT_DIR + '/parsers')
-sys.path.append(PARSERS_DIR)
+sys.path.insert(0, PARSERS_DIR)
 
 from hbc_file_parser import HBCReader, StringKind
 
