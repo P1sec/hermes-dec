@@ -64,6 +64,9 @@ class Pass3StructureDecompiledFlow:
                         # representation), manage to find the end of the
                         # current basic block through iterating over code
                         
+                        continue # Commented yet: Show not to always work
+
+                        """
                         for further_index in range(other_index + 2, len(lines)):
                             
                             if (isinstance(lines[further_index].tokens[0], JC) and
@@ -85,6 +88,7 @@ class Pass3StructureDecompiledFlow:
                                 break
                         
                         end_address = lines[further_index + 1].assembly[0].original_pos
+                        """
                     
                     else:
                         
@@ -105,11 +109,16 @@ class Pass3StructureDecompiledFlow:
                         min_boundary = min(boundary_1, boundary_2)
                         max_boundary = max(boundary_1, boundary_2)
                         if min_boundary != max_boundary:
+                            weird_case = False
                             for further_index in range(other_index + 2, len(lines)):    
                                 if min_boundary <= lines[further_index].assembly[0].original_pos < max_boundary:
-                                    lines[further_index].tokens.insert(0, RT('// NOTE: Orphan basic block present beween two condition branches automatically created upon For..in loop: '))
+                                    weird_case = True
+                                    # lines[further_index].tokens.insert(0, RT('// NOTE: Orphan basic block present beween two condition branches automatically created upon For..in loop: '))
+                                    break
+                            if weird_case:
+                                continue
                     
-                    #print('EEEEE ([. DEBUG]', lines[index], ':///', lines[index + 1], '/D/D+', lines[other_index], '/D+D+D', lines[other_index + 1])
+                    # print('EEEEE ([. DEBUG]', lines[index], ':///', lines[index + 1], '/D/D+', lines[other_index], '/D+D+D', lines[other_index + 1])
                     
                     function_body.basic_blocks.append(
                         BasicBlock(
