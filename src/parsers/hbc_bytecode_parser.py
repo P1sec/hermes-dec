@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 #-*- encoding: Utf-8 -*-
-from typing import List, Dict, Set, Sequence, Union, Optional, Any
+from typing import List, Dict, Set, Sequence, Union, Optional, Iterator, Any
 from logging import warning
 from io import BytesIO
 
@@ -133,10 +133,15 @@ def get_builtin_functions(parser_module : 'module') -> List[str]:
     
     return parser_module._builtin_function_names
 
-def parse_hbc_bytecode(buf : BytesIO, file_offset : int, bytecode_version : int, hbc_reader: 'HBCReader') -> List[Instruction]:
+# Read and parse the actual bytecode (+ switch tables) for
+# a given function header
+
+def parse_hbc_bytecode(function_header : object, hbc_reader : 'HBCReader') -> Iterator[Instruction]:
     
-    output_instructions : List['Instruction'] = []
-    
+    hbc_reader.file_buffer.seek(function_header.offset)
+
+    buf = BytesIO(hbc_reader.file_buffer.read(function_header.bytecodeSizeInBytes))
+
     while True:
         original_pos = buf.tell()
         
@@ -163,15 +168,11 @@ def parse_hbc_bytecode(buf : BytesIO, file_offset : int, bytecode_version : int,
         
         if inst.name == 'SwitchImm':
             result.switch_jump_table = []
-            hbc_reader.file_buffer.seek(file_offset + original_pos + structure.arg2)
+            hbc_reader.file_buffer.seek(function_header.offset + original_pos + structure.arg2)
             hbc_reader.align_over_padding()
             
             for jump_table_entry in range(structure.arg4, structure.arg5 + 1):
                 result.switch_jump_table.append(int.from_bytes(
                     hbc_reader.file_buffer.read(4), 'little') + original_pos)
         
-        output_instructions.append(result)
-        
-        # print('==> [i] DEBUG: Read %s...' % result)
-    
-    return output_instructions
+        yield result

@@ -5,6 +5,7 @@ from os.path import dirname, realpath
 from dataclasses import dataclass
 from sys import path
 from re import sub
+import sys
 
 SCRIPT_DIR = dirname(realpath(__file__))
 ROOT_DIR = realpath(SCRIPT_DIR + '/..')
@@ -19,13 +20,13 @@ class HermesDecompiler:
     
     input_file : str
     output_file : Optional[str]
+
+    calldirect_function_ids : Set[int]
     
     hbc_reader : HBCReader
-    closure_to_caller_function_ids : List[Tuple[int, int]] = {}
     
+    function_header : object # For the function being transformed to dehydrated state
     indent_level : int = 0 # Used while producing decompilation output
-    
-    function_id_to_body : Dict[int, 'DecompiledFunctionBody']
 
 # This will store information related to the curly braces that
 # will encompass a loop, a condition, a switch...
@@ -37,11 +38,19 @@ class BasicBlock:
     start_address : int
     end_address : int
 
+@dataclass
+class Environment:
+
+    parent_environment : Optional['Environment'] = None
+    nesting_quantity : int = 0
+    slot_index_to_varname : Dict[int, str] = None
+
 class DecompiledFunctionBody:
     
-    function_id : int
+    is_global : bool # Is this the global function?
     function_name : str
     function_object : object
+    exc_handlers : 'HBCExceptionHandlerInfo'
     
     try_starts : Dict[int, List[str]]
     try_ends : Dict[int, List[str]]
@@ -51,7 +60,10 @@ class DecompiledFunctionBody:
     is_async : bool = False
     is_generator : bool = False
     
-    argument_list : 'TODO' # todo
+    # Closure variable naming-related attributes:
+    parent_environment : Optional[Environment] = None
+    environment_id : Optional[int] = None
+    local_items : Dict[int, Environment] = {} # {env_register: Environment}
     
     basic_blocks : List[BasicBlock]
     
@@ -59,13 +71,11 @@ class DecompiledFunctionBody:
     
     statements : List['TokenString']
     
-    def stringify(self, state : HermesDecompiler, environment_id = None):
+    # Output decompiled code for this function to stdout
+    def output_code(self, state : HermesDecompiler):
         output = ''
         
-        global_function_index = state.hbc_reader.header.globalCodeIndex # Should be 0
-        
-        if self.function_id != global_function_index: # Don't prototype the global function
-                # or maybe do it for readibility?
+        if not self.is_global: # Don't prototype the global function
             if self.is_async:
                 output += 'async '
             output += 'function'
@@ -84,10 +94,10 @@ class DecompiledFunctionBody:
             if self.is_closure or self.is_generator:
                 if self.function_name:
                     output += ' // Original name: ' + self.function_name
-                    if environment_id is not None:
-                        output += ', environment: r' + str(environment_id)
-                elif environment_id is not None:
-                    output += ' // Environment: r' + str(environment_id)
+                    if self.environment_id is not None:
+                        output += ', environment: r' + str(self.environment_id)
+                elif self.environment_id is not None:
+                    output += ' // Environment: r' + str(self.environment_id)
             output += '\n'
             state.indent_level += 1
         
@@ -95,6 +105,11 @@ class DecompiledFunctionBody:
             for basic_block in self.basic_blocks]
         basic_block_ends = [basic_block.end_address
             for basic_block in self.basic_blocks]
+        
+        sys.stdout.write(output)
+        output = ''
+
+        # Process each statement, including nested functions
         
         for statement in self.statements:
             if statement.assembly:
@@ -122,22 +137,27 @@ class DecompiledFunctionBody:
                     basic_block_starts.pop(basic_block_starts.index(pos))
                     output += (' ' * (state.indent_level * 4)) + '{\n'
                     state.indent_level += 1
-                
-                # print('===> ', statement)
+
+                sys.stdout.write(output)
+                output = ''
             
             if statement.tokens:
-                output += (' ' * (state.indent_level * 4)) + ''.join(str(op) for op in statement.tokens)
-                if statement.tokens[:2] == [RawToken('for'), LeftParenthesisToken()]:
-                    output += '\n'
+                sys.stdout.write(' ' * (state.indent_level * 4))
+                is_for_loop = statement.tokens[:2] == [RawToken('for'), LeftParenthesisToken()]
+                while statement.tokens:
+                    op = statement.tokens.pop(0)
+                    if isinstance(op, FunctionTableIndex):
+                        op.closure_decompile(self)
+                    else:
+                        sys.stdout.write(str(op))
+                if is_for_loop:
+                    sys.stdout.write('\n')
                 else:
-                    output += ';\n'
+                    sys.stdout.write(';\n')
     
-        if self.function_id != global_function_index:
+        if not self.is_global:
             state.indent_level -= 1
-            output += ' ' * (state.indent_level * 4)
-            output += '}'
-    
-        return output
+            sys.stdout.write(' ' * (state.indent_level * 4) + '}')
     
 @dataclass
 class TokenString:
@@ -282,31 +302,38 @@ class FunctionTableIndex(Token):
     is_builtin : bool = False
     is_generator : bool = False
     is_async : bool = False
+
+    parent_environment : Optional[Environment] = None
     
-    def __post_init__(self):
-        
-        if not self.is_builtin:
-            name = self._name_if_any()
-            
-            self.function_body = self.state.function_id_to_body[self.function_id]
-            self.function_body.is_closure = self.is_closure
-            self.function_body.is_generator = self.is_generator
-            self.function_body.is_async = self.is_async
-    
-    def __repr__(self):
+    def closure_decompile(self, parent_closure : DecompiledFunctionBody):
+
+        # Is this a nested closure?
+        # If yes, print its decompiled code
         if (self.is_closure or self.is_generator) and not self.is_builtin:
-            return self.function_body.stringify(self.state, self.environment_id)
+
+            import hbc_decompiler
+            hbc_decompiler.decompile_function(self.state, self.function_id,
+                parent_environment = self.parent_environment,
+                environment_id = self.environment_id,
+                is_closure = self.is_closure,
+                is_generator = self.is_generator,
+                is_async = self.is_async)
+            return
+        
+        # Is this a know builtin or named function?
         name = self._name_if_any()
         if name:
-            return name
-        return '<Function #%d%s: %s>' % (
+            sys.stdout.write(name)
+            return
+        
+        # Is this anything else?
+        sys.stdout.write('<Function #%d: %s>' % (
             self.function_id,
-            ' (%s)' % name if name else '',
             ', '.join(
                 '%s: %s' % (key, value)
                 for key, value in self.__dict__.items()
                 if key != 'state' and value)
-            )
+            ))
     
     def _name_if_any(self) -> Optional[str]:
         

@@ -11,6 +11,7 @@ ROOT_DIR = realpath(DISASSEMBLY_DIR + '/..')
 PARSERS_DIR = realpath(ROOT_DIR + '/parsers')
 sys.path.insert(0, PARSERS_DIR)
 
+from hbc_bytecode_parser import parse_hbc_bytecode
 from hbc_file_parser import HBCReader, StringKind
 
 
@@ -92,7 +93,7 @@ def do_disassemble(input_file : str):
             print()
             print('Bytecode listing:')
             print()
-            for instruction in hbc_reader.function_ops[function_count]:
+            for instruction in parse_hbc_bytecode(function_header, hbc_reader):
                 print('==>', repr(instruction))
             print()
             print()

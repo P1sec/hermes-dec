@@ -5,60 +5,68 @@ from argparse import ArgumentParser
 import sys
 
 SCRIPT_DIR = dirname(realpath(__file__))
+ROOT_DIR = realpath(SCRIPT_DIR + '/..')
+PARSERS_DIR = realpath(ROOT_DIR + '/parsers')
+
 sys.path.insert(0, SCRIPT_DIR)
+sys.path.insert(0, PARSERS_DIR)
 
-from defs import HermesDecompiler, FunctionTableIndex
-from pass0_internally_disassemble import Pass0InternallyDisassemble
-from pass1_make_graphes import Pass1MakeGraphes
-from pass2_make_atomic_flow import Pass2MakeAtomicFlow
-from pass3_structure_decompiled_flow import Pass3StructureDecompiledFlow
+from hbc_file_parser import HBCReader
+from pass1_set_metadata import pass1_set_metadata
+from pass2_transform_code import pass2_transform_code
+from pass3_parse_forin_loops import pass3_parse_forin_loops
+from pass4_name_closure_vars import pass4_name_closure_vars
+from defs import HermesDecompiler, FunctionTableIndex, DecompiledFunctionBody
 
 """
-    Entry point for the Hermes HBC Decompiler
+    Entry points for the Hermes HBC Decompiler
 """
 
-def do_decompilation(state : HermesDecompiler):
+# Decompile a function and its nested closures to the standard
+# output, given a parsed Hermes bytecode file and a function ID:
 
-    Pass0InternallyDisassemble(state)
+def decompile_function(state : HermesDecompiler, function_id : int, **kwargs):
+
+    dehydrated = DecompiledFunctionBody()
     
-    Pass1MakeGraphes(state)
+    dehydrated.function_object = state.hbc_reader.function_headers[function_id]
+    dehydrated.is_global = function_id == state.hbc_reader.header.globalCodeIndex
+
+    # Used within FunctionTableIndex.closure_decompile to
+    # provide extra context about the current function:
+    for key, value in kwargs.items():
+        setattr(dehydrated, key, value)
+
+    if dehydrated.function_object.hasExceptionHandler:
+        dehydrated.exc_handlers = state.hbc_reader.function_id_to_exc_handlers[function_id]
+
+    pass1_set_metadata(state, dehydrated)
     
-    Pass2MakeAtomicFlow(state)
+    pass2_transform_code(state, dehydrated)
     
-    Pass3StructureDecompiledFlow(state) # WIP ..
+    pass3_parse_forin_loops(state, dehydrated)
     
-    # DEBUG:
-    print('[DEBUG] => Number of closures in the JS document:', len(state.closure_to_caller_function_ids))
+    pass4_name_closure_vars(state, dehydrated)
+
+    dehydrated.output_code(state)
     
-    print('=> DEBUG: [Intermediary representation of the decompiled code]')
-        
-    for function_id, function_body in state.function_id_to_body.items():
-        
-        if (function_body.is_closure or function_body.is_generator):
-            continue
-            # Everything except global (function_id=0) actually
-            # seems to be a closure, so if in nested mode etc.
-        
-        state.indent_level = 0
-        print()
-        print('=> Decompiling function #%d "%s" (at address 0x%08x%s):' % (
-            function_id, function_body.function_name,
-            function_body.function_object.offset,
-            ''.join((', %s: %s' % (
-                    (attribute[3:].title(), int(getattr(function_body, attribute))))
-                    for attribute in ('is_closure', 'is_async', 'is_generator')
-                    if getattr(function_body, attribute)
-                ))
-            ))
-        print()
-        print('_' * 37)
-        print()
-        print(function_body.stringify(state))
-        print()
+
+def do_decompilation(state : HermesDecompiler, file_handle):
+
+    hbc_reader = HBCReader()
+    state.hbc_reader = hbc_reader
+
+    state.hbc_reader.read_whole_file(file_handle)
     
-    print()
-    
-    # WIP ..
+    state.calldirect_function_ids = set()
+
+    global_function_index = state.hbc_reader.header.globalCodeIndex
+
+    state.indent_level = 0
+    decompile_function(state, global_function_index)
+
+    for function_id in sorted(state.calldirect_function_ids):
+        decompile_function(state, function_id)
 
 def main():
 
@@ -69,23 +77,23 @@ def main():
     
     args = args.parse_args()
     
-    # WIP .. Instantiate
     state = HermesDecompiler()
     state.input_file = args.input_file
     state.output_file = args.output_file
     
-    if state.output_file:
-        stdout = sys.stdout
-        with open(state.output_file, 'w', encoding='utf-8') as sys.stdout:
-            do_decompilation(state)
-        sys.stdout = stdout
-        
-        print()
-        print('[+] Decompiled output wrote to "%s"' % state.output_file)
-        print()
-    else:
-        sys.stdout.reconfigure(encoding='utf-8')
-        do_decompilation(state)
+    with open(state.input_file, 'rb') as file_handle:
+        if state.output_file:
+            stdout = sys.stdout
+            with open(state.output_file, 'w', encoding='utf-8') as sys.stdout:
+                do_decompilation(state, file_handle)
+            sys.stdout = stdout
+            
+            print()
+            print('[+] Decompiled output wrote to "%s"' % state.output_file)
+            print()
+        else:
+            sys.stdout.reconfigure(encoding='utf-8')
+            do_decompilation(state, file_handle)
 
 if __name__ == '__main__':
 

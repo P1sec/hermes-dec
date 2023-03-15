@@ -74,7 +74,6 @@ class HBCReader:
     
     header : object
     function_headers : List[object]
-    function_ops : List[List[ParsedInstruction]]
     function_id_to_exc_handlers : Dict[int, List['HBCExceptionHandlerInfo']]
     function_id_to_debug_offsets : Dict[int, 'DebugOffsets']
     string_kinds : List[StringKind]
@@ -504,7 +503,6 @@ class HBCReader:
     def read_functions(self):
         
         self.function_headers = []
-        self.function_ops = []
         
         self.function_id_to_exc_handlers = {}
         self.function_id_to_debug_offsets = {}
@@ -557,18 +555,8 @@ class HBCReader:
                 
                 self.function_id_to_debug_offsets[function_count] = debug_header
             
-            # Read and parse the actual bytecode (+ switch tables) using
-            # the "hbc_bytecode_parser.py" file:
-            
-            self.file_buffer.seek(function_header.offset)
-            
-            data = self.file_buffer.read(function_header.bytecodeSizeInBytes)
-            function_ops = parse_hbc_bytecode(BytesIO(data), function_header.offset, self.header.version, self)
-            
             self.file_buffer.seek(before_pos)
             
-            self.function_ops.append(function_ops)
-    
     def read_string_kinds(self):
         
         self.string_kinds = []

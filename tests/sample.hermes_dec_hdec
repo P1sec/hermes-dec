@@ -1,10 +1,3 @@
-[DEBUG] => Number of closures in the JS document: 7
-=> DEBUG: [Intermediary representation of the decompiled code]
-
-=> Decompiling function #0 "global" (at address 0x00000320):
-
-_____________________________________
-
 testx = undefined;
 gen = undefined;
 ze = undefined;
@@ -200,6 +193,3 @@ r1 = r0.bind(r1)();
 r0 = 'b';
 r0 = r2.bind(r3)(r0, r1);
 return r0;
-
-
-
