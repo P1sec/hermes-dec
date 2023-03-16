@@ -29,6 +29,7 @@ def decompile_function(state : HermesDecompiler, function_id : int, **kwargs):
 
     dehydrated = DecompiledFunctionBody()
     
+    dehydrated.function_id = function_id
     dehydrated.function_object = state.hbc_reader.function_headers[function_id]
     dehydrated.is_global = function_id == state.hbc_reader.header.globalCodeIndex
 
@@ -64,9 +65,11 @@ def do_decompilation(state : HermesDecompiler, file_handle):
 
     state.indent_level = 0
     decompile_function(state, global_function_index)
+    print()
 
     for function_id in sorted(state.calldirect_function_ids):
         decompile_function(state, function_id)
+        print()
 
 def main():
 

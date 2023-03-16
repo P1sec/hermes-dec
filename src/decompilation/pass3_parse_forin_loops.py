@@ -4,7 +4,7 @@ from typing import List, Tuple, Dict, Set, Sequence, Union, Optional, Any
 from os.path import dirname, realpath
 from dataclasses import dataclass
 
-from defs import HermesDecompiler, DecompiledFunctionBody, Environment, TokenString, ForInLoopInit, ForInLoopNextIter, RawToken, ReturnDirective, ThrowDirective, JumpNotCondition, JumpCondition, AssignmentToken, BasicBlock, LeftParenthesisToken, RightHandRegToken,  RightParenthesisToken, LeftHandRegToken, NewEnvironmentToken, StoreToEnvironment, GetEnvironmentToken, LoadFromEnvironmentToken, FunctionTableIndex
+from defs import HermesDecompiler, DecompiledFunctionBody, NestedFrame, Environment, TokenString, ForInLoopInit, ForInLoopNextIter, RawToken, ReturnDirective, ThrowDirective, JumpNotCondition, JumpCondition, AssignmentToken, BasicBlock, LeftParenthesisToken, RightHandRegToken,  RightParenthesisToken, LeftHandRegToken, NewEnvironmentToken, StoreToEnvironment, GetEnvironmentToken, LoadFromEnvironmentToken, FunctionTableIndex
 
 def pass3_parse_forin_loops(state : HermesDecompiler, function_body : DecompiledFunctionBody):
 
@@ -111,8 +111,8 @@ def pass3_parse_forin_loops(state : HermesDecompiler, function_body : Decompiled
                     if weird_case:
                         continue
             
-            function_body.basic_blocks.append(
-                BasicBlock(
+            function_body.nested_frames.append(
+                NestedFrame(
                     begin_address,
                     end_address
                 )

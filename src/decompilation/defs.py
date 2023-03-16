@@ -28,15 +28,80 @@ class HermesDecompiler:
     function_header : object # For the function being transformed to dehydrated state
     indent_level : int = 0 # Used while producing decompilation output
 
-# This will store information related to the curly braces that
-# will encompass a loop, a condition, a switch...
-#
-# At a latter stage of decompilation, the latter basic blocks
-# should be checked for non-overlap (TODO)
-@dataclass
+# This should encompass the scope for a HBC assembly-level basic
+# block (retranscribed as a for(;;) switch { case X: } case in
+# the decompiled code, if not matching a particular NestingFrame
+# object as defined below)
+# This will provide the ability to construct a graph of
+# the basic assembly blocks in the disassembled/decompiled
+# output
 class BasicBlock:
     start_address : int
     end_address : int
+    
+    # These flags should indicate whether we have
+    # encountered cycling in
+    # "graph_traversers/step2_visite_code_paths.py"
+    # (which indicates the presence of a loop):
+    may_be_cycling_anchor : bool = False
+    may_be_cycling_target : bool = False
+    
+    # These flags delimite blocks that will mark
+    # the code not continue into something
+    # whichsoever
+    is_unconditional_throw_anchor : bool = False
+    is_unconditional_return_end : bool = False
+
+    # These flags delimite blocks that have the
+    # code to continue somewhere else
+    is_unconditional_jump_anchor : bool = False
+    is_yield_action_anchor : bool = False
+    
+    # These flags delimite blocks that
+    # should have more than one branching
+    # end
+    is_conditional_jump_anchor : bool = False
+    if_switch_action_anchor : bool = False
+
+    anchor_instruction : Optional[ParsedInstruction] = None
+    jump_targets_for_anchor : Optional[List[int]] = None
+
+    # These attributes will be used to build
+    # the decompiler's graph structure
+    
+    child_nodes : List['BasicBlock']
+    parent_nodes : List['BasicBlock']
+    
+    error_handling_child_nodes : List['BasicBlock']
+    error_handling_parent_nodes : List['BasicBlock']
+    
+    # These attributes should be added at steps 3+
+    # of the graph traversal process (using
+    # instruction pattern maching, etc)
+    
+    do_expr_at_begin : Optional['XXX_TODO']
+    if_expr_at_begin : Optional['XXX_TODO']
+    else_if_expr_at_begin : Optional['XXX_TODO']
+    else_expr_at_begin : Optional['XXX_TODO']
+    switch_expr_at_begin : Optional['XXX_TODO']
+    while_expr_at_begin : Optional['XXX_TODO']
+    for_expr_at_begin : Optional['XXX_TODO']
+    while_expr_at_end_matching_block : Optional['XXX_TODO']
+    closing_brace_at_end_matching_block : Optional['XXX_TODO']
+
+    # Whether this basic block should still be visible in the
+    # decompiled code (switch this attribute to False when
+    # a NestingFrame totally overlaps the concerned block)
+    stay_visible : bool = True
+
+# This should encompass the scope for a decompiled code-level
+# nesting frame (switch, if, else if, for, while, do... block)
+@dataclass
+class NestedFrame:
+    start_address : int
+    end_address : int
+
+    pass # WIP
 
 @dataclass
 class Environment:
@@ -49,6 +114,7 @@ class DecompiledFunctionBody:
     
     is_global : bool # Is this the global function?
     function_name : str
+    function_id : int
     function_object : object
     exc_handlers : 'HBCExceptionHandlerInfo'
     
@@ -56,6 +122,11 @@ class DecompiledFunctionBody:
     try_ends : Dict[int, List[str]]
     catch_targets : Dict[int, List[str]]
     
+    jump_anchors : Dict[int, ParsedInstruction] # Non-jump address associated with a jump/switch/yield instruction
+    ret_anchors : Dict[int, ParsedInstruction] # Unreacheable address associated with a return instruction
+    throw_anchors : Dict[int, ParsedInstruction] # Unreacheable address associated with a jump instruction
+    jump_targets : Set[int] # Jump target address
+
     is_closure : bool = False
     is_async : bool = False
     is_generator : bool = False
@@ -66,8 +137,7 @@ class DecompiledFunctionBody:
     local_items : Dict[int, Environment] = {} # {env_register: Environment}
     
     basic_blocks : List[BasicBlock]
-    
-    jump_targets : Set[int]
+    nested_frames : List[NestedFrame]
     
     statements : List['TokenString']
     
@@ -101,10 +171,24 @@ class DecompiledFunctionBody:
             output += '\n'
             state.indent_level += 1
         
+        nested_frame_starts = [nested_frame.start_address
+            for nested_frame in self.nested_frames]
+        nested_frame_ends = [nested_frame.end_address
+            for nested_frame in self.nested_frames]
+
         basic_block_starts = [basic_block.start_address
             for basic_block in self.basic_blocks]
         basic_block_ends = [basic_block.end_address
             for basic_block in self.basic_blocks]
+        
+        if len(basic_block_starts) > 1:
+            output += (' ' * (state.indent_level * 4))
+            output += '_fun%d: for(var _fun%d_ip = 0; ; ) switch(_fun%d_ip) {\n' % (
+                self.function_id,
+                self.function_id,
+                self.function_id
+            )
+            state.indent_level += 1
         
         sys.stdout.write(output)
         output = ''
@@ -115,11 +199,15 @@ class DecompiledFunctionBody:
             if statement.assembly:
                 pos = statement.assembly[0].original_pos
                 
-                while pos in basic_block_ends:
-                    basic_block_ends.pop(basic_block_ends.index(pos))
+                while pos in nested_frame_ends:
+                    nested_frame_ends.pop(nested_frame_ends.index(pos))
                     state.indent_level -= 1
                     output += (' ' * (state.indent_level * 4)) + '}\n'
                 
+                if len(basic_block_starts) > 1 and pos in basic_block_starts:
+                    output += 'case %d:\n' % pos
+                """
+                # Commented: Unused now that we have basic blocks:
                 if pos in self.try_starts:
                     for label in self.try_starts[pos]:
                         output += '%s:\n' % label
@@ -132,9 +220,10 @@ class DecompiledFunctionBody:
 
                 if pos in self.jump_targets:
                     output += 'label_%d:\n' % pos
+                """
                 
-                while pos in basic_block_starts:
-                    basic_block_starts.pop(basic_block_starts.index(pos))
+                while pos in nested_frame_starts:
+                    nested_frame_starts.pop(nested_frame_starts.index(pos))
                     output += (' ' * (state.indent_level * 4)) + '{\n'
                     state.indent_level += 1
 
@@ -143,17 +232,62 @@ class DecompiledFunctionBody:
             
             if statement.tokens:
                 sys.stdout.write(' ' * (state.indent_level * 4))
-                is_for_loop = statement.tokens[:2] == [RawToken('for'), LeftParenthesisToken()]
+                is_block = statement.tokens[:2] == [RawToken('for'), LeftParenthesisToken()]
                 while statement.tokens:
                     op = statement.tokens.pop(0)
                     if isinstance(op, FunctionTableIndex):
                         op.closure_decompile(self)
+                    elif isinstance(op, JumpNotCondition):
+                        conditions = ''.join(str(token) for token in statement.tokens)
+                        statement.tokens = []
+                        if conditions == 'false':
+                            sys.stdout.write('_fun%d_ip = %d; continue _fun%d' % (
+                                self.function_id,
+                                op.target_address,
+                                self.function_id
+                            ))
+                        else:
+                            is_block = True
+                            sys.stdout.write('if(')
+                            if '(' in conditions or ' ' in conditions:
+                                sys.stdout.write('!(%s)' % conditions)
+                            elif conditions[0] == '!':
+                                sys.stdout.write(conditions[1:])
+                            else:
+                                sys.stdout.write('!' + conditions)
+                            sys.stdout.write(') { _fun%d_ip = %d; continue _fun%d }' % (
+                                self.function_id,
+                                op.target_address,
+                                self.function_id
+                            ))
+                    elif isinstance(op, JumpCondition):
+                        conditions = ''.join(str(token) for token in statement.tokens)
+                        statement.tokens = []
+                        if conditions == 'true':
+                            sys.stdout.write('_fun%d_ip = %d; continue _fun%d' % (
+                                self.function_id,
+                                op.target_address,
+                                self.function_id
+                            ))
+                        else:
+                            is_block = True
+                            sys.stdout.write('if(')
+                            sys.stdout.write(conditions)
+                            sys.stdout.write(') { _fun%d_ip = %d; continue _fun%d }' % (
+                                self.function_id,
+                                op.target_address,
+                                self.function_id
+                            ))
                     else:
                         sys.stdout.write(str(op))
-                if is_for_loop:
+                if is_block:
                     sys.stdout.write('\n')
                 else:
                     sys.stdout.write(';\n')
+
+        if len(basic_block_starts) > 1:
+            state.indent_level -= 1
+            sys.stdout.write(' ' * (state.indent_level * 4) + '}\n')
     
         if not self.is_global:
             state.indent_level -= 1

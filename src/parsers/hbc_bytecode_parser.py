@@ -19,6 +19,7 @@ class ParsedInstruction:
     arg6 : object
     switch_jump_table : Optional[List[int]]
     original_pos : int
+    next_pos : int
     hbc_reader : 'HBCReader'
     
     def __repr__(self):
@@ -160,6 +161,7 @@ def parse_hbc_bytecode(function_header : object, hbc_reader : 'HBCReader') -> It
         result = ParsedInstruction()
         result.inst = inst
         result.original_pos = original_pos
+        result.next_pos = original_pos + inst.binary_size
         result.hbc_reader = hbc_reader
         
         for operand in ('arg1', 'arg2', 'arg3', 'arg4', 'arg5', 'arg6'):
