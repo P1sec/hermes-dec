@@ -205,22 +205,19 @@ class DecompiledFunctionBody:
                     output += (' ' * (state.indent_level * 4)) + '}\n'
                 
                 if len(basic_block_starts) > 1 and pos in basic_block_starts:
-                    output += 'case %d:\n' % pos
-                """
-                # Commented: Unused now that we have basic blocks:
-                if pos in self.try_starts:
-                    for label in self.try_starts[pos]:
-                        output += '%s:\n' % label
-                if pos in self.try_ends:
-                    for label in self.try_ends[pos]:
-                        output += '%s:\n' % label
-                if pos in self.catch_targets:
-                    for label in self.catch_targets[pos]:
-                        output += '%s:\n' % label
+                    output += 'case %d:' % pos
 
-                if pos in self.jump_targets:
-                    output += 'label_%d:\n' % pos
-                """
+                    if pos in self.try_starts:
+                        for label in self.try_starts[pos]:
+                            output += ' // %s' % label
+                    if pos in self.try_ends:
+                        for label in self.try_ends[pos]:
+                            output += ' // %s' % label
+                    if pos in self.catch_targets:
+                        for label in self.catch_targets[pos]:
+                            output += ' // %s' % label
+
+                    output += '\n'
                 
                 while pos in nested_frame_starts:
                     nested_frame_starts.pop(nested_frame_starts.index(pos))

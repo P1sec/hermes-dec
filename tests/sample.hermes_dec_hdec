@@ -82,25 +82,25 @@ case 19:
 case 21:
             ResumeGenerator(result_out_reg=1, return_bool_out_reg=4);
             if(r4) { _fun5_ip = 173; continue _fun5 }
-case 30:
+case 30: // try_start_0 // try_start_1
             r4 = global;
             r4 = r4.gen;
             r5 = r4.bind(r2)();
             r4 = r5.next;
             r4 = r4.bind(r5)();
-case 50:
+case 50: // try_end0
             _fun5_ip = 71; continue _fun5;
-case 52:
+case 52: // catch_target0
             CatchBlockStart(arg_register=4);
             r4 = global;
             r5 = r4.print;
             r4 = 'Hello! Exception handling';
             r4 = r5.bind(r2)(r4);
-case 71:
+case 71: // try_end1
             _fun5_ip = 170; continue _fun5;
-case 73:
+case 73: // catch_target1
             CatchBlockStart(arg_register=3);
-case 75:
+case 75: // try_start_2
             r5 = 432;
             r4 = 'dçdàçD°D+D';
             r5 = r5 * r4;
@@ -119,9 +119,9 @@ case 102:
             r3 = 6;
             r3 = r7 + r3;
             r3 = r5.bind(r6)(r4, r3);
-case 149:
+case 149: // try_end2
             _fun5_ip = 170; continue _fun5;
-case 151:
+case 151: // catch_target2
             CatchBlockStart(arg_register=3);
             r3 = global;
             r4 = r3.alert;
