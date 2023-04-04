@@ -3,7 +3,7 @@
 from typing import List, Tuple, Dict, Set, Sequence, Union, Optional, Any
 from sys import stderr
 
-from defs import HermesDecompiler, DecompiledFunctionBody, Environment, TokenString, ForInLoopInit, ForInLoopNextIter, RawToken, ReturnDirective, ThrowDirective, JumpNotCondition, JumpCondition, AssignmentToken, BasicBlock, LeftParenthesisToken, RightHandRegToken,  RightParenthesisToken, LeftHandRegToken, NewEnvironmentToken, StoreToEnvironment, GetEnvironmentToken, LoadFromEnvironmentToken, FunctionTableIndex
+from defs import HermesDecompiler, DecompiledFunctionBody, Environment, TokenString, ForInLoopInit, ForInLoopNextIter, RawToken, ReturnDirective, ThrowDirective, JumpNotCondition, JumpCondition, AssignmentToken, BasicBlock, LeftParenthesisToken, RightHandRegToken,  RightParenthesisToken, LeftHandRegToken, NewInnerEnvironmentToken, NewEnvironmentToken, StoreToEnvironment, GetEnvironmentToken, LoadFromEnvironmentToken, FunctionTableIndex
 
 # Implementation for the "NameNonLocalClosureVariables" algorithm (see the .odt notes)
 
@@ -42,7 +42,12 @@ def pass4_name_closure_vars(state : HermesDecompiler, function_body : Decompiled
             
                 function_body.local_items[token.register] = Environment(parent_environment, (parent_environment.nesting_quantity + 1) if parent_environment else 0, {})
                 line.tokens = [] # Silence this instruction in the produced decompiled code
-                
+
+            elif isinstance(token, NewInnerEnvironmentToken):
+
+                outer_environment = function_body.local_items[token.parent_register]
+                function_body.local_items[token.dest_register] = Environment(outer_environment, (outer_environment.nesting_quantity + 1), {})
+
             elif isinstance(token, GetEnvironmentToken):
 
                 environment = parent_environment
@@ -73,4 +78,3 @@ def pass4_name_closure_vars(state : HermesDecompiler, function_body : Decompiled
                     token.slot_index)
                 
                 line.tokens[2] = RT(var_name)
-    

@@ -385,6 +385,12 @@ class NewEnvironmentToken(Token):
     register : int
 
 @dataclass
+class NewInnerEnvironmentToken(Token):
+    dest_register : int
+    parent_register : int
+    number_of_slots : int
+
+@dataclass
 class SwitchImm(Token):
     value_reg : int
     jump_table_address : int

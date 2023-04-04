@@ -70,7 +70,7 @@ def do_disassemble(input_file : str):
                 debug_data = hbc_reader.function_id_to_debug_offsets[function_count]
                 debug_info = '\n  [Debug offsets: '
                 debug_info += 'source_locs=' + hex(debug_data.source_locations) + ', '
-                debug_info += 'lexical_data=' + hex(debug_data.lexical_data) + ']'
+                debug_info += 'scope_desc_data=' + hex(debug_data.scope_desc_data) + ']'
                 
             print('=> [Function #%d "%s" of %d bytes]: %d params, frame size=%d, env size=%d, read index sz=%d, write index sz=%d, strict=%r, exc handler=%r, debug info=%r  @ offset 0x%08x%s%s' % (
                 
