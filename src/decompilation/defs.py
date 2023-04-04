@@ -30,14 +30,46 @@ class HermesDecompiler:
 
 # This should encompass the scope for a HBC assembly-level basic
 # block (retranscribed as a for(;;) switch { case X: } case in
-# the decompiled code, if not matching a particular NestingFrame
+# the decompiled code, if not matching a particular NestedFrame
 # object as defined below)
 # This will provide the ability to construct a graph of
 # the basic assembly blocks in the disassembled/decompiled
 # output
 class BasicBlock:
+    # File offsets of the basic block in the Hermes bytecode file.
     start_address : int
     end_address : int
+
+    # Individual number of instructions in the basic block
+    insn_count : int
+
+    # Number of instructions that will be gone through
+    # when taking the longest possible code path to
+    # the present basic block without cycling.
+    #
+    # => Calculated through, for each "parent_nodes",
+    # adding up the "insn_count" of each block where
+    # "max_acc_insn_weight" is not set with the
+    # "max_acc_insn_weight" value of the first block
+    # in the ascending block graph where it is set.
+    #
+    # => For the first/root block of the code graph,
+    # this value is 0.
+    #
+    # => Used for choosing which block should be
+    # preferred to be the main branch or the conditional
+    # branch in case of if() conditions, etc. (the branch
+    # going the block with the largest "max_acc_insn_weight"
+    # should be preferred to be main, and the block with
+    # the smalled value should be preferred to be conditional)
+    max_acc_insn_weight : int = 0
+
+    # Same as "max_acc_insn_weight" but used to determinate
+    # which blocks should be painted bottom-center (main branches)
+    # or painted bottom-right (conditional branches), using an
+    # estimate vertical height expressed in pixels instead of an
+    # instruction count
+    max_acc_pixel_weight : int = 0
     
     # These flags should indicate whether we have
     # encountered cycling in
@@ -52,8 +84,8 @@ class BasicBlock:
     is_unconditional_throw_anchor : bool = False
     is_unconditional_return_end : bool = False
 
-    # These flags delimite blocks that have the
-    # code to continue somewhere else
+    # These flags delimite blocks that have exactly
+    # one determined branching end
     is_unconditional_jump_anchor : bool = False
     is_yield_action_anchor : bool = False
     
@@ -63,6 +95,8 @@ class BasicBlock:
     is_conditional_jump_anchor : bool = False
     if_switch_action_anchor : bool = False
 
+    # When one the flags above are set, this provides
+    # insight about the instruction performing the jump
     anchor_instruction : Optional[ParsedInstruction] = None
     jump_targets_for_anchor : Optional[List[int]] = None
 
@@ -91,7 +125,7 @@ class BasicBlock:
 
     # Whether this basic block should still be visible in the
     # decompiled code (switch this attribute to False when
-    # a NestingFrame totally overlaps the concerned block)
+    # a NestedFrame totally overlaps the concerned block)
     stay_visible : bool = True
 
 # This should encompass the scope for a decompiled code-level
@@ -126,6 +160,8 @@ class DecompiledFunctionBody:
     ret_anchors : Dict[int, ParsedInstruction] # Unreacheable address associated with a return instruction
     throw_anchors : Dict[int, ParsedInstruction] # Unreacheable address associated with a jump instruction
     jump_targets : Set[int] # Jump target address
+
+    instruction_boundaries : List[int] # Offset for each instruction and end of code, the first item is zero
 
     is_closure : bool = False
     is_async : bool = False

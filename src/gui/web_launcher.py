@@ -5,6 +5,11 @@ from sys import path
 
 path.insert(0, dirname(realpath(__file__)))
 
-from src.decompilation.hbc_decompiler import main
+from webbrowser import open_new_tab
 
+open_new_tab('file:///home/marin/hermes-dec/src/gui/static/index.html')
+
+from server import main
 main()
+
+# WIP ...

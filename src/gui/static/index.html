@@ -1,0 +1,52 @@
+	
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Graph viewer</title>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <div id="home_view"> <!-- File open/recently opened options -->
+            <div id="open_button_container">
+                <input type="button" id="open_button" value="Open a file...">
+                <input type="file" id="file_picker" accept=".bundle, .hbc, .apk" style="display: none">
+            </div>
+        </div>
+        <div id="work_view">
+            <div id="side_pane"> <!-- Functions list -->
+                <div id="functions_list">
+                    <table id="functions_table">
+                        <thead></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+            <canvas id="canvas"></canvas> <!-- Disassembly graph view -->
+            <div id="code_pane"></div> <!-- Decompiled code view -->
+        </div>
+        <script src="socket_client.js"></script>
+        <script src="file_uploader.js"></script>
+        <script src="canvas.js"></script>
+        <script>
+
+
+            // Load data...
+            // (Use a forkable/threaded Websocket-based server?)
+            //      (=> Where the server entry point should be located?)
+            //          (=> /server_gui.py loading /src/gui/server.py)
+            // (We'll have to load the sidebar contents, metadata, function contents)
+            // (Maybe disassemble/decompile functions on-demand to save RAM/CPU/time?)
+
+            // Module : URL hash
+
+            // (TODO)
+            // Adapt the canvas to the window/div size too (at canvas initialization + onresize)
+            // Draw the UI frame (should the sidebar be a plain div, the decompiled
+            // data form plain text, and the graph view a 2D canvas?)
+            // Use a TypeScript or JS compiler maybe? (We can avoid that I think
+            // this is a local application which does not require compilation,
+            // modern ECMAScript provides correct OO programming, etc.)
+        </script>
+    </body>
+</html> 

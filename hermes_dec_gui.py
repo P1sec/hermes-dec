@@ -5,6 +5,6 @@ from sys import path
 
 path.insert(0, dirname(realpath(__file__)))
 
-from src.decompilation.hbc_decompiler import main
+from src.gui.web_launcher import main
 
 main()

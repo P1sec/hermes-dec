@@ -25,13 +25,15 @@ On non-Hermes based setups of React Native, this file usually contains minified/
 
 ## Installation
 
-The application itself only relies on the Python 3.x standard library for now.
+The command-line application itself only relies on the Python 3.x standard library for now.
+
+The GUI also relies on the a few external modules (listed in the `pip3` command below) to work.
 
 You can install the tool through the following commands on Ubuntu 22.04:
 
 ```
 sudo apt install -y python3-pip
-sudo pip3 install --upgrade git+https://github.com/P1sec/hermes-dec
+sudo pip3 install --upgrade websockets unidecode appdirs git+https://github.com/P1sec/hermes-dec
 ```
 
 Certain internal development utilities may however require to install `libclang` for Python:

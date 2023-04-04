@@ -17,7 +17,6 @@ from hbc_file_parser import HBCReader, StringKind
 
 def do_disassemble(input_file : str):
     
-    
     with open(input_file, 'rb') as file_descriptor:
 
         hbc_reader = HBCReader()

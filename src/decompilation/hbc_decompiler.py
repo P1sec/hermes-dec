@@ -13,6 +13,8 @@ sys.path.insert(0, PARSERS_DIR)
 
 from hbc_file_parser import HBCReader
 from pass1_set_metadata import pass1_set_metadata
+from pass1b_make_basic_blocks import pass1b_make_basic_blocks
+from pass1c_visit_code_paths import pass1c_visit_code_paths
 from pass2_transform_code import pass2_transform_code
 from pass3_parse_forin_loops import pass3_parse_forin_loops
 from pass4_name_closure_vars import pass4_name_closure_vars
@@ -28,7 +30,8 @@ from defs import HermesDecompiler, FunctionTableIndex, DecompiledFunctionBody
 def decompile_function(state : HermesDecompiler, function_id : int, **kwargs):
 
     dehydrated = DecompiledFunctionBody()
-    
+    dehydrated.is_closure = True
+
     dehydrated.function_id = function_id
     dehydrated.function_object = state.hbc_reader.function_headers[function_id]
     dehydrated.is_global = function_id == state.hbc_reader.header.globalCodeIndex
@@ -42,6 +45,8 @@ def decompile_function(state : HermesDecompiler, function_id : int, **kwargs):
         dehydrated.exc_handlers = state.hbc_reader.function_id_to_exc_handlers[function_id]
 
     pass1_set_metadata(state, dehydrated)
+    pass1b_make_basic_blocks(state, dehydrated)
+    pass1c_visit_code_paths(state, dehydrated)
     
     pass2_transform_code(state, dehydrated)
     
