@@ -1,201 +1,201 @@
 hbcdump> 
-a692192bdc8ee6f7b2b9918faf18a64db39587c8:     file format HBC-93
+a692192bdc8ee6f7b2b9918faf18a64db39587c8:     file format HBC-94
 
 
 Disassembly of section .text:
 
 0000000000000320 <_0>:
-00000320:	33 11 00 00 00                                              DeclareGlobalVar                 $0x000011
-00000325:	33 13 00 00 00                                              DeclareGlobalVar                 $0x000013
-0000032a:	33 19 00 00 00                                              DeclareGlobalVar                 $0x000019
+00000320:	34 11 00 00 00                                              DeclareGlobalVar                 $0x000011
+00000325:	34 13 00 00 00                                              DeclareGlobalVar                 $0x000013
+0000032a:	34 19 00 00 00                                              DeclareGlobalVar                 $0x000019
 0000032f:	32 01                                                       CreateEnvironment                %r1
-00000331:	66 02 01 01 00                                              CreateAsyncClosure               %r2, %r1, $0x01
+00000331:	68 02 01 01 00                                              CreateAsyncClosure               %r2, %r1, $0x01
 00000336:	30 00                                                       GetGlobalObject                  %r0
-00000338:	39 00 02 01 11 00                                           PutById                          %r0, %r2, $0x1, $0x11
-0000033e:	64 02 01 04 00                                              CreateGeneratorClosure           %r2, %r1, $0x04
-00000343:	39 00 02 02 13 00                                           PutById                          %r0, %r2, $0x2, $0x13
-00000349:	62 01 01 06 00                                              CreateClosure                    %r1, %r1, $0x06
-0000034e:	39 00 01 03 19 00                                           PutById                          %r0, %r1, $0x3, $0x19
-00000354:	37 02 00 01 20 00                                           TryGetById                       %r2, %r0, $0x1, $0x20
-0000035a:	34 01 00 02 19                                              GetByIdShort                     %r1, %r0, $0x2, $0x19
-0000035f:	39 02 01 04 17 00                                           PutById                          %r2, %r1, $0x4, $0x17
-00000365:	34 01 00 02 19                                              GetByIdShort                     %r1, %r0, $0x2, $0x19
-0000036a:	74 04                                                       LoadConstUndefined               %r4
-0000036c:	4f 01 01 04                                                 Call1                            %r1, %r1, %r4
-00000370:	82 01 0c 00 00 00 0d 00 00 00 00 00 00 00                   CreateRegExp                     %r1, $0x00000c, $0x00000d, $0x000000
-0000037e:	39 00 01 05 1d 00                                           PutById                          %r0, %r1, $0x5, $0x1d
-00000384:	37 03 00 03 1b 00                                           TryGetById                       %r3, %r0, $0x3, $0x1b
-0000038a:	34 02 03 04 18                                              GetByIdShort                     %r2, %r3, $0x4, $0x18
-0000038f:	37 06 00 05 1d 00                                           TryGetById                       %r6, %r0, $0x5, $0x1d
-00000395:	34 05 06 06 1a                                              GetByIdShort                     %r5, %r6, $0x6, $0x1a
-0000039a:	71 01 0b 00                                                 LoadConstString                  %r1, $0x0b
-0000039e:	51 01 05 06 01                                              Call2                            %r1, %r5, %r6, %r1
-000003a3:	51 01 02 03 01                                              Call2                            %r1, %r2, %r3, %r1
-000003a8:	37 05 00 03 1b 00                                           TryGetById                       %r5, %r0, $0x3, $0x1b
-000003ae:	34 03 05 04 18                                              GetByIdShort                     %r3, %r5, $0x4, $0x18
-000003b3:	34 01 00 07 13                                              GetByIdShort                     %r1, %r0, $0x7, $0x13
-000003b8:	4f 02 01 04                                                 Call1                            %r2, %r1, %r4
-000003bc:	34 01 02 08 14                                              GetByIdShort                     %r1, %r2, $0x8, $0x14
-000003c1:	4f 02 01 02                                                 Call1                            %r2, %r1, %r2
-000003c5:	71 01 08 00                                                 LoadConstString                  %r1, $0x08
-000003c9:	52 01 03 05 01 02                                           Call3                            %r1, %r3, %r5, %r1, %r2
-000003cf:	37 03 00 03 1b 00                                           TryGetById                       %r3, %r0, $0x3, $0x1b
-000003d5:	34 02 03 04 18                                              GetByIdShort                     %r2, %r3, $0x4, $0x18
-000003da:	34 01 00 09 11                                              GetByIdShort                     %r1, %r0, $0x9, $0x11
-000003df:	6e 05 33 33 33 33 33 33 1d 40                               LoadConstDouble                  %r5, $0x401d333333333333
-000003e9:	71 00 0e 00                                                 LoadConstString                  %r0, $0x0e
+00000338:	3b 00 02 01 11 00                                           PutById                          %r0, %r2, $0x1, $0x11
+0000033e:	66 02 01 04 00                                              CreateGeneratorClosure           %r2, %r1, $0x04
+00000343:	3b 00 02 02 13 00                                           PutById                          %r0, %r2, $0x2, $0x13
+00000349:	64 01 01 06 00                                              CreateClosure                    %r1, %r1, $0x06
+0000034e:	3b 00 01 03 19 00                                           PutById                          %r0, %r1, $0x3, $0x19
+00000354:	39 02 00 01 20 00                                           TryGetById                       %r2, %r0, $0x1, $0x20
+0000035a:	36 01 00 02 19                                              GetByIdShort                     %r1, %r0, $0x2, $0x19
+0000035f:	3b 02 01 04 17 00                                           PutById                          %r2, %r1, $0x4, $0x17
+00000365:	36 01 00 02 19                                              GetByIdShort                     %r1, %r0, $0x2, $0x19
+0000036a:	76 04                                                       LoadConstUndefined               %r4
+0000036c:	51 01 01 04                                                 Call1                            %r1, %r1, %r4
+00000370:	84 01 0c 00 00 00 0d 00 00 00 00 00 00 00                   CreateRegExp                     %r1, $0x00000c, $0x00000d, $0x000000
+0000037e:	3b 00 01 05 1d 00                                           PutById                          %r0, %r1, $0x5, $0x1d
+00000384:	39 03 00 03 1b 00                                           TryGetById                       %r3, %r0, $0x3, $0x1b
+0000038a:	36 02 03 04 18                                              GetByIdShort                     %r2, %r3, $0x4, $0x18
+0000038f:	39 06 00 05 1d 00                                           TryGetById                       %r6, %r0, $0x5, $0x1d
+00000395:	36 05 06 06 1a                                              GetByIdShort                     %r5, %r6, $0x6, $0x1a
+0000039a:	73 01 0b 00                                                 LoadConstString                  %r1, $0x0b
+0000039e:	53 01 05 06 01                                              Call2                            %r1, %r5, %r6, %r1
+000003a3:	53 01 02 03 01                                              Call2                            %r1, %r2, %r3, %r1
+000003a8:	39 05 00 03 1b 00                                           TryGetById                       %r5, %r0, $0x3, $0x1b
+000003ae:	36 03 05 04 18                                              GetByIdShort                     %r3, %r5, $0x4, $0x18
+000003b3:	36 01 00 07 13                                              GetByIdShort                     %r1, %r0, $0x7, $0x13
+000003b8:	51 02 01 04                                                 Call1                            %r2, %r1, %r4
+000003bc:	36 01 02 08 14                                              GetByIdShort                     %r1, %r2, $0x8, $0x14
+000003c1:	51 02 01 02                                                 Call1                            %r2, %r1, %r2
+000003c5:	73 01 08 00                                                 LoadConstString                  %r1, $0x08
+000003c9:	54 01 03 05 01 02                                           Call3                            %r1, %r3, %r5, %r1, %r2
+000003cf:	39 03 00 03 1b 00                                           TryGetById                       %r3, %r0, $0x3, $0x1b
+000003d5:	36 02 03 04 18                                              GetByIdShort                     %r2, %r3, $0x4, $0x18
+000003da:	36 01 00 09 11                                              GetByIdShort                     %r1, %r0, $0x9, $0x11
+000003df:	70 05 33 33 33 33 33 33 1d 40                               LoadConstDouble                  %r5, $0x401d333333333333
+000003e9:	73 00 0e 00                                                 LoadConstString                  %r0, $0x0e
 000003ed:	16 00 05 00                                                 Add                              %r0, %r5, %r0
-000003f1:	51 01 01 04 00                                              Call2                            %r1, %r1, %r4, %r0
-000003f6:	34 00 01 08 14                                              GetByIdShort                     %r0, %r1, $0x8, $0x14
-000003fb:	4f 01 00 01                                                 Call1                            %r1, %r0, %r1
-000003ff:	71 00 0a 00                                                 LoadConstString                  %r0, $0x0a
-00000403:	52 00 02 03 00 01                                           Call3                            %r0, %r2, %r3, %r0, %r1
-00000409:	5a 00                                                       Ret                              %r0
+000003f1:	53 01 01 04 00                                              Call2                            %r1, %r1, %r4, %r0
+000003f6:	36 00 01 08 14                                              GetByIdShort                     %r0, %r1, $0x8, $0x14
+000003fb:	51 01 00 01                                                 Call1                            %r1, %r0, %r1
+000003ff:	73 00 0a 00                                                 LoadConstString                  %r0, $0x0a
+00000403:	54 00 02 03 00 01                                           Call3                            %r0, %r2, %r3, %r0, %r1
+00000409:	5c 00                                                       Ret                              %r0
 
 000000000000040b <_1>:
-0000040b:	74 04                                                       LoadConstUndefined               %r4
-0000040d:	74 00                                                       LoadConstUndefined               %r0
-0000040f:	81 00                                                       ReifyArguments                   %r0
+0000040b:	76 04                                                       LoadConstUndefined               %r4
+0000040d:	76 00                                                       LoadConstUndefined               %r0
+0000040f:	83 00                                                       ReifyArguments                   %r0
 00000411:	08 03 00                                                    Mov                              %r3, %r0
-00000414:	59 02 33                                                    GetBuiltinClosure                %r2, $0x33
+00000414:	5b 02 34                                                    GetBuiltinClosure                %r2, $0x34
 00000417:	32 00                                                       CreateEnvironment                %r0
-00000419:	64 01 00 02 00                                              CreateGeneratorClosure           %r1, %r0, $0x02
-0000041e:	7a 00                                                       LoadThisNS                       %r0
-00000420:	53 00 02 04 01 00 03                                        Call4                            %r0, %r2, %r4, %r1, %r0, %r3
-00000427:	5a 00                                                       Ret                              %r0
+00000419:	66 01 00 02 00                                              CreateGeneratorClosure           %r1, %r0, $0x02
+0000041e:	7c 00                                                       LoadThisNS                       %r0
+00000420:	55 00 02 04 01 00 03                                        Call4                            %r0, %r2, %r4, %r1, %r0, %r3
+00000427:	5c 00                                                       Ret                              %r0
 
 0000000000000429 <_2>:
 00000429:	32 00                                                       CreateEnvironment                %r0
-0000042b:	87 00 00 03 00                                              CreateGenerator                  %r0, %r0, $0x03
-00000430:	5a 00                                                       Ret                              %r0
+0000042b:	89 00 00 03 00                                              CreateGenerator                  %r0, %r0, $0x03
+00000430:	5c 00                                                       Ret                              %r0
 
 0000000000000432 <_3>:
-00000432:	84                                                          StartGenerator                  
-00000433:	85 00 01                                                    ResumeGenerator                  %r0, %r1
-00000436:	8e 75 01                                                    JmpTrue                          000004ab, %r1
+00000432:	86                                                          StartGenerator                  
+00000433:	87 00 01                                                    ResumeGenerator                  %r0, %r1
+00000436:	90 75 01                                                    JmpTrue                          000004ab, %r1
 00000439:	30 04                                                       GetGlobalObject                  %r4
-0000043b:	34 02 04 01 11                                              GetByIdShort                     %r2, %r4, $0x1, $0x11
-00000440:	37 03 04 02 1d 00                                           TryGetById                       %r3, %r4, $0x2, $0x1d
-00000446:	6c 05 2a                                                    LoadConstUInt8                   %r5, $0x2a
-00000449:	71 01 10 00                                                 LoadConstString                  %r1, $0x10
+0000043b:	36 02 04 01 11                                              GetByIdShort                     %r2, %r4, $0x1, $0x11
+00000440:	39 03 04 02 1d 00                                           TryGetById                       %r3, %r4, $0x2, $0x1d
+00000446:	6e 05 2a                                                    LoadConstUInt8                   %r5, $0x2a
+00000449:	73 01 10 00                                                 LoadConstString                  %r1, $0x10
 0000044d:	16 01 05 01                                                 Add                              %r1, %r5, %r1
 00000451:	16 01 01 03                                                 Add                              %r1, %r1, %r3
-00000455:	74 03                                                       LoadConstUndefined               %r3
-00000457:	51 01 02 03 01                                              Call2                            %r1, %r2, %r3, %r1
-0000045c:	94 04                                                       SaveGenerator                    00000460
-0000045e:	5a 01                                                       Ret                              %r1
-00000460:	85 01 02                                                    ResumeGenerator                  %r1, %r2
-00000463:	8e 45 02                                                    JmpTrue                          000004a8, %r2
-00000466:	34 02 04 03 13                                              GetByIdShort                     %r2, %r4, $0x3, $0x13
-0000046b:	4f 02 02 03                                                 Call1                            %r2, %r2, %r3
-0000046f:	94 04                                                       SaveGenerator                    00000473
-00000471:	5a 02                                                       Ret                              %r2
-00000473:	85 02 05                                                    ResumeGenerator                  %r2, %r5
-00000476:	8e 2f 05                                                    JmpTrue                          000004a5, %r5
-00000479:	37 07 04 04 1b 00                                           TryGetById                       %r7, %r4, $0x4, $0x1b
-0000047f:	34 06 07 05 18                                              GetByIdShort                     %r6, %r7, $0x5, $0x18
-00000484:	6a 05 01                                                    LoadParam                        %r5, $0x1
-00000487:	51 05 06 07 05                                              Call2                            %r5, %r6, %r7, %r5
-0000048c:	37 06 04 04 1b 00                                           TryGetById                       %r6, %r4, $0x4, $0x1b
-00000492:	34 05 06 05 18                                              GetByIdShort                     %r5, %r6, $0x5, $0x18
-00000497:	37 04 04 06 12 00                                           TryGetById                       %r4, %r4, $0x6, $0x12
-0000049d:	51 04 05 06 04                                              Call2                            %r4, %r5, %r6, %r4
-000004a2:	86                                                          CompleteGenerator               
-000004a3:	5a 03                                                       Ret                              %r3
-000004a5:	86                                                          CompleteGenerator               
-000004a6:	5a 02                                                       Ret                              %r2
-000004a8:	86                                                          CompleteGenerator               
-000004a9:	5a 01                                                       Ret                              %r1
-000004ab:	86                                                          CompleteGenerator               
-000004ac:	5a 00                                                       Ret                              %r0
+00000455:	76 03                                                       LoadConstUndefined               %r3
+00000457:	53 01 02 03 01                                              Call2                            %r1, %r2, %r3, %r1
+0000045c:	96 04                                                       SaveGenerator                    00000460
+0000045e:	5c 01                                                       Ret                              %r1
+00000460:	87 01 02                                                    ResumeGenerator                  %r1, %r2
+00000463:	90 45 02                                                    JmpTrue                          000004a8, %r2
+00000466:	36 02 04 03 13                                              GetByIdShort                     %r2, %r4, $0x3, $0x13
+0000046b:	51 02 02 03                                                 Call1                            %r2, %r2, %r3
+0000046f:	96 04                                                       SaveGenerator                    00000473
+00000471:	5c 02                                                       Ret                              %r2
+00000473:	87 02 05                                                    ResumeGenerator                  %r2, %r5
+00000476:	90 2f 05                                                    JmpTrue                          000004a5, %r5
+00000479:	39 07 04 04 1b 00                                           TryGetById                       %r7, %r4, $0x4, $0x1b
+0000047f:	36 06 07 05 18                                              GetByIdShort                     %r6, %r7, $0x5, $0x18
+00000484:	6c 05 01                                                    LoadParam                        %r5, $0x1
+00000487:	53 05 06 07 05                                              Call2                            %r5, %r6, %r7, %r5
+0000048c:	39 06 04 04 1b 00                                           TryGetById                       %r6, %r4, $0x4, $0x1b
+00000492:	36 05 06 05 18                                              GetByIdShort                     %r5, %r6, $0x5, $0x18
+00000497:	39 04 04 06 12 00                                           TryGetById                       %r4, %r4, $0x6, $0x12
+0000049d:	53 04 05 06 04                                              Call2                            %r4, %r5, %r6, %r4
+000004a2:	88                                                          CompleteGenerator               
+000004a3:	5c 03                                                       Ret                              %r3
+000004a5:	88                                                          CompleteGenerator               
+000004a6:	5c 02                                                       Ret                              %r2
+000004a8:	88                                                          CompleteGenerator               
+000004a9:	5c 01                                                       Ret                              %r1
+000004ab:	88                                                          CompleteGenerator               
+000004ac:	5c 00                                                       Ret                              %r0
 
 00000000000004ae <_4>:
 000004ae:	32 00                                                       CreateEnvironment                %r0
-000004b0:	87 00 00 05 00                                              CreateGenerator                  %r0, %r0, $0x05
-000004b5:	5a 00                                                       Ret                              %r0
+000004b0:	89 00 00 05 00                                              CreateGenerator                  %r0, %r0, $0x05
+000004b5:	5c 00                                                       Ret                              %r0
 
 00000000000004b7 <_5>:
-000004b7:	84                                                          StartGenerator                  
-000004b8:	74 02                                                       LoadConstUndefined               %r2
-000004ba:	74 03                                                       LoadConstUndefined               %r3
-000004bc:	85 00 01                                                    ResumeGenerator                  %r0, %r1
-000004bf:	8f a8 00 00 00 01                                           JmpTrueLong                      00000567, %r1
-000004c5:	6c 01 2a                                                    LoadConstUInt8                   %r1, $0x2a
-000004c8:	94 04                                                       SaveGenerator                    000004cc
-000004ca:	5a 01                                                       Ret                              %r1
-000004cc:	85 01 04                                                    ResumeGenerator                  %r1, %r4
-000004cf:	8f 95 00 00 00 04                                           JmpTrueLong                      00000564, %r4
+000004b7:	86                                                          StartGenerator                  
+000004b8:	76 02                                                       LoadConstUndefined               %r2
+000004ba:	76 03                                                       LoadConstUndefined               %r3
+000004bc:	87 00 01                                                    ResumeGenerator                  %r0, %r1
+000004bf:	91 a8 00 00 00 01                                           JmpTrueLong                      00000567, %r1
+000004c5:	6e 01 2a                                                    LoadConstUInt8                   %r1, $0x2a
+000004c8:	96 04                                                       SaveGenerator                    000004cc
+000004ca:	5c 01                                                       Ret                              %r1
+000004cc:	87 01 04                                                    ResumeGenerator                  %r1, %r4
+000004cf:	91 95 00 00 00 04                                           JmpTrueLong                      00000564, %r4
 000004d5:	30 04                                                       GetGlobalObject                  %r4
-000004d7:	34 04 04 01 13                                              GetByIdShort                     %r4, %r4, $0x1, $0x13
-000004dc:	4f 05 04 02                                                 Call1                            %r5, %r4, %r2
-000004e0:	34 04 05 02 14                                              GetByIdShort                     %r4, %r5, $0x2, $0x14
-000004e5:	4f 04 04 05                                                 Call1                            %r4, %r4, %r5
-000004e9:	8c 15                                                       Jmp                              000004fe
-000004eb:	5b 04                                                       Catch                            %r4
+000004d7:	36 04 04 01 13                                              GetByIdShort                     %r4, %r4, $0x1, $0x13
+000004dc:	51 05 04 02                                                 Call1                            %r5, %r4, %r2
+000004e0:	36 04 05 02 14                                              GetByIdShort                     %r4, %r5, $0x2, $0x14
+000004e5:	51 04 04 05                                                 Call1                            %r4, %r4, %r5
+000004e9:	8e 15                                                       Jmp                              000004fe
+000004eb:	5d 04                                                       Catch                            %r4
 000004ed:	30 04                                                       GetGlobalObject                  %r4
-000004ef:	37 05 04 03 21 00                                           TryGetById                       %r5, %r4, $0x3, $0x21
-000004f5:	71 04 06 00                                                 LoadConstString                  %r4, $0x06
-000004f9:	51 04 05 02 04                                              Call2                            %r4, %r5, %r2, %r4
-000004fe:	8c 63                                                       Jmp                              00000561
-00000500:	5b 03                                                       Catch                            %r3
-00000502:	6d 05 b0 01 00 00                                           LoadConstInt                     %r5, $0x0001b0
-00000508:	71 04 0f 00                                                 LoadConstString                  %r4, $0x0f
+000004ef:	39 05 04 03 21 00                                           TryGetById                       %r5, %r4, $0x3, $0x21
+000004f5:	73 04 06 00                                                 LoadConstString                  %r4, $0x06
+000004f9:	53 04 05 02 04                                              Call2                            %r4, %r5, %r2, %r4
+000004fe:	8e 63                                                       Jmp                              00000561
+00000500:	5d 03                                                       Catch                            %r3
+00000502:	6f 05 b0 01 00 00                                           LoadConstInt                     %r5, $0x0001b0
+00000508:	73 04 0f 00                                                 LoadConstString                  %r4, $0x0f
 0000050c:	18 05 05 04                                                 Mul                              %r5, %r5, %r4
-00000510:	6d 04 de 01 00 00                                           LoadConstInt                     %r4, $0x0001de
+00000510:	6f 04 de 01 00 00                                           LoadConstInt                     %r4, $0x0001de
 00000516:	17 04 05 04                                                 AddN                             %r4, %r5, %r4
-0000051a:	90 32 04                                                    JmpFalse                         0000054c, %r4
+0000051a:	92 32 04                                                    JmpFalse                         0000054c, %r4
 0000051d:	30 04                                                       GetGlobalObject                  %r4
-0000051f:	37 06 04 04 1b 00                                           TryGetById                       %r6, %r4, $0x4, $0x1b
-00000525:	34 05 06 05 18                                              GetByIdShort                     %r5, %r6, $0x5, $0x18
+0000051f:	39 06 04 04 1b 00                                           TryGetById                       %r6, %r4, $0x4, $0x1b
+00000525:	36 05 06 05 18                                              GetByIdShort                     %r5, %r6, $0x5, $0x18
 0000052a:	08 07 03                                                    Mov                              %r7, %r3
-0000052d:	71 03 05 00                                                 LoadConstString                  %r3, $0x05
+0000052d:	73 03 05 00                                                 LoadConstString                  %r3, $0x05
 00000531:	16 04 03 07                                                 Add                              %r4, %r3, %r7
-00000535:	6d 03 20 30 05 00                                           LoadConstInt                     %r3, $0x053020
+00000535:	6f 03 20 30 05 00                                           LoadConstInt                     %r3, $0x053020
 0000053b:	18 07 07 03                                                 Mul                              %r7, %r7, %r3
-0000053f:	6c 03 06                                                    LoadConstUInt8                   %r3, $0x6
+0000053f:	6e 03 06                                                    LoadConstUInt8                   %r3, $0x6
 00000542:	17 03 07 03                                                 AddN                             %r3, %r7, %r3
-00000546:	52 03 05 06 04 03                                           Call3                            %r3, %r5, %r6, %r4, %r3
-0000054c:	8c 15                                                       Jmp                              00000561
-0000054e:	5b 03                                                       Catch                            %r3
+00000546:	54 03 05 06 04 03                                           Call3                            %r3, %r5, %r6, %r4, %r3
+0000054c:	8e 15                                                       Jmp                              00000561
+0000054e:	5d 03                                                       Catch                            %r3
 00000550:	30 03                                                       GetGlobalObject                  %r3
-00000552:	37 04 03 06 15 00                                           TryGetById                       %r4, %r3, $0x6, $0x15
-00000558:	71 03 04 00                                                 LoadConstString                  %r3, $0x04
-0000055c:	51 03 04 02 03                                              Call2                            %r3, %r4, %r2, %r3
-00000561:	86                                                          CompleteGenerator               
-00000562:	5a 02                                                       Ret                              %r2
-00000564:	86                                                          CompleteGenerator               
-00000565:	5a 01                                                       Ret                              %r1
-00000567:	86                                                          CompleteGenerator               
-00000568:	5a 00                                                       Ret                              %r0
+00000552:	39 04 03 06 15 00                                           TryGetById                       %r4, %r3, $0x6, $0x15
+00000558:	73 03 04 00                                                 LoadConstString                  %r3, $0x04
+0000055c:	53 03 04 02 03                                              Call2                            %r3, %r4, %r2, %r3
+00000561:	88                                                          CompleteGenerator               
+00000562:	5c 02                                                       Ret                              %r2
+00000564:	88                                                          CompleteGenerator               
+00000565:	5c 01                                                       Ret                              %r1
+00000567:	88                                                          CompleteGenerator               
+00000568:	5c 00                                                       Ret                              %r0
 
 000000000000056a <_6>:
-0000056a:	74 00                                                       LoadConstUndefined               %r0
+0000056a:	76 00                                                       LoadConstUndefined               %r0
 0000056c:	32 03                                                       CreateEnvironment                %r3
 0000056e:	30 01                                                       GetGlobalObject                  %r1
-00000570:	37 04 01 01 1e 00                                           TryGetById                       %r4, %r1, $0x1, $0x1e
-00000576:	34 02 04 02 16                                              GetByIdShort                     %r2, %r4, $0x2, $0x16
-0000057b:	4f 02 02 04                                                 Call1                            %r2, %r2, %r4
-0000057f:	8e 09 02                                                    JmpTrue                          00000588, %r2
+00000570:	39 04 01 01 1e 00                                           TryGetById                       %r4, %r1, $0x1, $0x1e
+00000576:	36 02 04 02 16                                              GetByIdShort                     %r2, %r4, $0x2, $0x16
+0000057b:	51 02 02 04                                                 Call1                            %r2, %r2, %r4
+0000057f:	90 09 02                                                    JmpTrue                          00000588, %r2
 00000582:	2c 03 00 00                                                 StoreNPToEnvironment             %r3, $0x0, %r0
-00000586:	8c 18                                                       Jmp                              0000059e
-00000588:	62 02 03 07 00                                              CreateClosure                    %r2, %r3, $0x07
+00000586:	8e 18                                                       Jmp                              0000059e
+00000588:	64 02 03 07 00                                              CreateClosure                    %r2, %r3, $0x07
 0000058d:	2a 03 00 02                                                 StoreToEnvironment               %r3, $0x0, %r2
-00000591:	4f 02 02 00                                                 Call1                            %r2, %r2, %r0
-00000595:	34 01 01 03 19                                              GetByIdShort                     %r1, %r1, $0x3, $0x19
-0000059a:	4f 01 01 00                                                 Call1                            %r1, %r1, %r0
-0000059e:	5a 00                                                       Ret                              %r0
+00000591:	51 02 02 00                                                 Call1                            %r2, %r2, %r0
+00000595:	36 01 01 03 19                                              GetByIdShort                     %r1, %r1, $0x3, $0x19
+0000059a:	51 01 01 00                                                 Call1                            %r1, %r1, %r0
+0000059e:	5c 00                                                       Ret                              %r0
 
 00000000000005a0 <_7>:
 000005a0:	30 00                                                       GetGlobalObject                  %r0
-000005a2:	37 01 00 01 1c 00                                           TryGetById                       %r1, %r0, $0x1, $0x1c
-000005a8:	34 00 01 02 1f                                              GetByIdShort                     %r0, %r1, $0x2, $0x1f
-000005ad:	4f 00 00 01                                                 Call1                            %r0, %r0, %r1
-000005b1:	90 10 00                                                    JmpFalse                         000005c1, %r0
+000005a2:	39 01 00 01 1c 00                                           TryGetById                       %r1, %r0, $0x1, $0x1c
+000005a8:	36 00 01 02 1f                                              GetByIdShort                     %r0, %r1, $0x2, $0x1f
+000005ad:	51 00 00 01                                                 Call1                            %r0, %r0, %r1
+000005b1:	92 10 00                                                    JmpFalse                         000005c1, %r0
 000005b4:	29 00 00                                                    GetEnvironment                   %r0, $0x0
 000005b7:	2e 01 00 00                                                 LoadFromEnvironment              %r1, %r0, $0x0
-000005bb:	74 00                                                       LoadConstUndefined               %r0
-000005bd:	4f 00 01 00                                                 Call1                            %r0, %r1, %r0
-000005c1:	74 00                                                       LoadConstUndefined               %r0
-000005c3:	5a 00                                                       Ret                              %r0
+000005bb:	76 00                                                       LoadConstUndefined               %r0
+000005bd:	51 00 01 00                                                 Call1                            %r0, %r1, %r0
+000005c1:	76 00                                                       LoadConstUndefined               %r0
+000005c3:	5c 00                                                       Ret                              %r0
 
 hbcdump> 

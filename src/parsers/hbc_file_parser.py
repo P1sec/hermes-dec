@@ -106,7 +106,7 @@ class HBCReader:
     debug_string_storage : BytesIO
     debug_file_regions : List[object]
     sources_data_storage : BytesIO
-    lexical_data_storage : BytesIO
+    scope_desc_data_storage : BytesIO
     textified_data_storage : BytesIO
     string_table_storage : BytesIO
 
@@ -386,7 +386,7 @@ class HBCReader:
                 ('filename_count', c_uint32),
                 ('filename_storage_size', c_uint32),
                 ('file_region_count', c_uint32),
-                ('lexical_data_offset', c_uint32),
+                ('scope_desc_data_offset', c_uint32), # lexical_data_offset before up to version 91 and in version 93
                 ('textified_data_offset', c_uint32),
                 ('string_table_offset', c_uint32),
                 ('debug_data_size', c_uint32)
@@ -398,7 +398,7 @@ class HBCReader:
                 ('filename_count', c_uint32),
                 ('filename_storage_size', c_uint32),
                 ('file_region_count', c_uint32),
-                ('lexical_data_offset', c_uint32),
+                ('scope_desc_data_offset', c_uint32),
                 ('debug_data_size', c_uint32)
             ]
         
@@ -438,14 +438,14 @@ class HBCReader:
         if self.header.version >= 91:
             fields = [
                 ('source_locations', c_uint32),
-                ('lexical_data', c_uint32),
+                ('scope_desc_data', c_uint32), # lexical_data before up to version 91 and in version 93
                 ('textified_callees', c_uint32)
             ]
         
         else:
             fields = [
                 ('source_locations', c_uint32),
-                ('lexical_data', c_uint32)
+                ('scope_desc_data', c_uint32)
             ]
         
         CTypesReader._fields_ = fields
@@ -721,19 +721,19 @@ class HBCReader:
         self.file_buffer.readinto(self.debug_file_regions)
         
         if self.header.version < 91:
-            sources_data_size = self.debug_info_header.lexical_data_offset
-            lexical_data_size = self.debug_info_header.debug_data_size - self.debug_info_header.lexical_data_offset
+            sources_data_size = self.debug_info_header.scope_desc_data_offset
+            scope_desc_data_size = self.debug_info_header.debug_data_size - self.debug_info_header.scope_desc_data_offset
             
             self.sources_data_storage = BytesIO(self.file_buffer.read(sources_data_size))
-            self.lexical_data_storage = BytesIO(self.file_buffer.read(lexical_data_size))
+            self.scope_desc_data_storage = BytesIO(self.file_buffer.read(scope_desc_data_size))
         else:
-            sources_data_size = self.debug_info_header.lexical_data_offset
-            lexical_data_size = self.debug_info_header.textified_data_offset - self.debug_info_header.lexical_data_offset
+            sources_data_size = self.debug_info_header.scope_desc_data_offset
+            scope_desc_data_size = self.debug_info_header.textified_data_offset - self.debug_info_header.scope_desc_data_offset
             textified_data_size = self.debug_info_header.string_table_offset - self.debug_info_header.textified_data_offset
             string_table_size = self.debug_info_header.debug_data_size - self.debug_info_header.string_table_offset
             
             self.sources_data_storage = BytesIO(self.file_buffer.read(sources_data_size))
-            self.lexical_data_storage = BytesIO(self.file_buffer.read(lexical_data_size))
+            self.scope_desc_data_storage = BytesIO(self.file_buffer.read(scope_desc_data_size))
             
             self.textified_data_storage = BytesIO(self.file_buffer.read(textified_data_size))
             self.string_table_storage = BytesIO(self.file_buffer.read(string_table_size))
@@ -915,7 +915,7 @@ def main():
         print_debug_info(hbc_reader.sources_data_storage)
 
         print('  => Sources data:', hbc_reader.sources_data_storage.getvalue().hex())
-        print('  => Lexical raw data:', hbc_reader.lexical_data_storage.getvalue().hex())
+        print('  => Scope descriptor raw data:', hbc_reader.scope_desc_data_storage.getvalue().hex())
         if hbc_reader.header.version >= 91:
             print('  => Textified data:', hbc_reader.textified_data_storage.getvalue().hex())
             print('  => Raw variables and callees data:', hbc_reader.string_table_storage.getvalue().hex())

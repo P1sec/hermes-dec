@@ -2,11 +2,11 @@
 +-------------------------------------------------------------------------+
 | Magic                        | 0x1f1903c103bc1fc6                       |
 +-------------------------------------------------------------------------+
-| Version                      | 93                                       |
+| Version                      | 94                                       |
 +-------------------------------------------------------------------------+
 | SourceHash                   | a692192bdc8ee6f7b2b9918faf18a64db39587c8 |
 +-------------------------------------------------------------------------+
-| FileLength                   | 1931                                     |
+| FileLength                   | 2256                                     |
 +-------------------------------------------------------------------------+
 | GlobalCodeIndex              | 0                                        |
 +-------------------------------------------------------------------------+
@@ -104,21 +104,21 @@
 
 => Debug data:
 
-+-----------------------------+
-| Filename count        | 1   |
-+-----------------------------+
-| Filename storage size | 9   |
-+-----------------------------+
-| File region count     | 1   |
-+-----------------------------+
-| Lexical data offset   | 259 |
-+-----------------------------+
-| Textified data offset | 261 |
-+-----------------------------+
-| String table offset   | 262 |
-+-----------------------------+
-| Debug data size       | 262 |
-+-----------------------------+
++------------------------------+
+| Filename count         | 1   |
++------------------------------+
+| Filename storage size  | 9   |
++------------------------------+
+| File region count      | 1   |
++------------------------------+
+| Scope desc data offset | 583 |
++------------------------------+
+| Textified data offset  | 586 |
++------------------------------+
+| String table offset    | 587 |
++------------------------------+
+| Debug data size        | 587 |
++------------------------------+
 
 +------------+
 | Offset | 0 |
@@ -139,105 +139,139 @@ Function index: 0
 Start line: 7
 Start column: 1
   Address 24: Line 7 - Column 1 - Statement 0
-  Address 35: Line 7 - Column 1 - Statement 0
-  Address 46: Line 7 - Column 1 - Statement 0
-  Address 52: Line 52 - Column 1 - Statement 0
-  Address 58: Line 52 - Column 17 - Statement 0
-  Address 63: Line 52 - Column 15 - Statement 0
-  Address 69: Line 53 - Column 1 - Statement 0
-  Address 76: Line 53 - Column 3 - Statement 0
-  Address 94: Line 55 - Column 7 - Statement 0
-  Address 100: Line 56 - Column 1 - Statement 0
-  Address 106: Line 56 - Column 12 - Statement 0
-  Address 111: Line 56 - Column 13 - Statement 0
-  Address 117: Line 56 - Column 23 - Statement 0
-  Address 126: Line 56 - Column 23 - Statement 0
-  Address 131: Line 56 - Column 12 - Statement 0
-  Address 136: Line 58 - Column 1 - Statement 0
-  Address 142: Line 58 - Column 12 - Statement 0
-  Address 147: Line 58 - Column 18 - Statement 0
-  Address 152: Line 58 - Column 21 - Statement 0
-  Address 156: Line 58 - Column 28 - Statement 0
-  Address 161: Line 58 - Column 28 - Statement 0
-  Address 169: Line 58 - Column 12 - Statement 0
-  Address 175: Line 59 - Column 1 - Statement 0
-  Address 181: Line 59 - Column 12 - Statement 0
-  Address 186: Line 59 - Column 18 - Statement 0
-  Address 209: Line 59 - Column 23 - Statement 0
-  Address 214: Line 59 - Column 40 - Statement 0
-  Address 219: Line 59 - Column 40 - Statement 0
-  Address 227: Line 59 - Column 12 - Statement 0
+  Address 24: Line 8 - Column 12 - Statement 0
+  Address 24: Line 8 - Column 12 - Statement 0
+  Address 26: Line 13 - Column 12 - Statement 0
+  Address 26: Line 13 - Column 18 - Statement 90
+  Address 26: Line 13 - Column 20 - Statement 90
+  Address 32: Line 13 - Column 36 - Statement 90
+  Address 32: Line 13 - Column 41 - Statement 90
+  Address 30: Line 13 - Column 42 - Statement 90
+  Address 36: Line 14 - Column 28 - Statement 90
+  Address 36: Line 14 - Column 35 - Statement 90
+  Address 38: Line 14 - Column 36 - Statement 90
+  Address 56: Line 16 - Column 40 - Statement 90
+  Address 56: Line 16 - Column 46 - Statement 92
+  Address 50: Line 16 - Column 49 - Statement 92
+  Address 56: Line 16 - Column 60 - Statement 92
+  Address 56: Line 17 - Column 65 - Statement 92
+  Address 56: Line 17 - Column 65 - Statement 98
+  Address 62: Line 17 - Column 75 - Statement 98
+  Address 62: Line 19 - Column 84 - Statement 98
+  Address 62: Line 19 - Column 85 - Statement 98
+  Address 67: Line 19 - Column 74 - Statement 98
+  Address 67: Line 19 - Column 79 - Statement 102
+  Address 56: Line 19 - Column 84 - Statement 102
+  Address 62: Line 19 - Column 95 - Statement 102
+  Address 62: Line 20 - Column 100 - Statement 102
+  Address 68: Line 20 - Column 101 - Statement 102
+  Address 73: Line 20 - Column 104 - Statement 102
+  Address 73: Line 21 - Column 108 - Statement 102
+  Address 73: Line 24 - Column 108 - Statement 103
+  Address 78: Line 24 - Column 108 - Statement 103
+  Address 78: Line 25 - Column 116 - Statement 103
+  Address 78: Line 17 - Column 116 - Statement 103
+  Address 79: Line 20 - Column 118 - Statement 103
+  Address 68: Line 20 - Column 121 - Statement 103
+  Address 74: Line 20 - Column 132 - Statement 103
+  Address 74: Line 21 - Column 137 - Statement 103
+  Address 74: Line 24 - Column 137 - Statement 103
+  Address 75: Line 35 - Column 137 - Statement 108
+  Address 75: Line 35 - Column 142 - Statement 108
+  Address 92: Line 35 - Column 142 - Statement 108
+  Address 97: Line 35 - Column 142 - Statement 108
+  Address 97: Line 35 - Column 150 - Statement 108
+  Address 69: Line 35 - Column 150 - Statement 108
 
 Function index: 1
 Start line: 7
 Start column: 1
   Address 21: Line 7 - Column 1 - Statement 0
+  Address 21: Line 7 - Column 0 - Statement 0
+  Address 24: Line 10 - Column 1 - Statement 9
+  Address 26: Line 15 - Column 1 - Statement 9
+  Address 4294967321: Line 17 - Column 1 - Statement 49
+  Address 4294967321: Line 2147483664 - Column 18 - Statement 49
+  Address 4294967287: Line 2147483664 - Column 4294967313 - Statement 49
+  Address 4294967293: Line 2147483664 - Column 4294967312 - Statement 49
+  Address 4294967293: Line 4294967311 - Column 4294967317 - Statement 49
+  Address 4294967282: Line 4294967311 - Column 8589934612 - Statement 49
+  Address 4294967286: Line 4294967311 - Column 8589934612 - Statement 49
+  Address 4294967286: Line 6442450958 - Column 8589934618 - Statement 53
+  Address 4294967292: Line 6442450958 - Column 12884901913 - Statement 53
+  Address 4294967297: Line 6442450958 - Column 12884901916 - Statement 53
+  Address 4294967297: Line 8589934605 - Column 12884901920 - Statement 53
+  Address 4294967288: Line 8589934605 - Column 17179869215 - Statement 53
+  Address 4294967292: Line 8589934605 - Column 17179869215 - Statement 53
+  Address 4294967292: Line 10737418252 - Column 17179869221 - Statement 57
+  Address 4294967292: Line 10737418252 - Column 21474836516 - Statement 57
+  Address 4294967298: Line 10737418252 - Column 21474836527 - Statement 57
+  Address 4294967298: Line 12884901899 - Column 21474836535 - Statement 57
+  Address 4294967298: Line 12884901899 - Column 25769803830 - Statement 57
+  Address 4294967303: Line 12884901900 - Column 25769803819 - Statement 57
+  Address 4294967303: Line 15032385547 - Column 25769803825 - Statement 57
+  Address 4294967314: Line 15032385547 - Column 30064771120 - Statement 57
+  Address 4294967319: Line 15032385547 - Column 30064771121 - Statement 57
+  Address 4294967319: Line 17179869194 - Column 30064771127 - Statement 57
 
-Function index: 3
-Start line: 7
-Start column: 1
-  Address 9: Line 8 - Column 11 - Statement 0
-  Address 14: Line 8 - Column 51 - Statement 0
-  Address 31: Line 8 - Column 17 - Statement 0
-  Address 37: Line 8 - Column 16 - Statement 0
-  Address 42: Line 8 - Column 5 - Statement 0
-  Address 46: Line 8 - Column 5 - Statement 0
-  Address 52: Line 10 - Column 11 - Statement 0
-  Address 57: Line 10 - Column 14 - Statement 0
-  Address 61: Line 10 - Column 5 - Statement 0
-  Address 65: Line 10 - Column 5 - Statement 0
-  Address 71: Line 12 - Column 5 - Statement 0
-  Address 77: Line 12 - Column 16 - Statement 0
-  Address 85: Line 12 - Column 16 - Statement 0
-  Address 90: Line 13 - Column 5 - Statement 0
-  Address 96: Line 13 - Column 16 - Statement 0
-  Address 101: Line 13 - Column 17 - Statement 0
-  Address 107: Line 13 - Column 16 - Statement 0
-
-Function index: 5
-Start line: 16
-Start column: 1
-  Address 17: Line 17 - Column 5 - Statement 0
-  Address 21: Line 17 - Column 5 - Statement 0
-  Address 32: Line 20 - Column 13 - Statement 0
-  Address 37: Line 20 - Column 16 - Statement 0
-  Address 41: Line 20 - Column 23 - Statement 0
-  Address 46: Line 20 - Column 23 - Statement 0
-  Address 50: Line 21 - Column 9 - Statement 0
-  Address 52: Line 22 - Column 9 - Statement 0
-  Address 56: Line 23 - Column 13 - Statement 0
-  Address 66: Line 23 - Column 18 - Statement 0
-  Address 71: Line 25 - Column 5 - Statement 0
-  Address 73: Line 26 - Column 5 - Statement 0
-  Address 104: Line 29 - Column 17 - Statement 0
-  Address 110: Line 29 - Column 28 - Statement 0
-  Address 122: Line 29 - Column 29 - Statement 0
-  Address 132: Line 29 - Column 48 - Statement 0
-  Address 143: Line 29 - Column 28 - Statement 0
-  Address 149: Line 31 - Column 9 - Statement 0
-  Address 151: Line 32 - Column 9 - Statement 0
-  Address 155: Line 33 - Column 13 - Statement 0
-  Address 165: Line 33 - Column 18 - Statement 0
-
-Function index: 6
-Start line: 39
-Start column: 1
-  Address 6: Line 41 - Column 8 - Statement 0
-  Address 12: Line 41 - Column 19 - Statement 0
-  Address 17: Line 41 - Column 19 - Statement 0
-  Address 39: Line 48 - Column 11 - Statement 0
-  Address 43: Line 48 - Column 17 - Statement 0
-  Address 48: Line 48 - Column 19 - Statement 0
+Function index: 0
+Start line: 4294967295
+Start column: -1
+  Address 5: Line 4294967303 - Column 0 - Statement 0
+  Address 22: Line 4294967304 - Column 4 - Statement 0
+  Address 22: Line 6442450951 - Column 8 - Statement 0
+  Address 22: Line 6442450951 - Column 4294967303 - Statement 0
+  Address 33: Line 6442450954 - Column 4294967311 - Statement 0
+  Address 33: Line 8589934601 - Column 4294967316 - Statement 0
+  Address 36: Line 8589934601 - Column 8589934611 - Statement 0
+  Address 40: Line 8589934601 - Column 8589934618 - Statement 0
+  Address 40: Line 10737418248 - Column 8589934623 - Statement 0
+  Address 40: Line 10737418248 - Column 12884901918 - Statement 0
+  Address 44: Line 10737418249 - Column 12884901904 - Statement 0
+  Address 44: Line 12884901896 - Column 12884901906 - Statement 2
+  Address 44: Line 12884901896 - Column 17179869201 - Statement 2
+  Address 48: Line 12884901897 - Column 17179869205 - Statement 2
+  Address 48: Line 15032385544 - Column 17179869215 - Statement 2
+  Address 53: Line 15032385544 - Column 21474836510 - Statement 2
+  Address 58: Line 15032385546 - Column 21474836497 - Statement 2
+  Address 58: Line 17179869193 - Column 21474836499 - Statement 4
+  Address 58: Line 17179869193 - Column 25769803794 - Statement 4
+  Address 89: Line 17179869196 - Column 25769803806 - Statement 4
+  Address 89: Line 19327352843 - Column 25769803812 - Statement 4
+  Address 100: Line 19327352843 - Column 30064771107 - Statement 4
+  Address 112: Line 19327352843 - Column 30064771108 - Statement 4
+  Address 112: Line 21474836490 - Column 30064771118 - Statement 4
+  Address 131: Line 21474836490 - Column 34359738413 - Statement 4
+  Address 142: Line 21474836490 - Column 34359738393 - Statement 4
+  Address 142: Line 23622320137 - Column 34359738399 - Statement 8
+  Address 123: Line 23622320137 - Column 38654705694 - Statement 8
+  Address 125: Line 23622320138 - Column 38654705694 - Statement 8
+  Address 125: Line 25769803785 - Column 38654705698 - Statement 10
+  Address 129: Line 25769803785 - Column 42949672993 - Statement 10
+  Address 139: Line 25769803785 - Column 42949672998 - Statement 10
+  Address 139: Line 27917287432 - Column 42949672997 - Statement 16
+  Address 178: Line 27917287432 - Column 42949673003 - Statement 20
+  Address 185: Line 27917287432 - Column 42949673007 - Statement 20
+  Address 191: Line 27917287432 - Column 42949673018 - Statement 20
+  Address 191: Line 27917287433 - Column 42949673023 - Statement 20
+  Address 191: Line 27917287433 - Column 42949673023 - Statement 20
+  Address 193: Line 27917287444 - Column 42949673037 - Statement 20
+  Address 185: Line 27917287444 - Column 42949673039 - Statement 20
+  Address 189: Line 27917287444 - Column 42949673045 - Statement 20
+  Address 189: Line 27917287444 - Column 42949673050 - Statement 20
+  Address 191: Line 27917287444 - Column 42949673051 - Statement 20
 
 Function index: 7
 Start line: 42
 Start column: 18
   Address 2: Line 43 - Column 16 - Statement 0
-  Address 8: Line 43 - Column 24 - Statement 0
-  Address 13: Line 43 - Column 24 - Statement 0
-  Address 29: Line 44 - Column 19 - Statement 0
+  Address 2: Line 2147483690 - Column 22 - Statement 0
+  Address 10: Line 2147483690 - Column 4294967317 - Statement 0
+  Address 15: Line 2147483690 - Column 4294967317 - Statement 0
+  Address 15: Line 4294967337 - Column 4294967333 - Statement 2
+  Address 10: Line 4294967337 - Column 8589934628 - Statement 2
 
-  => Sources data: 0007011800000b00000b000006da000006001005007e06027207000212040406027a06000b05000106000a09000005007505047506000b05000605000304000705000008007006027506000b0500061700050500110500000800647f0107011500007f03070109020a05002811005e06007f05007504000006040605000304007704000006040006000b08000005027506000b05000106007f7f0510011102040400000b06080500030400070500000402720202000402040a00050504730202001f060c06000b0c00010a00130b006c06046d0202000402040a00057f06270106040706000b050000160e780400060500027f072a1202027e06000805000010027b7f
-  => Lexical raw data: 7f00
+  => Sources data: 00070118000000020b000000020b0000000106da00000002060010000105007e000106027200010700020001120404000106027a000306000b0002050001000606000a000509000000010500750001050475000506000b000305000600010500030002040007000105000000020800700001060275000306000b0002050006000117000500010500110000050000000108006400007f01070115000000007f03070109020a00ffffffff0f05002800ffffffff0f11005e00ffffffff0f06007f00ffffffff0f05007500ffffffff0f04000000ffffffff0f06040600ffffffff0f05000300ffffffff0f04007700ffffffff0f04000000ffffffff0f06040000ffffffff0f06000b00ffffffff0f08000000ffffffff0f05027500ffffffff0f06000b00ffffffff0f05000100ffffffff0f06007f00ffffffff0f7f05100111020400ffffffff0f04000000ffffffff0f0b060800ffffffff0f05000300ffffffff0f04000700ffffffff0f05000000ffffffff0f04027200ffffffff0f02020000ffffffff0f04020400ffffffff0f0a000500ffffffff0f05047300ffffffff0f02020000ffffffff0f1f060c00ffffffff0f06000b00ffffffff0f0c000100ffffffff0f0a001300ffffffff0f0b006c00ffffffff0f06046d00ffffffff0f02020000ffffffff0f04020400ffffffff0f0a000500ffffffff0f7f062701060407000406000b00020500000002160e780002040006000105000200017f072a1202027e00ffffffff0f06000800ffffffff0f05000000ffffffff0f10027b00ffffffff0f7f
+  => Scope descriptor raw data: 7f0000
   => Textified data: 00
   => Raw variables and callees data: 

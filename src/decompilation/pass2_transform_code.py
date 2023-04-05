@@ -3,7 +3,7 @@
 from typing import List, Tuple, Dict, Set, Sequence, Union, Optional, Any
 from os.path import dirname, realpath
 
-from defs import HermesDecompiler, DecompiledFunctionBody, TokenString, LeftParenthesisToken, RightParenthesisToken, LeftHandRegToken, AssignmentToken, DotAccessorToken, CatchBlockStart, RightHandRegToken, GetEnvironmentToken, StoreToEnvironment, BindToken, SwitchImm, LoadFromEnvironmentToken, ReturnDirective, ResumeGenerator, SaveGenerator, StartGenerator, NewEnvironmentToken, JumpCondition, JumpNotCondition, FunctionTableIndex, ForInLoopInit, ForInLoopNextIter, ThrowDirective, ReturnDirective, RawToken
+from defs import HermesDecompiler, DecompiledFunctionBody, TokenString, LeftParenthesisToken, RightParenthesisToken, LeftHandRegToken, AssignmentToken, DotAccessorToken, CatchBlockStart, RightHandRegToken, GetEnvironmentToken, StoreToEnvironment, BindToken, SwitchImm, LoadFromEnvironmentToken, ReturnDirective, ResumeGenerator, SaveGenerator, StartGenerator, NewInnerEnvironmentToken, NewEnvironmentToken, JumpCondition, JumpNotCondition, FunctionTableIndex, ForInLoopInit, ForInLoopNextIter, ThrowDirective, ReturnDirective, RawToken
 from serialized_literal_parser import unpack_slp_array, SLPArray, SLPValue, TagType
 from hbc_bytecode_parser import parse_hbc_bytecode
 
@@ -27,6 +27,7 @@ def pass2_transform_code(state : HermesDecompiler, function_body : DecompiledFun
     GET = GetEnvironmentToken
     STE = StoreToEnvironment
     NET = NewEnvironmentToken
+    NIET = NewInnerEnvironmentToken
     LFET = LoadFromEnvironmentToken
     
     TD = ThrowDirective
@@ -159,6 +160,9 @@ def pass2_transform_code(state : HermesDecompiler, function_body : DecompiledFun
                 assembly = [instruction]))
         elif instruction.inst.name == 'CreateEnvironment':
             lines.append(TS([NET(op1)],
+                assembly = [instruction]))
+        elif instruction.inst.name == 'CreateInnerEnvironment':
+            lines.append(TS([NIET(op1, op2, op3)],
                 assembly = [instruction]))
         elif instruction.inst.name in ('CreateGenerator', 'CreateGeneratorLongIndex'):
             lines.append(TS([LHRT(op1), AT(), FTI(op3, state, op2, is_generator = True)],
@@ -570,12 +574,20 @@ def pass2_transform_code(state : HermesDecompiler, function_body : DecompiledFun
         elif instruction.inst.name == 'Throw':
             lines.append(TS([TD(), RHRT(op1)], assembly = [instruction]))
         elif instruction.inst.name == 'ThrowIfEmpty':
-            lines.append(TS([RT('if'), LPT(), RT('!'), RHRT(op2), RPT(), RT(' '), TD(), RT('ReferenceError()')],
+            lines.append(TS([RT('if'), LPT(), RT('!'), RHRT(op2), RPT(), RT(' '), TD(),
+                RT('ReferenceError("accessing an uninitialized variable")')],
                 assembly = [instruction]))
             lines.append(TS([RT('else '), LHRT(op1), AT(), RHRT(op2)], assembly = []))
+        elif instruction.inst.name == 'ThrowIfHasRestrictedGlobalProperty':
+            global_var = state.hbc_reader.strings[op1]
+
+            lines.append(TS([RT('if'), LPT(), RT('typeof global'), DAT(), RT(global_var),
+                RT(" === 'undefined'"), RPT(), RT(' '), TD(),
+                RT('SyntaxError("Name is a restricted global identifier")')],
+                assembly = [instruction]))
         elif instruction.inst.name == 'ThrowIfUndefinedInst':
             lines.append(TS([RT('if'), LPT(), RT('typeof '), RHRT(op1), RT(" === 'undefined'"),
-                RPT(), RT(' '), TD(), RT('ReferenceError()')],
+                RPT(), RT(' '), TD(), RT('ReferenceError("accessing an uninitialized variable")')],
                 assembly = [instruction]))
         elif instruction.inst.name == 'ToInt32':
             lines.append(TS([LHRT(op1), AT(), RHRT(op2), RT(' | 0')],

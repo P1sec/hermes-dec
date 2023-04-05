@@ -1,5 +1,5 @@
 hbcdump> Bytecode File Information:
-  Bytecode version number: 93
+  Bytecode version number: 94
   Source hash: a692192bdc8ee6f7b2b9918faf18a64db39587c8
   Function count: 8
   String count: 34
@@ -55,7 +55,7 @@ Function Source Table:
   Function ID 5 -> s0
 
 Function<global>0(1 params, 16 registers, 0 symbols):
-Offset in debug table: source 0x0000, lexical 0x0000, textified callees 0x0000
+Offset in debug table: source 0x0000, scope 0x0000, textified callees 0x0000
 [@ 0] DeclareGlobalVar 17<UInt32>
 [@ 5] DeclareGlobalVar 19<UInt32>
 [@ 10] DeclareGlobalVar 25<UInt32>
@@ -104,12 +104,12 @@ Offset in debug table: source 0x0000, lexical 0x0000, textified callees 0x0000
 [@ 233] Ret 0<Reg8>
 
 NCFunction<testx>1(2 params, 15 registers, 0 symbols):
-Offset in debug table: source 0x005c, lexical 0x0000, textified callees 0x0000
+Offset in debug table: source 0x0096, scope 0x0000, textified callees 0x0000
 [@ 0] LoadConstUndefined 4<Reg8>
 [@ 2] LoadConstUndefined 0<Reg8>
 [@ 4] ReifyArguments 0<Reg8>
 [@ 6] Mov 3<Reg8>, 0<Reg8>
-[@ 9] GetBuiltinClosure 2<Reg8>, 51<UInt8>
+[@ 9] GetBuiltinClosure 2<Reg8>, 52<UInt8>
 [@ 12] CreateEnvironment 0<Reg8>
 [@ 14] CreateGeneratorClosure 1<Reg8>, 0<Reg8>, 2<UInt16>
 [@ 19] LoadThisNS 0<Reg8>
@@ -122,7 +122,7 @@ NCFunction<?anon_0_testx>2(2 params, 1 registers, 0 symbols):
 [@ 7] Ret 0<Reg8>
 
 Function<?anon_0_?anon_0_testx>3(2 params, 16 registers, 0 symbols):
-Offset in debug table: source 0x0063, lexical 0x0000, textified callees 0x0000
+Offset in debug table: source 0x009f, scope 0x0000, textified callees 0x0000
 [@ 0] StartGenerator
 [@ 1] ResumeGenerator 0<Reg8>, 1<Reg8>
 [@ 4] JmpTrue 117<Addr8>, 1<Reg8>
@@ -168,7 +168,7 @@ NCFunction<gen>4(1 params, 1 registers, 0 symbols):
 [@ 7] Ret 0<Reg8>
 
 Function<?anon_0_gen>5(1 params, 17 registers, 0 symbols):
-Offset in debug table: source 0x009a, lexical 0x0000, textified callees 0x0000
+Offset in debug table: source 0x013c, scope 0x0000, textified callees 0x0000
 [@ 0] StartGenerator
 [@ 1] LoadConstUndefined 2<Reg8>
 [@ 3] LoadConstUndefined 3<Reg8>
@@ -228,7 +228,7 @@ Exception Handlers:
 2: start = 75, end = 149, target = 151
 
 Function<ze>6(1 params, 12 registers, 1 symbols):
-Offset in debug table: source 0x00dd, lexical 0x0000, textified callees 0x0000
+Offset in debug table: source 0x01fd, scope 0x0000, textified callees 0x0000
 [@ 0] LoadConstUndefined 0<Reg8>
 [@ 2] CreateEnvironment 3<Reg8>
 [@ 4] GetGlobalObject 1<Reg8>
@@ -246,7 +246,7 @@ Offset in debug table: source 0x00dd, lexical 0x0000, textified callees 0x0000
 [@ 52] Ret 0<Reg8>
 
 Function<zb>7(1 params, 9 registers, 0 symbols):
-Offset in debug table: source 0x00f3, lexical 0x0000, textified callees 0x0000
+Offset in debug table: source 0x021f, scope 0x0000, textified callees 0x0000
 [@ 0] GetGlobalObject 0<Reg8>
 [@ 2] TryGetById 1<Reg8>, 0<Reg8>, 1<UInt8>, 28<UInt16>
 [@ 8] GetByIdShort 0<Reg8>, 1<Reg8>, 2<UInt8>, 31<UInt8>
@@ -278,94 +278,94 @@ Debug file table:
 
 Debug source table:
   0x0000  function idx 0, starts at line 7 col 1
-    bc 24: line 7 col 1
-    bc 35: line 7 col 1
-    bc 46: line 7 col 1
-    bc 52: line 52 col 1
-    bc 58: line 52 col 17
-    bc 63: line 52 col 15
-    bc 69: line 53 col 1
-    bc 76: line 53 col 3
-    bc 94: line 55 col 7
-    bc 100: line 56 col 1
-    bc 106: line 56 col 12
-    bc 111: line 56 col 13
-    bc 117: line 56 col 23
-    bc 126: line 56 col 23
-    bc 131: line 56 col 12
-    bc 136: line 58 col 1
-    bc 142: line 58 col 12
-    bc 147: line 58 col 18
-    bc 152: line 58 col 21
-    bc 156: line 58 col 28
-    bc 161: line 58 col 28
-    bc 169: line 58 col 12
-    bc 175: line 59 col 1
-    bc 181: line 59 col 12
-    bc 186: line 59 col 18
-    bc 209: line 59 col 23
-    bc 214: line 59 col 40
-    bc 219: line 59 col 40
-    bc 227: line 59 col 12
-  0x005c  function idx 1, starts at line 7 col 1
-    bc 21: line 7 col 1
-  0x0063  function idx 3, starts at line 7 col 1
-    bc 9: line 8 col 11
-    bc 14: line 8 col 51
-    bc 31: line 8 col 17
-    bc 37: line 8 col 16
-    bc 42: line 8 col 5
-    bc 46: line 8 col 5
-    bc 52: line 10 col 11
-    bc 57: line 10 col 14
-    bc 61: line 10 col 5
-    bc 65: line 10 col 5
-    bc 71: line 12 col 5
-    bc 77: line 12 col 16
-    bc 85: line 12 col 16
-    bc 90: line 13 col 5
-    bc 96: line 13 col 16
-    bc 101: line 13 col 17
-    bc 107: line 13 col 16
-  0x009a  function idx 5, starts at line 16 col 1
-    bc 17: line 17 col 5
-    bc 21: line 17 col 5
-    bc 32: line 20 col 13
-    bc 37: line 20 col 16
-    bc 41: line 20 col 23
-    bc 46: line 20 col 23
-    bc 50: line 21 col 9
-    bc 52: line 22 col 9
-    bc 56: line 23 col 13
-    bc 66: line 23 col 18
-    bc 71: line 25 col 5
-    bc 73: line 26 col 5
-    bc 104: line 29 col 17
-    bc 110: line 29 col 28
-    bc 122: line 29 col 29
-    bc 132: line 29 col 48
-    bc 143: line 29 col 28
-    bc 149: line 31 col 9
-    bc 151: line 32 col 9
-    bc 155: line 33 col 13
-    bc 165: line 33 col 18
-  0x00dd  function idx 6, starts at line 39 col 1
-    bc 6: line 41 col 8
-    bc 12: line 41 col 19
-    bc 17: line 41 col 19
-    bc 39: line 48 col 11
-    bc 43: line 48 col 17
-    bc 48: line 48 col 19
-  0x00f3  function idx 7, starts at line 42 col 18
-    bc 2: line 43 col 16
-    bc 8: line 43 col 24
-    bc 13: line 43 col 24
-    bc 29: line 44 col 19
-  0x0103  end of debug source table
+    bc 24: line 7 col 1 scope offset 0x0000 env r2
+    bc 35: line 7 col 1 scope offset 0x0000 env r2
+    bc 46: line 7 col 1 scope offset 0x0000 env r1
+    bc 52: line 52 col 1 scope offset 0x0000 env r2
+    bc 58: line 52 col 17 scope offset 0x0000 env r1
+    bc 63: line 52 col 15 scope offset 0x0000 env r1
+    bc 69: line 53 col 1 scope offset 0x0000 env r1
+    bc 76: line 53 col 3 scope offset 0x0000 env r1
+    bc 94: line 55 col 7 scope offset 0x0000 env r1
+    bc 100: line 56 col 1 scope offset 0x0000 env r3
+    bc 106: line 56 col 12 scope offset 0x0000 env r2
+    bc 111: line 56 col 13 scope offset 0x0000 env r6
+    bc 117: line 56 col 23 scope offset 0x0000 env r5
+    bc 126: line 56 col 23 scope offset 0x0000 env r1
+    bc 131: line 56 col 12 scope offset 0x0000 env r1
+    bc 136: line 58 col 1 scope offset 0x0000 env r5
+    bc 142: line 58 col 12 scope offset 0x0000 env r3
+    bc 147: line 58 col 18 scope offset 0x0000 env r1
+    bc 152: line 58 col 21 scope offset 0x0000 env r2
+    bc 156: line 58 col 28 scope offset 0x0000 env r1
+    bc 161: line 58 col 28 scope offset 0x0000 env r2
+    bc 169: line 58 col 12 scope offset 0x0000 env r1
+    bc 175: line 59 col 1 scope offset 0x0000 env r3
+    bc 181: line 59 col 12 scope offset 0x0000 env r2
+    bc 186: line 59 col 18 scope offset 0x0000 env r1
+    bc 209: line 59 col 23 scope offset 0x0000 env r1
+    bc 214: line 59 col 40 scope offset 0x0000 env r0
+    bc 219: line 59 col 40 scope offset 0x0000 env r1
+    bc 227: line 59 col 12 scope offset 0x0000 env r0
+  0x0096  function idx 1, starts at line 7 col 1
+    bc 21: line 7 col 1 scope offset 0x0000 env r0
+  0x009f  function idx 3, starts at line 7 col 1
+    bc 9: line 8 col 11 scope offset 0x0000 env none
+    bc 14: line 8 col 51 scope offset 0x0000 env none
+    bc 31: line 8 col 17 scope offset 0x0000 env none
+    bc 37: line 8 col 16 scope offset 0x0000 env none
+    bc 42: line 8 col 5 scope offset 0x0000 env none
+    bc 46: line 8 col 5 scope offset 0x0000 env none
+    bc 52: line 10 col 11 scope offset 0x0000 env none
+    bc 57: line 10 col 14 scope offset 0x0000 env none
+    bc 61: line 10 col 5 scope offset 0x0000 env none
+    bc 65: line 10 col 5 scope offset 0x0000 env none
+    bc 71: line 12 col 5 scope offset 0x0000 env none
+    bc 77: line 12 col 16 scope offset 0x0000 env none
+    bc 85: line 12 col 16 scope offset 0x0000 env none
+    bc 90: line 13 col 5 scope offset 0x0000 env none
+    bc 96: line 13 col 16 scope offset 0x0000 env none
+    bc 101: line 13 col 17 scope offset 0x0000 env none
+    bc 107: line 13 col 16 scope offset 0x0000 env none
+  0x013c  function idx 5, starts at line 16 col 1
+    bc 17: line 17 col 5 scope offset 0x0000 env none
+    bc 21: line 17 col 5 scope offset 0x0000 env none
+    bc 32: line 20 col 13 scope offset 0x0000 env none
+    bc 37: line 20 col 16 scope offset 0x0000 env none
+    bc 41: line 20 col 23 scope offset 0x0000 env none
+    bc 46: line 20 col 23 scope offset 0x0000 env none
+    bc 50: line 21 col 9 scope offset 0x0000 env none
+    bc 52: line 22 col 9 scope offset 0x0000 env none
+    bc 56: line 23 col 13 scope offset 0x0000 env none
+    bc 66: line 23 col 18 scope offset 0x0000 env none
+    bc 71: line 25 col 5 scope offset 0x0000 env none
+    bc 73: line 26 col 5 scope offset 0x0000 env none
+    bc 104: line 29 col 17 scope offset 0x0000 env none
+    bc 110: line 29 col 28 scope offset 0x0000 env none
+    bc 122: line 29 col 29 scope offset 0x0000 env none
+    bc 132: line 29 col 48 scope offset 0x0000 env none
+    bc 143: line 29 col 28 scope offset 0x0000 env none
+    bc 149: line 31 col 9 scope offset 0x0000 env none
+    bc 151: line 32 col 9 scope offset 0x0000 env none
+    bc 155: line 33 col 13 scope offset 0x0000 env none
+    bc 165: line 33 col 18 scope offset 0x0000 env none
+  0x01fd  function idx 6, starts at line 39 col 1
+    bc 6: line 41 col 8 scope offset 0x0000 env r4
+    bc 12: line 41 col 19 scope offset 0x0000 env r2
+    bc 17: line 41 col 19 scope offset 0x0000 env r2
+    bc 39: line 48 col 11 scope offset 0x0000 env r2
+    bc 43: line 48 col 17 scope offset 0x0000 env r1
+    bc 48: line 48 col 19 scope offset 0x0000 env r1
+  0x021f  function idx 7, starts at line 42 col 18
+    bc 2: line 43 col 16 scope offset 0x0000 env none
+    bc 8: line 43 col 24 scope offset 0x0000 env none
+    bc 13: line 43 col 24 scope offset 0x0000 env none
+    bc 29: line 44 col 19 scope offset 0x0000 env none
+  0x0247  end of debug source table
 
-Debug lexical table:
-  0x0000  lexical parent: none, variable count: 0
-  0x0002  end of debug lexical table
+Debug scope descriptor table:
+  0x0000  lexical parent:   none, flags:   , variable count: 0
+  0x0003  end of debug scope descriptor table
 
 Textified callees table:
   0x0000  entries: 0
