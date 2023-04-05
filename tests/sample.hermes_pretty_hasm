@@ -1,5 +1,5 @@
 hbcdump> Bytecode File Information:
-  Bytecode version number: 93
+  Bytecode version number: 94
   Source hash: a692192bdc8ee6f7b2b9918faf18a64db39587c8
   Function count: 8
   String count: 34
@@ -55,67 +55,121 @@ Function Source Table:
   Function ID 5 -> s0
 
 Function<global>0(1 params, 16 registers, 0 symbols):
-Offset in debug table: source 0x0000, lexical 0x0000, textified callees 0x0000
-sample.js[7:1]
+Offset in debug table: source 0x0000, scope 0x0000, textified callees 0x0000
+; sample.js:7:1
     DeclareGlobalVar  "testx"
+; sample.js:7:1
     DeclareGlobalVar  "gen"
+; sample.js:7:1
     DeclareGlobalVar  "ze"
+; sample.js:7:1
     CreateEnvironment r1
+; sample.js:7:1
     CreateAsyncClosure r2, r1, NCFunction<testx>1
+; sample.js:7:1
     GetGlobalObject   r0
+; sample.js:7:1
     PutById           r0, r2, 1, "testx"
+; sample.js:7:1
     CreateGeneratorClosure r2, r1, NCFunction<gen>4
+; sample.js:7:1
     PutById           r0, r2, 2, "gen"
+; sample.js:7:1
     CreateClosure     r1, r1, Function<ze>6
+; sample.js:7:1
     PutById           r0, r1, 3, "ze"
+; sample.js:52:1
     TryGetById        r2, r0, 1, "window"
+; sample.js:52:17
     GetByIdShort      r1, r0, 2, "ze"
+; sample.js:52:15
     PutById           r2, r1, 4, "onload"
+; sample.js:53:1
     GetByIdShort      r1, r0, 2, "ze"
+; sample.js:53:1
     LoadConstUndefined r4
+; sample.js:53:3
     Call1             r1, r1, r4
+; sample.js:53:3
     CreateRegExp      r1, "dkooDD JPOD D09D\"..., "gmi", 0
+; sample.js:55:7
     PutById           r0, r1, 5, "test2"
+; sample.js:56:1
     TryGetById        r3, r0, 3, "console"
+; sample.js:56:12
     GetByIdShort      r2, r3, 4, "log"
+; sample.js:56:13
     TryGetById        r6, r0, 5, "test2"
+; sample.js:56:23
     GetByIdShort      r5, r6, 6, "exec"
+; sample.js:56:23
     LoadConstString   r1, "bonjour"
+; sample.js:56:23
     Call2             r1, r5, r6, r1
+; sample.js:56:12
     Call2             r1, r2, r3, r1
+; sample.js:58:1
     TryGetById        r5, r0, 3, "console"
+; sample.js:58:12
     GetByIdShort      r3, r5, 4, "log"
+; sample.js:58:18
     GetByIdShort      r1, r0, 7, "gen"
+; sample.js:58:21
     Call1             r2, r1, r4
+; sample.js:58:28
     GetByIdShort      r1, r2, 8, "next"
+; sample.js:58:28
     Call1             r2, r1, r2
+; sample.js:58:28
     LoadConstString   r1, "a"
+; sample.js:58:12
     Call3             r1, r3, r5, r1, r2
+; sample.js:59:1
     TryGetById        r3, r0, 3, "console"
+; sample.js:59:12
     GetByIdShort      r2, r3, 4, "log"
+; sample.js:59:18
     GetByIdShort      r1, r0, 9, "testx"
+; sample.js:59:18
     LoadConstDouble   r5, 7.3
+; sample.js:59:18
     LoadConstString   r0, "le"
+; sample.js:59:18
     Add               r0, r5, r0
+; sample.js:59:23
     Call2             r1, r1, r4, r0
+; sample.js:59:40
     GetByIdShort      r0, r1, 8, "next"
+; sample.js:59:40
     Call1             r1, r0, r1
+; sample.js:59:40
     LoadConstString   r0, "b"
+; sample.js:59:12
     Call3             r0, r2, r3, r0, r1
+; sample.js:59:12
     Ret               r0
 
 NCFunction<testx>1(2 params, 15 registers, 0 symbols):
-Offset in debug table: source 0x005c, lexical 0x0000, textified callees 0x0000
-sample.js[7:1]
+Offset in debug table: source 0x0096, scope 0x0000, textified callees 0x0000
+; sample.js:7:1
     LoadConstUndefined r4
+; sample.js:7:1
     LoadConstUndefined r0
+; sample.js:7:1
     ReifyArguments    r0
+; sample.js:7:1
     Mov               r3, r0
+; sample.js:7:1
     GetBuiltinClosure r2, "HermesBuiltin.spawnAsync"
+; sample.js:7:1
     CreateEnvironment r0
+; sample.js:7:1
     CreateGeneratorClosure r1, r0, NCFunction<?anon_0_testx>2
+; sample.js:7:1
     LoadThisNS        r0
+; sample.js:7:1
     Call4             r0, r2, r4, r1, r0, r3
+; sample.js:7:1
     Ret               r0
 
 NCFunction<?anon_0_testx>2(2 params, 1 registers, 0 symbols):
@@ -124,55 +178,87 @@ NCFunction<?anon_0_testx>2(2 params, 1 registers, 0 symbols):
     Ret               r0
 
 Function<?anon_0_?anon_0_testx>3(2 params, 16 registers, 0 symbols):
-Offset in debug table: source 0x0063, lexical 0x0000, textified callees 0x0000
-sample.js[7:1]
+Offset in debug table: source 0x009f, scope 0x0000, textified callees 0x0000
+; sample.js:7:1
     StartGenerator   
+; sample.js:7:1
     ResumeGenerator   r0, r1
+; sample.js:7:1
     JmpTrue           L1, r1
+; sample.js:7:1
     GetGlobalObject   r4
+; sample.js:8:11
     GetByIdShort      r2, r4, 1, "testx"
+; sample.js:8:51
     TryGetById        r3, r4, 2, "test2"
+; sample.js:8:51
     LoadConstUInt8    r5, 42
+; sample.js:8:51
     LoadConstString   r1, "D+D +D\u202f+D"
+; sample.js:8:51
     Add               r1, r5, r1
+; sample.js:8:17
     Add               r1, r1, r3
+; sample.js:8:17
     LoadConstUndefined r3
+; sample.js:8:16
     Call2             r1, r2, r3, r1
+; sample.js:8:5
     SaveGenerator     L2
+; sample.js:8:5
     Ret               r1
 L2:
-sample.js[8:5]
+; sample.js:8:5
     ResumeGenerator   r1, r2
+; sample.js:8:5
     JmpTrue           L3, r2
+; sample.js:10:11
     GetByIdShort      r2, r4, 3, "gen"
+; sample.js:10:14
     Call1             r2, r2, r3
+; sample.js:10:5
     SaveGenerator     L4
+; sample.js:10:5
     Ret               r2
 L4:
-sample.js[10:5]
+; sample.js:10:5
     ResumeGenerator   r2, r5
+; sample.js:10:5
     JmpTrue           L5, r5
+; sample.js:12:5
     TryGetById        r7, r4, 4, "console"
+; sample.js:12:16
     GetByIdShort      r6, r7, 5, "log"
+; sample.js:12:16
     LoadParam         r5, 1
+; sample.js:12:16
     Call2             r5, r6, r7, r5
+; sample.js:13:5
     TryGetById        r6, r4, 4, "console"
+; sample.js:13:16
     GetByIdShort      r5, r6, 5, "log"
+; sample.js:13:17
     TryGetById        r4, r4, 6, "xy"
+; sample.js:13:16
     Call2             r4, r5, r6, r4
+; sample.js:13:16
     CompleteGenerator
+; sample.js:13:16
     Ret               r3
 L5:
-sample.js[13:16]
+; sample.js:13:16
     CompleteGenerator
+; sample.js:13:16
     Ret               r2
 L3:
-sample.js[13:16]
+; sample.js:13:16
     CompleteGenerator
+; sample.js:13:16
     Ret               r1
 L1:
-sample.js[13:16]
+; sample.js:13:16
     CompleteGenerator
+; sample.js:13:16
     Ret               r0
 
 NCFunction<gen>4(1 params, 1 registers, 0 symbols):
@@ -181,83 +267,122 @@ NCFunction<gen>4(1 params, 1 registers, 0 symbols):
     Ret               r0
 
 Function<?anon_0_gen>5(1 params, 17 registers, 0 symbols):
-Offset in debug table: source 0x009a, lexical 0x0000, textified callees 0x0000
-sample.js[16:1]
+Offset in debug table: source 0x013c, scope 0x0000, textified callees 0x0000
+; sample.js:16:1
     StartGenerator   
+; sample.js:16:1
     LoadConstUndefined r2
+; sample.js:16:1
     LoadConstUndefined r3
+; sample.js:16:1
     ResumeGenerator   r0, r1
+; sample.js:16:1
     JmpTrueLong       L1, r1
+; sample.js:16:1
     LoadConstUInt8    r1, 42
+; sample.js:17:5
     SaveGenerator     L2
+; sample.js:17:5
     Ret               r1
 L2:
-sample.js[17:5]
+; sample.js:17:5
     ResumeGenerator   r1, r4
+; sample.js:17:5
     JmpTrueLong       L3, r4
 L11:
-sample.js[17:5]
+; sample.js:17:5
     GetGlobalObject   r4
+; sample.js:20:13
     GetByIdShort      r4, r4, 1, "gen"
+; sample.js:20:16
     Call1             r5, r4, r2
+; sample.js:20:23
     GetByIdShort      r4, r5, 2, "next"
+; sample.js:20:23
     Call1             r4, r4, r5
 L12:
-sample.js[21:9]
+; sample.js:21:9
     Jmp               L5
 L4:
-sample.js[22:9]
+; sample.js:22:9
     Catch             r4
+; sample.js:22:9
     GetGlobalObject   r4
+; sample.js:23:13
     TryGetById        r5, r4, 3, "print"
+; sample.js:23:13
     LoadConstString   r4, "Hello! Exception "...
+; sample.js:23:18
     Call2             r4, r5, r2, r4
 L5:
-sample.js[25:5]
+; sample.js:25:5
     Jmp               L7
 L6:
-sample.js[26:5]
+; sample.js:26:5
     Catch             r3
 L13:
-sample.js[26:5]
+; sample.js:26:5
     LoadConstInt      r5, 432
+; sample.js:26:5
     LoadConstString   r4, "d\u00e7d\u00e0\u00e7"
+; sample.js:26:5
     Mul               r5, r5, r4
+; sample.js:26:5
     LoadConstInt      r4, 478
+; sample.js:26:5
     AddN              r4, r5, r4
+; sample.js:26:5
     JmpFalse          L8, r4
+; sample.js:26:5
     GetGlobalObject   r4
+; sample.js:29:17
     TryGetById        r6, r4, 4, "console"
+; sample.js:29:28
     GetByIdShort      r5, r6, 5, "log"
+; sample.js:29:28
     Mov               r7, r3
+; sample.js:29:28
     LoadConstString   r3, "Bon-jour : "
+; sample.js:29:29
     Add               r4, r3, r7
+; sample.js:29:29
     LoadConstInt      r3, 340000
+; sample.js:29:48
     Mul               r7, r7, r3
+; sample.js:29:48
     LoadConstUInt8    r3, 6
+; sample.js:29:48
     AddN              r3, r7, r3
+; sample.js:29:28
     Call3             r3, r5, r6, r4, r3
 L8:
-sample.js[31:9]
+; sample.js:31:9
     Jmp               L7
 L9:
-sample.js[32:9]
+; sample.js:32:9
     Catch             r3
+; sample.js:32:9
     GetGlobalObject   r3
+; sample.js:33:13
     TryGetById        r4, r3, 6, "alert"
+; sample.js:33:13
     LoadConstString   r3, "AAAAAAAA"
+; sample.js:33:18
     Call2             r3, r4, r2, r3
 L7:
-sample.js[33:18]
+; sample.js:33:18
     CompleteGenerator
+; sample.js:33:18
     Ret               r2
 L3:
-sample.js[33:18]
+; sample.js:33:18
     CompleteGenerator
+; sample.js:33:18
     Ret               r1
 L1:
-sample.js[33:18]
+; sample.js:33:18
     CompleteGenerator
+; sample.js:33:18
     Ret               r0
 
 Exception Handlers:
@@ -266,43 +391,64 @@ Exception Handlers:
 2: start = L13, end = L8, target = L9
 
 Function<ze>6(1 params, 12 registers, 1 symbols):
-Offset in debug table: source 0x00dd, lexical 0x0000, textified callees 0x0000
-sample.js[39:1]
+Offset in debug table: source 0x01fd, scope 0x0000, textified callees 0x0000
+; sample.js:39:1
     LoadConstUndefined r0
+; sample.js:39:1
     CreateEnvironment r3
+; sample.js:39:1
     GetGlobalObject   r1
+; sample.js:41:8
     TryGetById        r4, r1, 1, "Math"
+; sample.js:41:19
     GetByIdShort      r2, r4, 2, "random"
+; sample.js:41:19
     Call1             r2, r2, r4
+; sample.js:41:19
     JmpTrue           L1, r2
+; sample.js:41:19
     StoreNPToEnvironment r3, 0, r0
+; sample.js:41:19
     Jmp               L2
 L1:
-sample.js[41:19]
+; sample.js:41:19
     CreateClosure     r2, r3, Function<zb>7
+; sample.js:41:19
     StoreToEnvironment r3, 0, r2
+; sample.js:48:11
     Call1             r2, r2, r0
+; sample.js:48:17
     GetByIdShort      r1, r1, 3, "ze"
+; sample.js:48:19
     Call1             r1, r1, r0
 L2:
-sample.js[48:19]
+; sample.js:48:19
     Ret               r0
 
 Function<zb>7(1 params, 9 registers, 0 symbols):
-Offset in debug table: source 0x00f3, lexical 0x0000, textified callees 0x0000
-sample.js[42:18]
+Offset in debug table: source 0x021f, scope 0x0000, textified callees 0x0000
+; sample.js:42:18
     GetGlobalObject   r0
+; sample.js:43:16
     TryGetById        r1, r0, 1, "Date"
+; sample.js:43:24
     GetByIdShort      r0, r1, 2, "now"
+; sample.js:43:24
     Call1             r0, r0, r1
+; sample.js:43:24
     JmpFalse          L1, r0
+; sample.js:43:24
     GetEnvironment    r0, 0
+; sample.js:43:24
     LoadFromEnvironment r1, r0, 0
+; sample.js:43:24
     LoadConstUndefined r0
+; sample.js:44:19
     Call1             r0, r1, r0
 L1:
-sample.js[44:19]
+; sample.js:44:19
     LoadConstUndefined r0
+; sample.js:44:19
     Ret               r0
 
 RegExp Bytecodes:
@@ -324,94 +470,94 @@ Debug file table:
 
 Debug source table:
   0x0000  function idx 0, starts at line 7 col 1
-    bc 24: line 7 col 1
-    bc 35: line 7 col 1
-    bc 46: line 7 col 1
-    bc 52: line 52 col 1
-    bc 58: line 52 col 17
-    bc 63: line 52 col 15
-    bc 69: line 53 col 1
-    bc 76: line 53 col 3
-    bc 94: line 55 col 7
-    bc 100: line 56 col 1
-    bc 106: line 56 col 12
-    bc 111: line 56 col 13
-    bc 117: line 56 col 23
-    bc 126: line 56 col 23
-    bc 131: line 56 col 12
-    bc 136: line 58 col 1
-    bc 142: line 58 col 12
-    bc 147: line 58 col 18
-    bc 152: line 58 col 21
-    bc 156: line 58 col 28
-    bc 161: line 58 col 28
-    bc 169: line 58 col 12
-    bc 175: line 59 col 1
-    bc 181: line 59 col 12
-    bc 186: line 59 col 18
-    bc 209: line 59 col 23
-    bc 214: line 59 col 40
-    bc 219: line 59 col 40
-    bc 227: line 59 col 12
-  0x005c  function idx 1, starts at line 7 col 1
-    bc 21: line 7 col 1
-  0x0063  function idx 3, starts at line 7 col 1
-    bc 9: line 8 col 11
-    bc 14: line 8 col 51
-    bc 31: line 8 col 17
-    bc 37: line 8 col 16
-    bc 42: line 8 col 5
-    bc 46: line 8 col 5
-    bc 52: line 10 col 11
-    bc 57: line 10 col 14
-    bc 61: line 10 col 5
-    bc 65: line 10 col 5
-    bc 71: line 12 col 5
-    bc 77: line 12 col 16
-    bc 85: line 12 col 16
-    bc 90: line 13 col 5
-    bc 96: line 13 col 16
-    bc 101: line 13 col 17
-    bc 107: line 13 col 16
-  0x009a  function idx 5, starts at line 16 col 1
-    bc 17: line 17 col 5
-    bc 21: line 17 col 5
-    bc 32: line 20 col 13
-    bc 37: line 20 col 16
-    bc 41: line 20 col 23
-    bc 46: line 20 col 23
-    bc 50: line 21 col 9
-    bc 52: line 22 col 9
-    bc 56: line 23 col 13
-    bc 66: line 23 col 18
-    bc 71: line 25 col 5
-    bc 73: line 26 col 5
-    bc 104: line 29 col 17
-    bc 110: line 29 col 28
-    bc 122: line 29 col 29
-    bc 132: line 29 col 48
-    bc 143: line 29 col 28
-    bc 149: line 31 col 9
-    bc 151: line 32 col 9
-    bc 155: line 33 col 13
-    bc 165: line 33 col 18
-  0x00dd  function idx 6, starts at line 39 col 1
-    bc 6: line 41 col 8
-    bc 12: line 41 col 19
-    bc 17: line 41 col 19
-    bc 39: line 48 col 11
-    bc 43: line 48 col 17
-    bc 48: line 48 col 19
-  0x00f3  function idx 7, starts at line 42 col 18
-    bc 2: line 43 col 16
-    bc 8: line 43 col 24
-    bc 13: line 43 col 24
-    bc 29: line 44 col 19
-  0x0103  end of debug source table
+    bc 24: line 7 col 1 scope offset 0x0000 env r2
+    bc 35: line 7 col 1 scope offset 0x0000 env r2
+    bc 46: line 7 col 1 scope offset 0x0000 env r1
+    bc 52: line 52 col 1 scope offset 0x0000 env r2
+    bc 58: line 52 col 17 scope offset 0x0000 env r1
+    bc 63: line 52 col 15 scope offset 0x0000 env r1
+    bc 69: line 53 col 1 scope offset 0x0000 env r1
+    bc 76: line 53 col 3 scope offset 0x0000 env r1
+    bc 94: line 55 col 7 scope offset 0x0000 env r1
+    bc 100: line 56 col 1 scope offset 0x0000 env r3
+    bc 106: line 56 col 12 scope offset 0x0000 env r2
+    bc 111: line 56 col 13 scope offset 0x0000 env r6
+    bc 117: line 56 col 23 scope offset 0x0000 env r5
+    bc 126: line 56 col 23 scope offset 0x0000 env r1
+    bc 131: line 56 col 12 scope offset 0x0000 env r1
+    bc 136: line 58 col 1 scope offset 0x0000 env r5
+    bc 142: line 58 col 12 scope offset 0x0000 env r3
+    bc 147: line 58 col 18 scope offset 0x0000 env r1
+    bc 152: line 58 col 21 scope offset 0x0000 env r2
+    bc 156: line 58 col 28 scope offset 0x0000 env r1
+    bc 161: line 58 col 28 scope offset 0x0000 env r2
+    bc 169: line 58 col 12 scope offset 0x0000 env r1
+    bc 175: line 59 col 1 scope offset 0x0000 env r3
+    bc 181: line 59 col 12 scope offset 0x0000 env r2
+    bc 186: line 59 col 18 scope offset 0x0000 env r1
+    bc 209: line 59 col 23 scope offset 0x0000 env r1
+    bc 214: line 59 col 40 scope offset 0x0000 env r0
+    bc 219: line 59 col 40 scope offset 0x0000 env r1
+    bc 227: line 59 col 12 scope offset 0x0000 env r0
+  0x0096  function idx 1, starts at line 7 col 1
+    bc 21: line 7 col 1 scope offset 0x0000 env r0
+  0x009f  function idx 3, starts at line 7 col 1
+    bc 9: line 8 col 11 scope offset 0x0000 env none
+    bc 14: line 8 col 51 scope offset 0x0000 env none
+    bc 31: line 8 col 17 scope offset 0x0000 env none
+    bc 37: line 8 col 16 scope offset 0x0000 env none
+    bc 42: line 8 col 5 scope offset 0x0000 env none
+    bc 46: line 8 col 5 scope offset 0x0000 env none
+    bc 52: line 10 col 11 scope offset 0x0000 env none
+    bc 57: line 10 col 14 scope offset 0x0000 env none
+    bc 61: line 10 col 5 scope offset 0x0000 env none
+    bc 65: line 10 col 5 scope offset 0x0000 env none
+    bc 71: line 12 col 5 scope offset 0x0000 env none
+    bc 77: line 12 col 16 scope offset 0x0000 env none
+    bc 85: line 12 col 16 scope offset 0x0000 env none
+    bc 90: line 13 col 5 scope offset 0x0000 env none
+    bc 96: line 13 col 16 scope offset 0x0000 env none
+    bc 101: line 13 col 17 scope offset 0x0000 env none
+    bc 107: line 13 col 16 scope offset 0x0000 env none
+  0x013c  function idx 5, starts at line 16 col 1
+    bc 17: line 17 col 5 scope offset 0x0000 env none
+    bc 21: line 17 col 5 scope offset 0x0000 env none
+    bc 32: line 20 col 13 scope offset 0x0000 env none
+    bc 37: line 20 col 16 scope offset 0x0000 env none
+    bc 41: line 20 col 23 scope offset 0x0000 env none
+    bc 46: line 20 col 23 scope offset 0x0000 env none
+    bc 50: line 21 col 9 scope offset 0x0000 env none
+    bc 52: line 22 col 9 scope offset 0x0000 env none
+    bc 56: line 23 col 13 scope offset 0x0000 env none
+    bc 66: line 23 col 18 scope offset 0x0000 env none
+    bc 71: line 25 col 5 scope offset 0x0000 env none
+    bc 73: line 26 col 5 scope offset 0x0000 env none
+    bc 104: line 29 col 17 scope offset 0x0000 env none
+    bc 110: line 29 col 28 scope offset 0x0000 env none
+    bc 122: line 29 col 29 scope offset 0x0000 env none
+    bc 132: line 29 col 48 scope offset 0x0000 env none
+    bc 143: line 29 col 28 scope offset 0x0000 env none
+    bc 149: line 31 col 9 scope offset 0x0000 env none
+    bc 151: line 32 col 9 scope offset 0x0000 env none
+    bc 155: line 33 col 13 scope offset 0x0000 env none
+    bc 165: line 33 col 18 scope offset 0x0000 env none
+  0x01fd  function idx 6, starts at line 39 col 1
+    bc 6: line 41 col 8 scope offset 0x0000 env r4
+    bc 12: line 41 col 19 scope offset 0x0000 env r2
+    bc 17: line 41 col 19 scope offset 0x0000 env r2
+    bc 39: line 48 col 11 scope offset 0x0000 env r2
+    bc 43: line 48 col 17 scope offset 0x0000 env r1
+    bc 48: line 48 col 19 scope offset 0x0000 env r1
+  0x021f  function idx 7, starts at line 42 col 18
+    bc 2: line 43 col 16 scope offset 0x0000 env none
+    bc 8: line 43 col 24 scope offset 0x0000 env none
+    bc 13: line 43 col 24 scope offset 0x0000 env none
+    bc 29: line 44 col 19 scope offset 0x0000 env none
+  0x0247  end of debug source table
 
-Debug lexical table:
-  0x0000  lexical parent: none, variable count: 0
-  0x0002  end of debug lexical table
+Debug scope descriptor table:
+  0x0000  lexical parent:   none, flags:   , variable count: 0
+  0x0003  end of debug scope descriptor table
 
 Textified callees table:
   0x0000  entries: 0

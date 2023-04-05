@@ -119,7 +119,7 @@ def get_parser(bytecode_version : int) -> 'module':
         warning('This file uses an ancient Hermes bytecode format, which ' +
             'is not supported.')
 
-    elif bytecode_version == 92 or bytecode_version > 93:
+    elif bytecode_version > 94:
         warning(('Bytecode version %d corresponds to a development or ' +
             'recent version of the Hermes bytecode and is not ' +
             'formally supported by the current tool.') % bytecode_version)

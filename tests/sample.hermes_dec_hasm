@@ -54,7 +54,7 @@ Bytecode listing:
 ===============
 
 => [Function #1 "testx" of 30 bytes]: 2 params, frame size=15, env size=0, read index sz=0, write index sz=0, strict=0, exc handler=0, debug info=1  @ offset 0x0000040b
-  [Debug offsets: source_locs=0x5c, scope_desc_data=0x0]
+  [Debug offsets: source_locs=0x96, scope_desc_data=0x0]
 
 Bytecode listing:
 
@@ -62,7 +62,7 @@ Bytecode listing:
 ==> 00000002: <LoadConstUndefined>: <Reg8: 0>
 ==> 00000004: <ReifyArguments>: <Reg8: 0>
 ==> 00000006: <Mov>: <Reg8: 3, Reg8: 0>
-==> 00000009: <GetBuiltinClosure>: <Reg8: 2, UInt8: 51>  # Built-in function: [#51 spawnAsync]
+==> 00000009: <GetBuiltinClosure>: <Reg8: 2, UInt8: 52>  # Built-in function: [#52 spawnAsync]
 ==> 0000000c: <CreateEnvironment>: <Reg8: 0>
 ==> 0000000e: <CreateGeneratorClosure>: <Reg8: 1, Reg8: 0, function_id: 2>  # Function: [#2 ?anon_0_testx of 9 bytes]: 2 params @ offset 0x00000429
 ==> 00000013: <LoadThisNS>: <Reg8: 0>
@@ -84,7 +84,7 @@ Bytecode listing:
 ===============
 
 => [Function #3 "?anon_0_?anon_0_testx" of 124 bytes]: 2 params, frame size=16, env size=0, read index sz=6, write index sz=0, strict=0, exc handler=0, debug info=1  @ offset 0x00000432
-  [Debug offsets: source_locs=0x63, scope_desc_data=0x0]
+  [Debug offsets: source_locs=0x9f, scope_desc_data=0x0]
 
 Bytecode listing:
 
@@ -143,7 +143,7 @@ Bytecode listing:
 
 => [Function #5 "?anon_0_gen" of 179 bytes]: 1 params, frame size=17, env size=0, read index sz=6, write index sz=0, strict=0, exc handler=1, debug info=1  @ offset 0x000004b7
   [Exception handlers: [start=0x1e, end=0x32, target=0x34] [start=0x1e, end=0x47, target=0x49] [start=0x4b, end=0x95, target=0x97] ]
-  [Debug offsets: source_locs=0x9a, scope_desc_data=0x0]
+  [Debug offsets: source_locs=0x13c, scope_desc_data=0x0]
 
 Bytecode listing:
 
@@ -204,7 +204,7 @@ Bytecode listing:
 ===============
 
 => [Function #6 "ze" of 54 bytes]: 1 params, frame size=12, env size=1, read index sz=3, write index sz=0, strict=0, exc handler=0, debug info=1  @ offset 0x0000056a
-  [Debug offsets: source_locs=0xdd, scope_desc_data=0x0]
+  [Debug offsets: source_locs=0x1fd, scope_desc_data=0x0]
 
 Bytecode listing:
 
@@ -228,7 +228,7 @@ Bytecode listing:
 ===============
 
 => [Function #7 "zb" of 37 bytes]: 1 params, frame size=9, env size=0, read index sz=2, write index sz=0, strict=0, exc handler=0, debug info=1  @ offset 0x000005a0
-  [Debug offsets: source_locs=0xf3, scope_desc_data=0x0]
+  [Debug offsets: source_locs=0x21f, scope_desc_data=0x0]
 
 Bytecode listing:
 
