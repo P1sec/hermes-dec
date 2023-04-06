@@ -17,7 +17,7 @@ def pass1b_make_basic_blocks(state : HermesDecompiler, function_body : Decompile
     error_handlers = (state.hbc_reader.function_id_to_exc_handlers[function_body.function_id]
         if function_body.function_object.hasExceptionHandler else [])
     
-    basic_block_boundaries = ({0} |
+    basic_block_boundaries = ({0, function_body.instruction_boundaries[-1]} |
         function_body.try_starts.keys() | function_body.try_ends.keys() | function_body.catch_targets.keys() |
         function_body.jump_anchors.keys() | function_body.ret_anchors.keys() | function_body.throw_anchors.keys() |
         function_body.jump_targets)

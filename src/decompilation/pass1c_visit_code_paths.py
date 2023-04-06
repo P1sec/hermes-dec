@@ -54,17 +54,17 @@ def desc_recurse_set_cycling_and_accs(block : BasicBlock, code_path : List[Basic
     
     if code_path:
         
-        acc_insn_weight = code_path.max_acc_insn_weight[-1]
+        acc_insn_weight = code_path[-1].max_acc_insn_weight
         acc_insn_weight += block.insn_count
 
         block.max_acc_insn_weight = max(block.max_acc_insn_weight, acc_insn_weight)
 
-        acc_pixel_weight = code_path.max_acc_pixel_weight[-1]
+        acc_pixel_weight = code_path[-1].max_acc_pixel_weight
         acc_pixel_weight += PER_BLOCK_PIXELS + block.insn_count * PER_INSN_PIXELS
 
         block.max_acc_pixel_weight = max(block.max_acc_pixel_weight, acc_pixel_weight)
     
-    code_path.components.append(block)
+    code_path.append(block)
 
     for child_node in child_nodes:
         desc_recurse_set_cycling_and_accs(child_node, list(code_path))

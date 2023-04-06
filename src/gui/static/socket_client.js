@@ -50,6 +50,29 @@ window.socket.onmessage = function(event) {
                 functions_table.appendChild(row);
             }
             break;
+        
+        case 'analyzed_function':
+
+            const canvas = document.querySelector('#canvas');
+            canvas.innerHTML = '';
+
+            const TILE_SIZE_Y = 12;
+            const TILE_SIZE_X = 12;
+
+            for(var block of message.blocks) {
+                var html_block = document.createElement('div');
+                html_block.className = 'graph_node';
+                html_block.style.top = block.y * TILE_SIZE_Y + 'px';
+                html_block.style.left = block.x * TILE_SIZE_X + 'px';
+                html_block.style.width = block.width * TILE_SIZE_X + 'px';
+                html_block.style.height = block.height * TILE_SIZE_Y + 'px';
+                html_block.textContent = block.raw_text;
+
+                canvas.appendChild(html_block);
+            }
+            break;
+
+            // WIP fix display introduce graph ordering introduce links pathfinding ...
     
     }
 };

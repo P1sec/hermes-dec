@@ -31,7 +31,19 @@ html, body {
 }
 
 #canvas {
-    flex-shrink: 2;
+    flex-grow: 2;
+    overflow: auto;
+    position: relative;
+}
+
+#canvas .graph_node { /* Basic block */
+    border: 1px solid #ccc;
+    padding: 5px;
+    font-size: 12px;
+    font-family: 'Courier New', Courier, monospace;
+    position: absolute;
+    white-space: pre;
+    line-height: 1.2em;
 }
 
 #functions_table {

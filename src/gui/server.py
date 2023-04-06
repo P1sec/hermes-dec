@@ -23,6 +23,7 @@ path.insert(0, PARSERS_DIR)
 
 from hbc_bytecode_parser import parse_hbc_bytecode
 from project_meta import ProjectSubdirManager
+from pre_render_graph import draw_stuff
 from hbc_file_parser import HBCReader
 
 class ServerConnection:
@@ -116,9 +117,9 @@ async def echo(socket):
                 pass1c_visit_code_paths(state, dehydrated)
 
                 # - Return the resulting pre-rendered/displayed graph as
-                #   serialized JSON.
+                #   serialized JSON. (WIP...)
 
-                draw_stuff(instructions, dehydrated)
+                await socket.send(dumps(draw_stuff(instructions, dehydrated)))
 
                 # WIP ..
 
