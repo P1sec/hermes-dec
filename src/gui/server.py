@@ -31,23 +31,52 @@ class ServerConnection:
     reader : HBCReader
     project : ProjectSubdirManager
 
+    def has_hash(self, file_hash : str):
+        return ProjectSubdirManager.has_hash(file_hash)
+    
+    def open_by_hash(self, file_hash : str):
+        self.project = ProjectSubdirManager.open_by_hash(file_hash)
+
     def create_file(self, file_name : str):
         self.project = ProjectSubdirManager.new_with_name(file_name)
     
     def write_to_file(self, bytes_slice : bytes):
-        self.project.file_buffer.write(bytes_slice)
+        self.project.write_to_file(bytes_slice)
     
     def parse_file(self):
         self.reader = HBCReader()
 
-        self.project.file_buffer.flush()
-        self.project.file_buffer.seek(0)
+        self.project.save_to_disk()
+
         self.reader.read_whole_file(self.project.file_buffer)
+        self.project.write_or_update_metadata({
+            'bytecode_version': self.reader.header.version
+        })
+    
+    def get_metadata(self) -> dict:
+
+        return {
+            'file_metadata': self.project.read_metadata(),
+            'functions_list': [
+                {
+                    'name': self.reader.strings[function.functionName] or 'fun_%08x' % function.offset,
+                    'offset': '%08x' % function.offset,
+                    'size': function.bytecodeSizeInBytes
+                }
+                for function in self.reader.function_headers
+                # WIP ..
+            ]
+        }
 
 
-async def echo(socket):
+async def socket_server(socket):
     loop = get_running_loop()
     connection = ServerConnection()
+
+    await socket.send(dumps({
+        'type': 'recent_files',
+        **ProjectSubdirManager.get_recent_files_data()
+    }))
 
     async for msg in socket:
         
@@ -66,27 +95,35 @@ async def echo(socket):
             # Please see the "../../../docs/GUI server websocket protocol.md"
             # file for documentation about the following messages.
 
-            if msg_type == 'begin_transfer':
+            if msg_type == 'open_file_by_hash':
+
+                if connection.has_hash(msg['hash']):
+                    connection.open_by_hash(msg['hash'])
+
+                    await loop.run_in_executor(None, connection.parse_file)
+
+                    await socket.send(dumps({
+                        'type': 'file_opened',
+                        **connection.get_metadata()
+                    }))
+                else:
+                    await socket.send(dumps({
+                        'type': 'file_hash_unknown'
+                    }))
+
+            elif msg_type == 'begin_transfer':
             
                 connection.create_file(msg['file_name'])
 
             elif msg_type == 'end_transfer':
 
                 await loop.run_in_executor(None, connection.parse_file)
-                
+
                 await socket.send(dumps({
                     'type': 'file_opened',
-                    'functions_list': [
-                        {
-                            'name': connection.reader.strings[function.functionName] or 'fun_%08x' % function.offset,
-                            'offset': '%08x' % function.offset,
-                            'size': function.bytecodeSizeInBytes
-                        }
-                        for function in connection.reader.function_headers
-                        # WIP ..
-                    ]
+                    **connection.get_metadata()
                 }))
-            
+        
             elif msg_type == 'analyze_function':
 
                 # - Internally disassemble the queried function.
@@ -133,7 +170,7 @@ async def async_main():
     # TODO: Implement the client/server communication defined within the
     # "docs/GUI server websocket protocol.md" file, as well as the GUI
 
-    async with serve(echo, 'localhost', 49594):
+    async with serve(socket_server, 'localhost', 49594):
         await Future()  # run forever
 
 def main():

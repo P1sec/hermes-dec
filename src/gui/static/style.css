@@ -14,7 +14,7 @@ html, body {
 }
 
 #main_view {
-    display: flex; /* Switch to none */
+    display: block; /* Switch to none */
 }
 
 #work_view {

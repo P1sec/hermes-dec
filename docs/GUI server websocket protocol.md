@@ -5,7 +5,9 @@ The browser/Websocket-based GUI of `hermes-dec` should implement the following J
 ```
 S->C {"type": "recent_files", ...} (saved files w/ context, etc.)
 
-C->S {"type": "load_saved", ...} (load saved context)
+C->S {"type": "open_file_by_hash", "file_hash": "<sha256 HEX>"} (load saved context)
+
+S->C {"type": "file_hash_unknown"}
 
 // (Implement first:)
 C->S {"type": "begin_tranfer", "file_name": "x.index.bundle OR apk"}

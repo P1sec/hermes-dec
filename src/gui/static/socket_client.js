@@ -1,11 +1,12 @@
 window.socket = new WebSocket('ws://localhost:49594');
+window.current_file_obj = null;
 
 const functions_table = document.querySelector('#functions_table tbody');
 const home_view = document.querySelector('#home_view');
 const work_view = document.querySelector('#work_view');
 
 const select_function = function(event) {
-    let function_id = Array.prototype.indexOf.call(event.target.parentNode.children, event.target);
+    let function_id = Array.prototype.indexOf.call(event.currentTarget.parentNode.children, event.currentTarget);
 
     window.socket.send(JSON.stringify({
         type: 'analyze_function',
@@ -24,6 +25,27 @@ window.socket.onmessage = function(event) {
     // file for documentation about the following messages.
 
     switch(message.type) {
+        case 'recent_files':
+            break; // WIP - TODO
+
+        case 'file_hash_unknown':
+            let file = window.current_file_obj;
+
+            window.socket.send(JSON.stringify({
+                type: 'begin_transfer',
+                file_name: file.name
+            }));
+
+            let chunk_size = 1 * 1024 * 1024;
+            for(let pos = 0; pos < file.size; pos += chunk_size) {
+                window.socket.send(file.slice(pos, Math.min(file.size, pos + chunk_size)));
+            }
+
+            window.socket.send(JSON.stringify({
+                type: 'end_transfer'
+            }));
+            break;
+
         case 'file_opened':
             home_view.style.display = 'none';
             work_view.style.display = 'flex';
