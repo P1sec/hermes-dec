@@ -46,15 +46,27 @@ html, body {
     line-height: 1.2em;
 }
 
-#functions_table {
+table {
     font-family: 'Courier New', Courier, monospace;
     font-size: 12px;
     border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid #ccc;
+    padding: 7px;
+}
+
+#recent_files_table {
+    display: none; /* Should switch to "table" if there are any recent files later */
+}
+
+#functions_table {
     table-layout: fixed;
     word-break: break-all;
 }
 
-#functions_table tr:hover {
+#functions_table tr:hover, #recent_files_table tbody tr:hover {
     background: #eee;
     cursor: pointer;
 }
@@ -63,9 +75,7 @@ html, body {
     cursor: default;
 }
 #functions_table td {
-    border: 1px solid #ccc;
     width: 100px;
-    padding: 7px;
 }
 
 #functions_table tr:first-child td {

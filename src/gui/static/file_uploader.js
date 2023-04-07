@@ -17,12 +17,6 @@ const hash_file_buffer = async function(file_buffer) {
     return to_hex(
         await window.crypto.subtle.digest('SHA-256', file_buffer)
     );
-
-    /**
-     * 
-            WIP /
-
-     */
 };
 
 open_button.onclick = function() {
@@ -44,6 +38,10 @@ file_picker.onchange = function(event) {
                     type: 'open_file_by_hash',
                     hash: file_hash
                 }));
+
+                window.hash_router.current_file_sha = file_hash;
+                window.hash_router.data.file_hash = file_hash;
+                window.hash_router.update();
 
             });
         });

@@ -16,6 +16,23 @@ const select_function = function(event) {
     // WIP ..
 };
 
+const format_size = function(size) { // Format a size in MiB or KiB
+    if(size >= 1024 * 1024) { // More than 1 MiB?
+        return Math.floor(size / 1024 / 1024 * 10) / 10 + ' MiB';
+    }
+    else {
+        return Math.floor(size / 1024 / 1024 * 10) / 10 + ' KiB';
+    }
+};
+
+const format_date = function(date) {
+    return date; // WIP
+};
+
+window.socket.onopen = function() {
+    window.hash_router = new HashRouter();
+}
+
 window.socket.onmessage = function(event) {
     let message = JSON.parse(event.data);
 
@@ -26,6 +43,44 @@ window.socket.onmessage = function(event) {
 
     switch(message.type) {
         case 'recent_files':
+            const tbody = document.querySelector('#recent_files_table tbody');
+
+            if(message.recent_files.length) {
+                document.querySelector('#recent_files_table').style.display = 'table';
+            }
+
+            for(let recent_file of message.recent_files) {
+                const tr = document.createElement('tr');
+
+                const items = [
+                    recent_file.orig_name,
+                    format_size(recent_file.file_size),
+                    recent_file.file_hash.substr(0, 7),
+                    format_date(recent_file.db_created_time),
+                    format_date(recent_file.db_updated_time)
+                ];
+
+                for(var data_item of items) {
+                    const td = document.createElement('td');
+                    td.textContent = data_item;
+                    tr.appendChild(td);
+                }
+
+                tr.addEventListener('click', function(event) {
+                    window.socket.send(JSON.stringify({
+                        type: 'open_file_by_hash',
+                        hash: recent_file.file_hash
+                    }), true);
+
+                    window.hash_router.current_file_sha = recent_file.file_hash;
+                    window.hash_router.data.file_hash = recent_file.file_hash;
+                    window.hash_router.update();
+                });
+
+                tbody.appendChild(tr);
+
+            }
+
             break; // WIP - TODO
 
         case 'file_hash_unknown':

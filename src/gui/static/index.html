@@ -16,7 +16,18 @@
             <br>
             <h1>Recently opened files</h1>
             <br>
-            WIP (TODO)...
+            <table id="recent_files_table"> <!-- WIP.. -->
+                <thead>
+                    <tr>
+                        <th>File name</th>
+                        <th>File size</th>
+                        <th>File hash</th>
+                        <th>Uploaded date</th>
+                        <th>Modified date</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
         </div>
         <div id="work_view">
             <div id="side_pane"> <!-- Functions list -->
@@ -30,9 +41,9 @@
             <div id="canvas"></div> <!-- Disassembly graph view -->
             <div id="code_pane"></div> <!-- Decompiled code view -->
         </div>
+        <script src="hash_router.js"></script>
         <script src="socket_client.js"></script>
         <script src="file_uploader.js"></script>
-        <script src="hash_router.js"></script>
         <script src="canvas.js"></script>
         <script>
 
