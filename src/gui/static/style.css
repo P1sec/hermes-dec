@@ -26,23 +26,28 @@ html, body {
     overflow-y: auto;
     display: flex;
     border: 1px solid #ccc;
-    flex-basis: content;
+    flex-basis: fit-content;
+    flex-shrink: 0;
+    flex-grow: 0;
     flex-direction: column;
 }
 
 #canvas {
-    flex-grow: 2;
+    flex-basis: min-content;
+    flex-shrink: 1;
+    flex-grow: 1;
     overflow: auto;
-    position: relative;
+    display: grid;
+    font-size: 12px;
+    gap: 38px;
+    font-family: 'Courier New', Courier, monospace;
+    grid-auto-columns: minmax(60ch, max-content);
 }
 
 #canvas .graph_node { /* Basic block */
     border: 1px solid #ccc;
     padding: 5px;
-    font-size: 12px;
-    font-family: 'Courier New', Courier, monospace;
-    position: absolute;
-    white-space: pre;
+    white-space: pre-line;
     line-height: 1.2em;
 }
 

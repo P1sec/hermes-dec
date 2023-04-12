@@ -18,8 +18,8 @@ def pass1c_visit_code_paths(state : HermesDecompiler, function_body : Decompiled
         order to:
         - Mark cycling points of the code
         
-        - Calculate the "max_acc_insn_weight" and "max_acc_pixel_weight"
-          values (see defs.py) for each basic block
+        - Calculate the "max_acc_insn_weight" value (see defs.py)
+          for each basic block
     
         Algorithm:
         - Apply descending recursion starting from the root node of
@@ -58,11 +58,6 @@ def desc_recurse_set_cycling_and_accs(block : BasicBlock, code_path : List[Basic
         acc_insn_weight += block.insn_count
 
         block.max_acc_insn_weight = max(block.max_acc_insn_weight, acc_insn_weight)
-
-        acc_pixel_weight = code_path[-1].max_acc_pixel_weight
-        acc_pixel_weight += PER_BLOCK_PIXELS + block.insn_count * PER_INSN_PIXELS
-
-        block.max_acc_pixel_weight = max(block.max_acc_pixel_weight, acc_pixel_weight)
     
     code_path.append(block)
 

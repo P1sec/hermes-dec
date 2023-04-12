@@ -27,12 +27,9 @@ C->S {"type": "analyze_function", "function_id": 49}
 // Will return disassembly graph + cross-references + decompiled code with clickable expandable "..." buttons for nested closures for a given function
 
 S->C {"type": "analyzed_function", "function_id": 49, "blocks": [{
-    "x": 42, // Coordinates and sizes are expressed in tiles (12x12)
-    "y": 42,
-    "height": 200,
-    "width": 42,
-    "raw_text": "" // Delimited with "\n" for newlines
-    // Calculate text wrap in Python? Which module should we use? => "from textwrap import wrap"
+    "grid_x": 1, // Used for rendering with the CSS grid layout
+    "grid_y": 2,
+    "text": "Assembly...\n",
     "WIP... // Links"
 }],
 "edges": ["WIP..."]}

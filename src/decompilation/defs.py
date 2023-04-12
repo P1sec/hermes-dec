@@ -61,16 +61,13 @@ class BasicBlock:
     # branch in case of if() conditions, etc. (the branch
     # going the block with the largest "max_acc_insn_weight"
     # should be preferred to be main, and the block with
-    # the smalled value should be preferred to be conditional)
+    # the smallest value should be preferred to be conditional)
     max_acc_insn_weight : int = 0
 
-    # Same as "max_acc_insn_weight" but used to determinate
-    # which blocks should be painted bottom-center (main branches)
-    # or painted bottom-right (conditional branches), using an
-    # estimate vertical height expressed in pixels instead of an
-    # instruction count
-    max_acc_pixel_weight : int = 0
-    
+    # State that will be used in "pre_render_graph.py":
+    rendered : bool = False
+    marked_to_render : bool = False
+
     # These flags should indicate whether we have
     # encountered cycling in
     # "graph_traversers/step2_visite_code_paths.py"

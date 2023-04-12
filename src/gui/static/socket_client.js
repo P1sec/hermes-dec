@@ -138,12 +138,13 @@ window.socket.onmessage = function(event) {
 
             for(var block of message.blocks) {
                 var html_block = document.createElement('div');
-                html_block.className = 'graph_node';
-                html_block.style.top = block.y * TILE_SIZE_Y + 'px';
-                html_block.style.left = block.x * TILE_SIZE_X + 'px';
-                html_block.style.width = block.width * TILE_SIZE_X + 'px';
-                html_block.style.height = block.height * TILE_SIZE_Y + 'px';
-                html_block.textContent = block.raw_text;
+                html_block.style.gridColumn = block.grid_x;
+                html_block.style.gridRow = block.grid_y;
+                
+                var node_div = document.createElement('div');
+                node_div.className = 'graph_node';
+                node_div.textContent = block.text;
+                html_block.appendChild(node_div);
 
                 canvas.appendChild(html_block);
             }

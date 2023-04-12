@@ -91,7 +91,6 @@ def pass1b_make_basic_blocks(state : HermesDecompiler, function_body : Decompile
     
     if basic_blocks:
         basic_blocks[0].max_acc_insn_weight = 0
-        basic_blocks[0].max_acc_pixel_weight = 0
     
     for basic_block in basic_blocks:
         if basic_block.jump_targets_for_anchor:
