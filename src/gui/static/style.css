@@ -36,15 +36,28 @@ html, body {
     flex-basis: min-content;
     flex-shrink: 1;
     flex-grow: 1;
+    position: relative;
     overflow: auto;
+}
+
+#canvas_svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
+#canvas_grid {
+    position: relative;
+    z-index: 2;
     display: grid;
     font-size: 12px;
     gap: 38px;
     font-family: 'Courier New', Courier, monospace;
-    grid-auto-columns: minmax(60ch, max-content);
+    grid-auto-columns: min-content minmax(60ch, max-content);
 }
 
-#canvas .graph_node { /* Basic block */
+#canvas_grid .graph_node { /* Basic block */
     border: 1px solid #ccc;
     padding: 5px;
     white-space: pre-line;

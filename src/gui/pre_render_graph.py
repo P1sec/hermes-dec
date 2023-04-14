@@ -31,6 +31,10 @@ def draw_stuff(instructions : List[ParsedInstruction], dehydrated : DecompiledFu
         'blocks': []
     } # TODO Defined the layout of this JSON object that should eventually be sent back to the Websocket server
 
+    # A list of the BasicBlock objects contained in the analyzed function, with
+    # list index matching the index in the result['blocks'] metadata array
+    block_objects : List[BasicBlock] = []
+
     def process_basic_block(basic_block : BasicBlock):
 
         nonlocal current_x
@@ -62,8 +66,13 @@ def draw_stuff(instructions : List[ParsedInstruction], dehydrated : DecompiledFu
             'grid_x': current_x,
             'grid_y': current_y,
             'text': current_block_text,
-            'links': ['WIP...']
+            'child_nodes': [],
+            'child_error_nodes': [],
+            'parent_nodes': [],
+            'parent_error_nodes': []
         })
+
+        block_objects.append(basic_block)
 
         # Recursively iterate through children blocks:
 
@@ -85,6 +94,19 @@ def draw_stuff(instructions : List[ParsedInstruction], dehydrated : DecompiledFu
 
     if dehydrated.basic_blocks:
         process_basic_block(dehydrated.basic_blocks[0])
+    
+    # Reproduce the linked graph of basic blocks within the JSON metadata
+    # array using array indexes as a reference
+
+    for index, basic_block in enumerate(block_objects):
+        result['blocks'][index]['child_nodes'].extend(
+            block_objects.index(node) for node in basic_block.child_nodes)
+        result['blocks'][index]['child_error_nodes'].extend(
+            block_objects.index(node) for node in basic_block.error_handling_child_nodes)
+        result['blocks'][index]['parent_nodes'].extend(
+            block_objects.index(node) for node in basic_block.parent_nodes)
+        result['blocks'][index]['parent_error_nodes'].extend(
+            block_objects.index(node) for node in basic_block.error_handling_parent_nodes)
 
             
     return result

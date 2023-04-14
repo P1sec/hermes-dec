@@ -130,24 +130,59 @@ window.socket.onmessage = function(event) {
         
         case 'analyzed_function':
 
-            const canvas = document.querySelector('#canvas');
-            canvas.innerHTML = '';
+            const canvas_grid = document.querySelector('#canvas_grid');
+            canvas_grid.innerHTML = '';
 
             const TILE_SIZE_Y = 12;
             const TILE_SIZE_X = 12;
 
-            for(var block of message.blocks) {
+            const svg_tag = document.querySelector('#canvas_svg');
+            svg_tag.innerHTML = '';
+
+            let graph = new Graph(svg_tag, canvas_grid);
+            let node_objects = [];
+
+            for(var block_idx = 0; block_idx < message.blocks.length; block_idx++) {
+                var block = message.blocks[block_idx];
+
                 var html_block = document.createElement('div');
-                html_block.style.gridColumn = block.grid_x;
-                html_block.style.gridRow = block.grid_y;
+
+                // We're using a CSS grid layout where:
+                // Odd rows/columns (1-indexed) = graph nodes;
+                // even rows/columns (1-indexed) = graph lattices
+                html_block.style.gridColumn = (block.grid_x - 1) * 2 + 2;
+                html_block.style.gridRow = (block.grid_y - 1) * 2 + 2;
                 
                 var node_div = document.createElement('div');
                 node_div.className = 'graph_node';
                 node_div.textContent = block.text;
                 html_block.appendChild(node_div);
 
-                canvas.appendChild(html_block);
+                var node = new Node(graph, html_block, block_idx);
+                node_objects.push(node);
+
+                canvas_grid.appendChild(html_block);
             }
+
+            for(var block_idx = 0; block_idx < message.blocks.length; block_idx++) {
+                var block = message.blocks[block_idx];
+                var node = node_objects[block_idx];
+
+                for(var child_port_idx of block.child_nodes) {
+                    var out_port = new OutPort(graph, node, false);
+                    var in_port = new InPort(graph, node_objects[child_port_idx], false);
+                    new Edge(graph, out_port, in_port);
+                }
+                for(var child_port_idx of block.child_error_nodes) {
+                    var out_port = new OutPort(graph, node, true);
+                    var in_port = new InPort(graph, node_objects[child_port_idx], true);
+                    new Edge(graph, out_port, in_port);
+                }
+            }
+
+            graph.prerender();
+            graph.render();
+
             break;
 
             // WIP fix display introduce graph ordering introduce links pathfinding ...

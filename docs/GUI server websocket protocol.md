@@ -30,9 +30,11 @@ S->C {"type": "analyzed_function", "function_id": 49, "blocks": [{
     "grid_x": 1, // Used for rendering with the CSS grid layout
     "grid_y": 2,
     "text": "Assembly...\n",
-    "WIP... // Links"
-}],
-"edges": ["WIP..."]}
+    "child_nodes": [index, index...],
+    "child_error_nodes": [index, index...],
+    "parent_nodes": [index, index...],
+    "parent_error_nodes": [index, index...]
+}]}
 
 (+ a progress bar upstream packet?)
 
