@@ -2,6 +2,8 @@
 // WIP ...
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
+const SPACING_BETWEEN_EDGES_PX = 4;
+const LINE_WIDTH = 1;
 
 // This abstracts the rendering of graph edges, that will be
 // operated through drawing a SVG background under the
@@ -18,6 +20,24 @@ class Graph {
         this.nodes = []; // Array<Node>
         this.edges = []; // Array<Edge>
         this.lattices = []; // Array<Lattice>
+    }
+
+    get_horizontal_lattice(grid_x, grid_y) {
+        if(this.css_grid[grid_x] && this.css_grid[grid_x][grid_y]) {
+            return this.css_grid[grid_x][grid_y];
+        }
+        else {
+            return new HorizontalLattice(this, grid_x, grid_y);
+        }
+    }
+
+    get_vertical_lattice(grid_x, grid_y) {
+        if(this.css_grid[grid_x] && this.css_grid[grid_x][grid_y]) {
+            return this.css_grid[grid_x][grid_y];
+        }
+        else {
+            return new VerticalLattice(this, grid_x, grid_y);
+        }
     }
 
     prerender() {
@@ -40,7 +60,9 @@ class Node {
         this.graph = graph; // Graph
         this.graph.nodes.push(this);
 
-        // Indexed in the CSS grid (1-indexed, odd index = node, even index = lattice)
+        // Indexes in the CSS grid (1-indexed, if both indexes
+        // are even it's a node, if either index is odd it's
+        // a lattice)
         this.grid_x = html_elem.style.gridColumn; // Integer
         this.grid_y = html_elem.style.gridRow; // Integer
         
@@ -53,15 +75,6 @@ class Node {
         this.orig_idx = orig_idx; // Integer
         this.in_ports = []; // Array<InPort>
         this.out_ports = []; // Array<OutPort>
-
-        this.bottom_lattice = new HorizontalLattice(graph, this, false);
-        if(this.html_elem.gridRow == 0) {
-            this.top_lattice = new HorizontalLattice(graph, this, true);
-        }
-        else {
-            this.top_lattice = null;
-        }
-        this.right_lattice = new VerticalLattice(graph, this, false);
     }
 }
 
@@ -69,10 +82,10 @@ class Node {
 class Port {
     constructor(graph, node, is_error_handling, is_out) {
         this.graph = graph; // Graph
+        this.node = node; // Node
 
         this.is_out = is_out; // Boolean
         this.is_error_handling = is_error_handling; // Boolean
-        this.node = node; // Node
         if(is_out) {
             node.out_ports.push(this);
         }
@@ -102,18 +115,134 @@ class Edge {
         this.graph = graph; // Graph
         this.graph.edges.push(this);
         
+        this.out_port = out_port; // OutPort
+        this.in_port = in_port; // InPort
         out_port.edge = this;
         in_port.edge = this;
 
         this.is_error_handling = out_port.is_error_handling; // Boolean
+        this.lattices = []; // Array<Lattice>
         this.lattice_lanes = []; // Array<LatticeLane>
         this.rendered_objects = []; // Array<RenderedObject>
     }
 
     prerender() {
-        // TODO... fill this.lattice_lanes using a pathfinding algorithm
+        // WIP... fill this.lattices and this.lattice_lanes using a
+        // pathfinding algorithm
 
-        // TODO... fill this.rendered_objects
+        // Pathfinding algorithm:
+        // 1. The first way of the path is the HorizontalLattice
+        //    located under OutPort which starts the Edge.
+        //    (We're reserving a first LatticeLane matched
+        //     with the corresponding OutPort here.)
+        // 2. Then, pick or create 0+ VerticalLattice objects in
+        //    the grid up to the level of matching InPort
+        // 3. Then, pick or create 1+ HorizontalLattice objects
+        //    in the grid up to the level of the matching InPort
+        //
+        // Our path is stored in the this.lattice_lanes object
+        //
+        // (Reminder: our CSS grid is: 1-indexed, if both indexes
+        //  are even it's a node, if either index is odd it's
+        //  a lattice)
+
+        const src_x = this.out_port.node.grid_x;
+        const src_y = this.out_port.node.grid_y + 1;
+
+        const dst_x = this.in_port.node.grid_x;
+        const dst_y = this.in_port.node.grid_y - 1;
+
+        const src_lattice = this.graph.get_horizontal_lattice(src_x, src_y);
+        const dst_lattice = this.graph.get_horizontal_lattice(dst_x, dst_y);
+        
+        var cur_x = src_x;
+        var cur_y = src_y;
+
+        // Step 1:
+        this.lattices.push(src_lattice);
+
+        // Step 2:
+        if(dst_x < src_x) {
+            cur_x--; // Should we get leftwards?
+        }
+        else if(dst_x > src_x || dst_y != src_y) {
+            cur_x++; // Should we get rightwards?
+        }
+        if(dst_y < src_y) {
+            while(dst_y < cur_y) {
+                cur_y--; // Get an even grid index
+                this.lattices.push(this.graph.get_vertical_lattice(cur_x, cur_y));
+                cur_y--;
+            }
+        }
+        else if(dst_y > src_y) {
+            while(dst_y > cur_y) {
+                cur_y++; // Get an even grid index
+                this.lattices.push(this.graph.get_vertical_lattice(cur_x, cur_y));
+                cur_y++;
+            }
+        }
+
+        if(dst_x < src_x) {
+            while(dst_y + 1 < cur_x) {
+                cur_x--; // Get an even grid index
+                this.lattices.push(this.graph.get_horizontal_lattice(cur_x, cur_y));
+                cur_x--;
+            }
+        }
+        else if(dst_x > src_x) {
+            while(dst_y - 1 > cur_y) {
+                cur_x++; // Get an even grid index
+                this.lattices.push(this.graph.get_horizontal_lattice(cur_x, cur_y));
+                cur_x++;
+            }
+        }
+
+        this.lattices.push(dst_lattice);
+
+        // Allocate this.lattice_lanes from this.lattices
+
+        for(var lattice of this.lattices) {
+            if(lattice instanceof HorizontalLattice) {
+                this.lattice_lanes.push(new HorizontalLatticeLane(this.edge, lattice));
+            }
+            else {
+                this.lattice_lanes.push(new VerticalLatticeLane(this.edge, lattice));
+            }
+        }
+        
+
+        // (TODO : Adjust the CSS pixel padding of lattices according
+        // to their number of lanes, if needed?)
+
+        // (Now we're think in pixels rather than grid units)
+
+        // TODO... fill this.rendered_objects from this.lattice_lanes
+
+        var canvas_div = this.graph.svg_root;
+        var canvas_bbox = canvas_div.getBoundingClientRect();
+
+        var src_div = this.out_port.node.html_elem.querySelector('.graph_node');
+        var src_bbox = src_div.getBoundingClientRect();
+
+        var dst_div = this.in_port.node.html_elem.querySelector('.graph_node');
+        var dst_bbox = dst_div.getBoundingClientRect();
+
+        // The start of the edge we will draw:
+        var cur_x = src_bbox.x - canvas_bbox.x + src_bbox.width / 2; // In pixels now
+        var cur_y = src_bbox.y - canvas_bbox.y + src_bbox.height;
+
+        // The end of the edge we will draw:
+        var target_x = dst_bbox.x - canvas_bbox.x + dst_bbox.width / 2;
+        var target_y = dst_bbox.y - canvas_bbox.y;
+
+        for(var lattice_lane of this.lattice_lanes) {
+            if(lattice_lane instanceof VerticalLatticeLane) {
+                cur_y += SPACING_BETWEEN_EDGES_PX + LINE_WIDTH; // WIP ..
+            }
+        }
+        this.rendered_objects.push();
+        // WIP ..
     }
 
     render() {
@@ -123,9 +252,9 @@ class Edge {
     }
 }
 
-// Linked with a side of Node
+// May be linked with a side of Node
 class Lattice {
-    constructor(graph, node, is_before, grid_x, grid_y, is_vertical) {
+    constructor(graph, grid_x, grid_y, is_vertical) {
         this.graph = graph; // Graph
         graph.lattices.push(this);
 
@@ -147,55 +276,18 @@ class Lattice {
 
         this.is_before = is_before; // Boolean
         this.is_vertical = is_vertical; // Boolean
-
-        this.all_neighbors = []; // Array<Lattice>
     }
 }
 
-class VerticalLattice extends Lattice { // Rendered at the right of each Node
-    constructor(graph, node, is_before) {
-        if(is_before) {
-            var grid_x = node.grid_x - 1;
-        }
-        else {
-            var grid_x = node.grid_x + 1;
-        }
-        var grid_y = node.grid_y;
-
-        super(graph, node, is_before, grid_x, grid_y, true);
-
-        // Neighbour lattices, used for pathfinding:
-        this.tl_lattice = null; // HorizontalLattice - top-left
-        this.tc_lattice = null; // VerticalLattice - top-center
-        this.tr_lattice = null; // HorizontalLattice - top-right
-
-        this.bl_lattice = null; // HorizontalLattice - bottom-left
-        this.bc_lattice = null; // VerticalLattice - bottom-center
-        this.br_lattice = null; // HorizontalLattice - bottom-right
+class VerticalLattice extends Lattice {
+    constructor(graph, grid_x, grid_y) {
+        super(graph, grid_x, grid_y, true);
     }
 }
 
-class HorizontalLattice extends Lattice { // Rendered under each Node, and atop of the first-row Node objects
-    constructor(graph, node, is_before) {
-        var grid_x = node.grid_x;
-        if(is_before) {
-            var grid_y = node.grid_y - 1;
-        }
-        else {
-            var grid_y = node.grid_y + 1;
-        }
-
-        super(graph, node, is_before, grid_x, grid_y, false);
-
-        // Neighbour lattices, used for pathfinding:
-        this.lt_lattice = null; // VerticalLattice - left-top
-        this.lc_lattice = null; // HorizontalLattice - left-center
-        this.lb_lattice = null; // VerticalLattice - left-bottom
-        
-        this.rt_lattice = null; // VerticalLattice - right-top
-        this.rc_lattice = null; // HorizontalLattice - right-center
-        this.rb_lattice = null; // VerticalLattice - right-bottom
-    
+class HorizontalLattice extends Lattice {
+    constructor(graph, grid_x, grid_y) {
+        super(graph, grid_x, grid_y, false);
     }
 }
 
@@ -203,23 +295,27 @@ class HorizontalLattice extends Lattice { // Rendered under each Node, and atop 
 class LatticeLane {
     constructor(edge, lattice, is_vertical) {
         this.edge = edge; // Edge
-
         this.lattice = lattice; // Lattice
-        lattice.lanes.push(this);
 
         this.is_vertical = is_vertical; // Boolean
+    }
+
+    get_lane_index() {
+        return this.lattice.lanes.indexOf(this);
     }
 }
 
 class VerticalLatticeLane extends LatticeLane { // Part of a VerticalLattice, and of a specific Edge
     constructor(edge, lattice) {
         super(edge, lattice, true);
+        lattice.lanes.push(this);
     }
 }
 
 class HorizontalLatticeLane extends LatticeLane { // Part of a HorizontalLattice, and of a specific Edge
     constructor(edge, lattice) {
         super(edge, lattice, false);
+        lattice.lanes.unshift(this);
     }
 }
 
@@ -235,29 +331,36 @@ class RenderedObject {
     }
 }
 
-class VerticalPortLine extends RenderedObject {
-    constructor(svg_root, x1, y1, x2, y2) {
+class VerticalLine extends RenderedObject {
+    constructor(svg_root, x, y1, y2) {
         this.svg_root = svg_root; // DOMElement
-        this.x1 = x1;
+        this.x = x;
         this.y1 = y1;
-        this.x2 = x2;
         this.y2 = y2;
     }
 }
 
-class VerticalLatticeLine extends RenderedObject {
-    
-}
-
-class HorizontalLatticeLine extends RenderedObject {
-
+class HorizontalLine extends RenderedObject {
+    constructor(svg_root, x1, x2, y) {
+        this.svg_root = svg_root; // DOMElement
+        this.x1 = x1;
+        this.x2 = x2;
+        this.y = y;
+    }
 }
 
 // All the arrows should be bottom-leaning I think
 class BottomLeaningArrow extends RenderedObject {
-    
+    constructor(svg_root, tip_x, tip_y) {
+        this.svg_root = svg_root; // DOMElement;
+        this.tip_x = tip_x;
+        this.tip_y = tip_y;
+    }
 }
 
+// Later:
+/**
 class OverlapHalfCircle extends RenderedObject {
 
 }
+*/

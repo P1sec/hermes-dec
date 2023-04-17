@@ -48,13 +48,15 @@ html, body {
 }
 
 #canvas_grid {
-    position: relative;
+    position: absolute;
+    top: 19px;
+    left: 19px;
     z-index: 2;
     display: grid;
     font-size: 12px;
-    gap: 38px;
     font-family: 'Courier New', Courier, monospace;
-    grid-auto-columns: min-content minmax(60ch, max-content);
+    grid-auto-columns: 19px minmax(60ch, max-content);
+    grid-auto-rows: 19px fit-content;
 }
 
 #canvas_grid .graph_node { /* Basic block */

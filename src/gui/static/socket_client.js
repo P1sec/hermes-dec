@@ -147,9 +147,9 @@ window.socket.onmessage = function(event) {
 
                 var html_block = document.createElement('div');
 
-                // We're using a CSS grid layout where:
-                // Odd rows/columns (1-indexed) = graph nodes;
-                // even rows/columns (1-indexed) = graph lattices
+                // We're using a 1-indexed CSS grid layout.
+                // When both indexes are even it's a node,
+                // whe, either index is odd it's a lattice
                 html_block.style.gridColumn = (block.grid_x - 1) * 2 + 2;
                 html_block.style.gridRow = (block.grid_y - 1) * 2 + 2;
                 
