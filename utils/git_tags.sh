@@ -61,6 +61,7 @@ GIT_TAGS=(
     # tree after three days (Feb 14-17, 2023).
     # Bytecode version 93 is similar to bytecode version 91.
     # '1c71748' # Bytecode version 94 reintroduces the change from version 92 - Mar 8, 2023
+    'f6b56d3' # Bytecode version 95 - Mar 29, 2023
 )
 
 declare -A TAG_TO_VERSION=(
@@ -90,4 +91,5 @@ declare -A TAG_TO_VERSION=(
     [4985960]='hbc91'
     [b544ff4]='hbc92'
     [1c71748]='hbc94'
+    [f6b56d3]='hbc95'
 )
