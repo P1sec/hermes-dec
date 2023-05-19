@@ -49,14 +49,20 @@ html, body {
 
 #canvas_grid {
     position: absolute;
-    top: 19px;
-    left: 19px;
+    top: 0;
+    left: 0;
+    padding: 19px;
     z-index: 2;
     display: grid;
     font-size: 12px;
     font-family: 'Courier New', Courier, monospace;
-    grid-auto-columns: 19px minmax(60ch, max-content);
-    grid-auto-rows: 19px fit-content;
+    grid-auto-columns: auto minmax(60ch, max-content);
+    grid-auto-rows: minmax(19px, max-content) max-content;
+}
+
+.lattice {
+    /* background: #C25EFF; */ /* Debug: Make the grid lattices visible enough */
+    opacity: 0.4;
 }
 
 #canvas_grid .graph_node { /* Basic block */

@@ -30,6 +30,7 @@ class HashRouter {
     constructor() {
         this.current_file_sha = null;
         this.current_function_id = null;
+        this.file_opened = false;
         this.data = {};
         this.parse_hash();
 
@@ -50,9 +51,14 @@ class HashRouter {
             }));
         }
 
-        if(this.data.current_function && this.current_function_id !== this.data.current_function) {
-            // WIP ..
-        }
+        if(this.file_opened && this.data.current_function && this.current_function_id !== this.data.current_function) {
+            this.current_function_id = this.data.current_function;
+
+            window.socket.send(JSON.stringify({
+                type: 'analyze_function',
+                function_id: this.current_function_id
+            }));
+         }
     }
 
     update() {

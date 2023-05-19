@@ -5,13 +5,16 @@ const functions_table = document.querySelector('#functions_table tbody');
 const home_view = document.querySelector('#home_view');
 const work_view = document.querySelector('#work_view');
 
-const select_function = function(event) {
-    let function_id = Array.prototype.indexOf.call(event.currentTarget.parentNode.children, event.currentTarget);
+const select_function = function(function_id) {
 
     window.socket.send(JSON.stringify({
         type: 'analyze_function',
         function_id: function_id
     }));
+
+    window.hash_router.current_function_id = function_id;
+    window.hash_router.data.current_function = function_id;
+    window.hash_router.update();
 
     // WIP ..
 };
@@ -102,6 +105,9 @@ window.socket.onmessage = function(event) {
             break;
 
         case 'file_opened':
+            window.hash_router.file_opened = true;
+            window.hash_router.parse_hash(); // Analyze a function from the URL hash, if specified
+
             home_view.style.display = 'none';
             work_view.style.display = 'flex';
 
@@ -122,7 +128,11 @@ window.socket.onmessage = function(event) {
                 cell.textContent = function_obj.size;
                 row.appendChild(cell);
 
-                row.addEventListener('click', select_function, true);
+                row.addEventListener('click', function(event) {
+                    let function_id = Array.prototype.indexOf.call(event.currentTarget.parentNode.children, event.currentTarget);
+
+                    select_function(function_id);
+                }, true);
 
                 functions_table.appendChild(row);
             }
@@ -149,9 +159,9 @@ window.socket.onmessage = function(event) {
 
                 // We're using a 1-indexed CSS grid layout.
                 // When both indexes are even it's a node,
-                // whe, either index is odd it's a lattice
-                html_block.style.gridColumn = (block.grid_x - 1) * 2 + 2;
-                html_block.style.gridRow = (block.grid_y - 1) * 2 + 2;
+                // when either index (row or column) is odd it's a lattice
+                html_block.style.gridColumn = block.grid_x * 2;
+                html_block.style.gridRow = block.grid_y * 2;
                 
                 var node_div = document.createElement('div');
                 node_div.className = 'graph_node';
