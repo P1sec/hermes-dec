@@ -19,7 +19,20 @@ C->S {"type": "open_file", "disk_path": "(...)/x.index.bundle"}
 
 S->C {"type": "pop_message", "icon": "error", "message_html": "Could not open file:<br><br><pre>XXX</pre>"}
 
-S->C {"type": "file_opened", "functions_list": [{"name": "fun_000001", "offset": '%08x' % 0x40234, size: 42}, ...]}
+S->C {
+    "type": "file_opened",
+    "file_metadata": {
+        "bytecode_version": 76,
+        "db_created_time": "2023-04-07T08:33:57.200578",
+        "db_updated_time": "2023-07-18T13:53:13.827344",
+        "dir_disk_path": "/home/marin/.local/share/HermesDec/by-date/2023-04-07T08:33:56-indexandroidbundle",
+        "file_hash": "b2b514abac3dedbc83619d0e782ae61a0d958038a432f01a11b22d09537d7090",
+        "file_size": 3482132,
+        "orig_name": "index.android.bundle",
+        "raw_disk_path": "/home/marin/.local/share/HermesDec/by-date/2023-04-07T08:33:56-indexandroidbundle/index.android.bundle"
+    },
+    "functions_list": [{"name": "fun_000001", "offset": '%08x' % 0x40234, size: 42}, ...]
+}
 // The "functions_list" attribute in the corresponding JSON object should be indexable
 // the same way as in the Hermes bytecode file format.
 

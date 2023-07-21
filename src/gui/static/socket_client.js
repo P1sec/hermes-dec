@@ -4,6 +4,8 @@ window.current_file_obj = null;
 const functions_table = document.querySelector('#functions_table tbody');
 const home_view = document.querySelector('#home_view');
 const work_view = document.querySelector('#work_view');
+const top_bar_label = document.querySelector('#top_bar_label');
+const top_bar_switch_file_button = document.querySelector('#top_bar_switch_file_button');
 
 const select_function = function(function_id) {
 
@@ -30,6 +32,11 @@ const format_size = function(size) { // Format a size in MiB or KiB
 
 const format_date = function(date) {
     return date; // WIP
+};
+
+top_bar_switch_file_button.onclick = function() {
+    home_view.style.display = 'block';
+    work_view.style.display = 'none';
 };
 
 window.socket.onopen = function() {
@@ -109,7 +116,13 @@ window.socket.onmessage = function(event) {
             window.hash_router.parse_hash(); // Analyze a function from the URL hash, if specified
 
             home_view.style.display = 'none';
-            work_view.style.display = 'flex';
+            work_view.style.display = 'grid';
+            top_bar_label.textContent = ('"' + message.file_metadata.orig_name + '" | ' +
+                'Opened ' + format_date(message.file_metadata.db_created_time) + ' | ' +
+                'Hermes bytecode v' + message.file_metadata.bytecode_version + ' | ' +
+                format_size(message.file_metadata.file_size));
+
+            functions_table.innerHTML = '';
 
             for(let function_id = 0; function_id < message.functions_list.length; function_id++) {
                 let function_obj = message.functions_list[function_id];
