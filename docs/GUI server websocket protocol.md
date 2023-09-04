@@ -3,7 +3,12 @@
 The browser/Websocket-based GUI of `hermes-dec` should implement the following JSON messages:
 
 ```
-S->C {"type": "recent_files", ...} (saved files w/ context, etc.)
+S->C {"type": "recent_files", recent_files: [
+    {
+        "file_hash": ...,
+        "orig_name": ...
+    }, ...
+]} (saved files w/ context, etc.)
 
 C->S {"type": "open_file_by_hash", "file_hash": "<sha256 HEX>"} (load saved context)
 

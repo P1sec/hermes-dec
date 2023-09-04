@@ -31,12 +31,18 @@ table, tr:first-child td, tr-first-child th {
  * Home view styling
  */
 
-#recent_files_table {
-    display: none; /* Should switch to "table" if there are any recent files later */
+#open_button_container {
+    font-size: 28px;
 }
 
-#main_view {
-    display: block; /* Switch to none */
+#open_button_container input {
+    font-size: 28px;
+    cursor: pointer;
+    margin-left: 8px;
+}
+
+#home_view {
+    padding: 46px 38px;
 }
 
 /**
@@ -44,7 +50,7 @@ table, tr:first-child td, tr-first-child th {
  */
 
 #work_view {
-    display: none; /* Switch to grid */
+    display: grid;
     grid-template-rows: 32px 1fr;
     grid-template-columns: auto 1fr;
 
@@ -70,7 +76,7 @@ table, tr:first-child td, tr-first-child th {
 
 #side_pane {
     overflow-y: auto;
-    border: 1px solid #ccc;
+    border-right: 1px solid #ccc;
     grid-row: 2;
     grid-column: 1;
 }

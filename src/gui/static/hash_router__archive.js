@@ -12,13 +12,23 @@
  * Then, store raw JSON data in the URL hash, in the form of:
  * {
  *     "file_hash": "<SHA256>",
- *     "current_function": null // or Integer
+ *     "current_function": null, // or Integer
+ *     "current_tab": null, // or Enum string, any of: "disasm_view", "string_view", "decompile_view"
  *     // WIP ...
  * }
  * 
  * Then, read this data on page load correctly so that we can
  * test our changes quickly later
- */
+ */data.
+
+// TOOD
+/DIDNO
+NOT£
+
+HTMLTimeElementDs!s!s
+
+
+
 
 // The object below is instancied once the WebSocket connection
 // has been established (in "socket_client.js"), so that
@@ -30,6 +40,7 @@ class HashRouter {
     constructor() {
         this.current_file_sha = null;
         this.current_function_id = null;
+        this.current_tab = null;
         this.file_opened = false;
         this.data = {};
         this.parse_hash();
