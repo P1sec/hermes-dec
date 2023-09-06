@@ -123,6 +123,11 @@ async def socket_server(socket):
                     'type': 'file_opened',
                     **connection.get_metadata()
                 }))
+
+                await socket.send(dumps({
+                    'type': 'recent_files',
+                    **ProjectSubdirManager.get_recent_files_data()
+                }))
         
             elif msg_type == 'analyze_function':
 

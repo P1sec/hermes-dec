@@ -6,12 +6,13 @@ var AppRoot = {
             socket: null, // The websocket object to be created itself
             is_connected: false, // Reactive state for syncing with the Websocket state
             is_retrying: false,
+            parsed_url_initially: false,
             current_file_obj: null,
 
             // URL router handling:
             hash_data: { // URL hash JSON data as currently present in the page's URL
                 file_hash: null, // SHA-256 lowercase hex string if set
-                current_function: null,
+                current_function: 0,
 
                 current_tab: null, // Not listed in sync_data
                     // ^ Enum string, any of: "disasm_view" (default),
@@ -21,7 +22,7 @@ var AppRoot = {
             sync_data: { // URL hash JSON data as it matches the content effectively
                 // retrieved from the WebSocket's URL
                 file_hash: null,
-                current_function: null,
+                current_function: 0,
                 
             },
 
@@ -35,7 +36,7 @@ var AppRoot = {
                 file_metadata: null, // (Main view > Top bar) (Retrieved from the "file_opened" wire message)
                 functions_list: null, // (Main view > Sidebar) (Retrieved from the "file_opened" wire message - TODO paginate this w/ scroll event handler?)
 
-                function_blocks: null, // (Main view > Body > Disasm tab) (Retrieved from the "analyzed_function" wire message),
+                disasm_blocks: null, // (Main view > Body > Disasm tab) (Retrieved from the "analyzed_function" wire message),
 
                 strings_list: null // (Main view > Body > Strings tab) (to be implemented/considered - TODO paginate this?)
             }
@@ -51,10 +52,14 @@ var AppRoot = {
     watch: {
         hash_data: {
             handler(new_value, same_value) {
+                if(!this.parsed_url_initially) {
+                    return;
+                }
+
                 var fields = [];
-                for(var field in new_value) {
-                    if(field && new_value[field] != null) {
-                        fields.push(field + '=' + new_value[field]);
+                for(var field in this.hash_data) {
+                    if(field && this.hash_data[field] != null) {
+                        fields.push(field + '=' + this.hash_data[field]);
                     }
                 }
 
@@ -113,11 +118,14 @@ var AppRoot = {
 
                     this.dl.file_metadata = message.file_metadata;
                     this.dl.functions_list = message.functions_list;
-                    // TODO
+
+                    this.hash_data.current_tab = 'disasm_view';
                     break;
                 
-                case 'analyzed function':
-                    // TODO
+                case 'analyzed_function':
+                    this.sync_data.current_function = message.function_id;
+                    this.dl.disasm_blocks = message.blocks;
+
                     break;
             }
         },
@@ -140,7 +148,7 @@ var AppRoot = {
 
         sync_hash_from_url() {
             var new_data = {};
-            for(var field of location.hash.slice(1)) {
+            for(var field of location.hash.slice(1).split('/')) {
                 var split_field = field.split('=');
                 if(split_field.length == 2) {
                     new_data[split_field[0]] = split_field[1];
@@ -152,6 +160,7 @@ var AppRoot = {
                     break;
                 }
             }
+            this.parsed_url_initially = true;
         },
 
         set_current_tab(tab_name) {
@@ -159,8 +168,17 @@ var AppRoot = {
         },
 
         select_function(function_id) {
-            // TODO ..
-            alert('DEBUG : ' + function_id);
+            if(this.hash_data.current_function != function_id) {
+                this.hash_data.current_function = function_id;
+            }
+        },
+        select_function_command() {
+            if(this.hash_data.current_function != this.sync_data.current_function) {
+                this.socket.send(JSON.stringify({
+                    type: 'analyze_function',
+                    function_id: parseInt(this.hash_data.current_function, 10)
+                }));
+            }
         },
 
         switch_file() {
@@ -220,11 +238,15 @@ var AppRoot = {
         <template v-else>
             <WorkView
                 :file_metadata="dl.file_metadata"
+                :current_function="hash_data.current_function"
+                :function_is_syncing="hash_data.current_function != sync_data.current_function"
                 :current_tab="hash_data.current_tab"
                 :functions_list="dl.functions_list"
+                :disasm_blocks="dl.disasm_blocks"
                 @switch_file="switch_file"
-                @set_current_tab="set_current_tab"
-                @select_function="select_function" />
+                @select_function="select_function"
+                @select_function_command="select_function_command"
+                @set_current_tab="set_current_tab" />
             <!-- TODO.. -->
         </template>
     </template>`

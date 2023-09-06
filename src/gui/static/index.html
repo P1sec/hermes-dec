@@ -38,6 +38,8 @@
         <script src="graph_canvas/13_lattice.js"></script>
         <script src="graph_canvas/131_latticelane.js"></script>
         <script src="graph_canvas/14_renderedobject.js"></script>
+        <script src="vue_templates/1331_disasmtab.js"></script>
+        <script src="vue_templates/133_tabview.js"></script>
         <script src="vue_templates/132_functionslist.js"></script>
         <script src="vue_templates/131_topbar.js"></script>
         <script src="vue_templates/13_workview.js"></script>
@@ -48,7 +50,12 @@
         <script src="vue_templates/1_approot.js"></script>
         <script>
 
-            Vue.createApp(AppRoot).mount('#app_root');
+            var app = Vue.createApp(AppRoot);
+            var root_component = app.mount('#app_root');
+
+            app.config.errorHandler = (err) => {
+                alert('ALERT EUH .. ?' + err)
+            };
             // ^^ TODO
 
 

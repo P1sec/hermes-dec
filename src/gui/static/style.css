@@ -46,13 +46,54 @@ table, tr:first-child td, tr-first-child th {
 }
 
 /**
+ * Tab system styling
+ */
+
+#tab_view {
+    display: flex;
+    overflow: hidden;
+    flex-direction: column;
+}
+
+#tab_list {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 0;
+    justify-content: start;
+    margin-bottom: 9px;
+}
+
+.tab {
+    background: #eee;
+    font-size: 16px;
+    padding: 9px;
+    cursor: default;
+    margin-right: 2px;
+}
+
+.tab:not(.tab_current):hover {
+    background: #ddd;
+    cursor: pointer;
+}
+
+.tab_current {
+    border-bottom: 2px solid aquamarine;
+}
+
+#tab_contents {
+    flex-grow: 1;
+    overflow: auto;
+    position: relative;
+}
+
+/**
  * Work view styling
  */
 
 #work_view {
     display: grid;
     grid-template-rows: 32px 1fr;
-    grid-template-columns: auto 1fr;
+    grid-template-columns: max-content 1fr;
 
     position: absolute;
     top: 0;
@@ -86,12 +127,12 @@ table, tr:first-child td, tr-first-child th {
     word-break: break-all;
 }
 
-#functions_table tr:hover, #recent_files_table tbody tr:hover {
+#functions_table tr.unselected_fun:hover, #recent_files_table tbody tr:hover {
     background: #eee;
     cursor: pointer;
 }
-#functions_table tr.selected {
-    background: #ddd;
+#functions_table tr.selected_fun {
+    background: #e1e1e1;
     cursor: default;
 }
 #functions_table td {
@@ -100,9 +141,6 @@ table, tr:first-child td, tr-first-child th {
 
 #functions_table tr:first-child td {
     border-top: none;
-}
-#functions_table tr:last-child td {
-    border-bottom: none;
 }
 #functions_table td:first-child {
     border-left: none;
@@ -116,13 +154,6 @@ table, tr:first-child td, tr-first-child th {
 /**
  * Canvas styling
  */
-
-#canvas {
-    grid-row: 2;
-    grid-column: 2;
-    overflow: auto;
-    position: relative;
-}
 
 #canvas_svg {
     position: absolute;

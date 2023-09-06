@@ -1,15 +1,28 @@
 var WorkView = {
     props: {
         file_metadata: Object,
+        current_function: Number,
+        function_is_syncing: Boolean,
         current_tab: String,
-        functions_list: Array
+        functions_list: Array,
+        disasm_blocks: Object
     },
 
     emits: [
         'switch_file',
-        'set_current_tab',
-        'select_function'
+        'select_function',
+        'select_function_command',
+        'set_current_tab'
     ],
+
+    watch: {
+        current_function: {
+            handler(new_value) {
+                this.$emit('select_function_command');
+            },
+            immediate: true
+        }
+    },
 
     methods: {
         select_function(function_id) {
@@ -32,10 +45,18 @@ var WorkView = {
             :file_metadata="file_metadata"
             @switch_file="$emit('switch_file')" />
         <FunctionsList
+            :current_function="current_function"
             :functions_list="functions_list"
             @select_function="select_function" />
-        <TabView
-            :current_tab="current_tab"
-            @set_current_tab="set_current_tab" />
+        <template v-if="function_is_syncing">
+            <h1>Loading function data...</h1>
+        </template>
+        <template v-else-if="current_function != null">
+            <TabView
+                :current_function="current_function"
+                :current_tab="current_tab"
+                :disasm_blocks="disasm_blocks"
+                @set_current_tab="set_current_tab" />
+        </template>
     </div>`
 };

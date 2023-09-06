@@ -1,6 +1,8 @@
 var TabView = {
     props: {
-        current_tab: String
+        current_function: Number,
+        current_tab: String,
+        disasm_blocks: Object
     },
 
     data() {
@@ -15,14 +17,27 @@ var TabView = {
         }
     },
 
+    components: {
+        DisasmTab
+    },
+
     emits: ['set_current_tab'],
 
-    template: `<div class="tab_view">
-        <template v-for="tab of tab_names">
-            <div :class="tab.raw == current_tab ? 'tab tab_current' : 'tab'"
-                @click="$emit('set_current_tab', tab.raw)">
-                {{ }}
-            </div>
-        </template>
+    template: `<div id="tab_view">
+        <div id="tab_list">
+            <template v-for="tab of tab_names">
+                <div :class="tab.raw == current_tab ? 'tab tab_current' : 'tab'"
+                    @click="$emit('set_current_tab', tab.raw)">
+                    {{ tab.readable }}
+                </div>
+            </template>
+        </div>
+        <div id="tab_contents">
+            <template v-if="current_tab == 'disasm_view' && disasm_blocks">
+                <DisasmTab
+                    :current_function="current_function"
+                    :disasm_blocks="disasm_blocks" />
+            </template>
+        </div>
     </div>`
 };
