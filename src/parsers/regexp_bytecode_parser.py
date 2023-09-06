@@ -60,6 +60,7 @@ class SyntaxFlags(IntFlag):
     UNICODE = 1 << 3 # UNICODE, later shorteneted to UCODE was added in version 0.3.0.
     DOTALL = 1 << 4 # DOTALL was added in version 0.4.0.
     STICKY = 1 << 5 # STICKY was added in version 0.6.0.
+    INDICES = 1 << 6 # INDICES was added in bytecode version 96.
 
 class MatchConstraintSet(IntFlag):
     MatchConstraintNonASCII = 1 << 0 # Requirement: contain 1 char value > 127
@@ -599,7 +600,8 @@ def decompile_regex(regex : ParsedRegex):
         (SyntaxFlags.MULTILINE, 'm'),
         (SyntaxFlags.UNICODE, 'u'),
         (SyntaxFlags.DOTALL, 's'),
-        (SyntaxFlags.STICKY,'y')
+        (SyntaxFlags.STICKY, 'y'),
+        (SyntaxFlags.INDICES, 'd')
     ]:
         if regex.header.syntaxFlags & flag:
             output += char
