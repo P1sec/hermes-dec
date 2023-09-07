@@ -1,0 +1,40 @@
+/**
+ * Tab system styling
+ */
+
+ .tab_view {
+    display: flex;
+    overflow: hidden;
+    flex-direction: column;
+}
+
+.tab_list {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 0;
+    justify-content: start;
+    margin-bottom: 9px;
+}
+
+.tab {
+    background: #eee;
+    font-size: 16px;
+    padding: 9px;
+    cursor: default;
+    margin-right: 2px;
+}
+
+.tab:not(.tab_current):hover {
+    background: #ddd;
+    cursor: pointer;
+}
+
+.tab_current {
+    border-bottom: 2px solid aquamarine;
+}
+
+.tab_contents {
+    flex-grow: 1;
+    overflow: auto;
+    position: relative;
+}

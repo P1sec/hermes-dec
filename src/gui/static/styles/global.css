@@ -1,0 +1,28 @@
+/**
+ * Global page styling
+ */
+
+ html, body {
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    font-size: 16px;
+}
+
+/**
+ * General table styling
+ */
+
+table {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 12px;
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid #ccc;
+    padding: 7px;
+}
+table, tr:first-child td, tr-first-child th {
+    border-top: none;
+}

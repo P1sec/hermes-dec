@@ -9,10 +9,10 @@ var AppRoot = {
             parsed_url_initially: false,
             current_file_obj: null,
 
-            // URL router handling:
+            // URL router handling (be sure to set all defaults to "null"):
             hash_data: { // URL hash JSON data as currently present in the page's URL
                 file_hash: null, // SHA-256 lowercase hex string if set
-                current_function: 0,
+                current_function: null,
 
                 current_tab: null, // Not listed in sync_data
                     // ^ Enum string, any of: "disasm_view" (default),
@@ -22,7 +22,7 @@ var AppRoot = {
             sync_data: { // URL hash JSON data as it matches the content effectively
                 // retrieved from the WebSocket's URL
                 file_hash: null,
-                current_function: 0,
+                current_function: null,
                 
             },
 
@@ -119,6 +119,7 @@ var AppRoot = {
                     this.dl.file_metadata = message.file_metadata;
                     this.dl.functions_list = message.functions_list;
 
+                    this.hash_data.current_function = 0;
                     this.hash_data.current_tab = 'disasm_view';
                     break;
                 

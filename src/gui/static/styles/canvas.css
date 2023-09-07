@@ -1,0 +1,35 @@
+/**
+ * Canvas styling
+ */
+
+ #canvas_svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
+#canvas_grid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 19px;
+    z-index: 2;
+    display: grid;
+    font-size: 12px;
+    font-family: 'Courier New', Courier, monospace;
+    grid-auto-columns: min-content minmax(60ch, max-content);
+    grid-auto-rows: minmax(19px, max-content) max-content;
+}
+
+.lattice {
+    /* background: #C25EFF; */ /* Debug: Make the grid lattices visible enough */
+    opacity: 0.4;
+}
+
+#canvas_grid .graph_node { /* Basic block */
+    border: 1px solid #ccc;
+    padding: 5px;
+    white-space: pre-line;
+    line-height: 1.2em;
+}
