@@ -18,7 +18,8 @@ th, td {
  */
 
 .search_bar {
-    margin: 5px;
+    padding: 9px;
+    padding-top: 4px;
 }
 
 /* Todo... */

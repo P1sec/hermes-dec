@@ -13,7 +13,6 @@
     flex-direction: row;
     flex-grow: 0;
     justify-content: start;
-    margin-bottom: 9px;
 }
 
 .tab {
@@ -35,6 +34,7 @@
 
 .tab_contents {
     flex-grow: 1;
+    padding-top: 9px;
 }
 
 .scrollable_area {
