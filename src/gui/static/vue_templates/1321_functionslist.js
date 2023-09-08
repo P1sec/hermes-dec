@@ -6,8 +6,7 @@ var FunctionsList = {
 
     emits: ['select_function'],
 
-    template: `<div id="side_pane">
-    <div id="functions_list">
+    template: `<div id="functions_list">
         <table id="functions_table">
             <tbody>
                 <template v-for="(func, index) in functions_list">
@@ -20,6 +19,5 @@ var FunctionsList = {
                 </template>
             </tbody>
         </table>
-    </div>
-</div>`
+    </div>`
 };

@@ -36,15 +36,15 @@ var WorkView = {
 
     components: {
         TopBar,
-        FunctionsList,
-        TabView
+        SidePane,
+        MainPane
     },
 
     template: `<div id="work_view">
         <TopBar
             :file_metadata="file_metadata"
             @switch_file="$emit('switch_file')" />
-        <FunctionsList
+        <SidePane
             :current_function="current_function"
             :functions_list="functions_list"
             @select_function="select_function" />
@@ -52,7 +52,7 @@ var WorkView = {
             <h1>Loading function data...</h1>
         </template>
         <template v-else-if="current_function != null">
-            <TabView
+            <MainPane
                 :current_function="current_function"
                 :current_tab="current_tab"
                 :disasm_blocks="disasm_blocks"

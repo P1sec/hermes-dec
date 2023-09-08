@@ -119,8 +119,8 @@ var AppRoot = {
                     this.dl.file_metadata = message.file_metadata;
                     this.dl.functions_list = message.functions_list;
 
-                    this.hash_data.current_function = 0;
-                    this.hash_data.current_tab = 'disasm_view';
+                    this.hash_data.current_function = this.hash_data.current_function || 0;
+                    this.hash_data.current_tab = this.hash_data.current_tab || 'disasm_view';
                     break;
                 
                 case 'analyzed_function':

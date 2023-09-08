@@ -1,4 +1,4 @@
-var TabView = {
+var MainPane = {
     props: {
         current_function: Number,
         current_tab: String,
