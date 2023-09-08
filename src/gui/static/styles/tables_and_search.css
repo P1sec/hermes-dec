@@ -17,4 +17,59 @@ th, td {
  * Search bar styling
  */
 
+.search_bar {
+    margin: 5px;
+}
+
+/* Todo... */
+
+ /**
+ * Table layouts
+ */
+
+ .searcheable_table_layout {
+    display: flex;
+    overflow: hidden;
+    flex-direction: column;
+ }
+
+ .search_bar {
+    flex-grow: 0;
+ }
+
+ .searcheable_table_layout .scrollable_area {
+    flex-grow: 1;
+ }
+
+.searchable_table {
+    table-layout: fixed;
+    word-break: break-all;
+}
+
+.searchable_table tr.unselected_row:hover {
+    background: #eee;
+    cursor: pointer;
+}
+.searchable_table tr.selected_row {
+    background: #e1e1e1;
+    cursor: default;
+}
+.searchable_table td {
+    width: 100px;
+}
+
+.searchable_table tr:first-child td {
+    border-top: none;
+}
+.searchable_table td:first-child {
+    border-left: none;
+    width: 150px;
+}
+.searchable_table td:last-child {
+    border-right: none;
+    width: 80px;
+}
+
+
+
 /* Todo... */

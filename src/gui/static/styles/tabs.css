@@ -35,6 +35,12 @@
 
 .tab_contents {
     flex-grow: 1;
+}
+
+.scrollable_area {
     overflow: auto;
+}
+
+.main_pane .tab_contents.scrollable_area {
     position: relative;
 }

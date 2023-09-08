@@ -35,43 +35,8 @@
  * Side pane
  */
 
-#side_pane {
-    overflow-y: auto;
+.tab_view.side_pane {
     border-right: 1px solid #ccc;
     grid-row: 2;
     grid-column: 1;
 }
-
-/**
- * Table layouts
- */
-
-#functions_table {
-    table-layout: fixed;
-    word-break: break-all;
-}
-
-#functions_table tr.unselected_fun:hover {
-    background: #eee;
-    cursor: pointer;
-}
-#functions_table tr.selected_fun {
-    background: #e1e1e1;
-    cursor: default;
-}
-#functions_table td {
-    width: 100px;
-}
-
-#functions_table tr:first-child td {
-    border-top: none;
-}
-#functions_table td:first-child {
-    border-left: none;
-    width: 150px;
-}
-#functions_table td:last-child {
-    border-right: none;
-    width: 80px;
-}
-

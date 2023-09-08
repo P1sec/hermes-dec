@@ -49,7 +49,7 @@ var WorkView = {
             :functions_list="functions_list"
             @select_function="select_function" />
         <template v-if="function_is_syncing">
-            <h1>Loading function data...</h1>
+            <h1 style="margin-left: 26px">Loading function data...</h1>
         </template>
         <template v-else-if="current_function != null">
             <MainPane
