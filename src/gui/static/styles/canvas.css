@@ -11,7 +11,7 @@
 
 #canvas_grid {
     position: absolute;
-    top: 0;
+    top: 9px;
     left: 0;
     padding: 19px;
     z-index: 2;
