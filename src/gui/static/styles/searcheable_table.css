@@ -37,25 +37,8 @@
     cursor: pointer;
 }
 .searchable_table tr.selected_row {
-    background: #e1e1e1;
+    background: #f1f1f1;
     cursor: default;
 }
-.searchable_table td {
-    width: 100px;
-}
-
-.searchable_table tr:first-child td {
-    border-top: none;
-}
-.searchable_table td:first-child {
-    border-left: none;
-    width: 150px;
-}
-.searchable_table td:last-child {
-    border-right: none;
-    width: 80px;
-}
-
-
 
 /* Todo... */

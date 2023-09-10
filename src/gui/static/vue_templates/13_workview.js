@@ -1,10 +1,11 @@
 var WorkView = {
     props: {
         file_metadata: Object,
+        functions_list: Array,
+        header_info: Array,
         current_function: Number,
         function_is_syncing: Boolean,
         current_tab: String,
-        functions_list: Array,
         disasm_blocks: Object
     },
 
@@ -47,6 +48,7 @@ var WorkView = {
         <SidePane
             :current_function="current_function"
             :functions_list="functions_list"
+            :header_info="header_info"
             @select_function="select_function" />
         <template v-if="function_is_syncing">
             <h1 style="margin-left: 26px">Loading function data...</h1>

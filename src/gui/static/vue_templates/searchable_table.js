@@ -9,6 +9,8 @@ var SearchableTable = {
         has_pagination: Boolean,
         pagination_thresold: Number,
 
+        custom_class: String,
+
         has_visible_headers: Boolean,
 
         has_selectable_rows: Boolean,
@@ -25,7 +27,8 @@ var SearchableTable = {
                 </span>
         </div>
         <div class="scrollable_area">
-            <table :class="'searchable_table' + (has_selectable_rows ? ' selectable_table' : ' unselectable_table')">
+            <table :class="'searchable_table ' + (has_selectable_rows ?
+                'selectable_table ' : 'unselectable_table ') + custom_class">
                 <thead v-if="has_visible_headers">
                     <tr>
                         <th v-for="column in columns">

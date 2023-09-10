@@ -35,6 +35,7 @@ var AppRoot = {
 
                 file_metadata: null, // (Main view > Top bar) (Retrieved from the "file_opened" wire message)
                 functions_list: null, // (Main view > Sidebar) (Retrieved from the "file_opened" wire message - TODO paginate this w/ scroll event handler?)
+                header_info: null, // (Main view > Sidebar) (Retrieved from the "file_opened" wire message)
 
                 disasm_blocks: null, // (Main view > Body > Disasm tab) (Retrieved from the "analyzed_function" wire message),
 
@@ -118,6 +119,7 @@ var AppRoot = {
 
                     this.dl.file_metadata = message.file_metadata;
                     this.dl.functions_list = message.functions_list;
+                    this.dl.header_info = message.header_info;
 
                     this.hash_data.current_function = parseInt(this.hash_data.current_function, 10) || 0;
                     this.hash_data.current_tab = this.hash_data.current_tab || 'disasm_view';
@@ -239,10 +241,11 @@ var AppRoot = {
         <template v-else>
             <WorkView
                 :file_metadata="dl.file_metadata"
+                :functions_list="dl.functions_list"
+                :header_info="dl.header_info"
                 :current_function="hash_data.current_function"
                 :function_is_syncing="hash_data.current_function != sync_data.current_function"
                 :current_tab="hash_data.current_tab"
-                :functions_list="dl.functions_list"
                 :disasm_blocks="dl.disasm_blocks"
                 @switch_file="switch_file"
                 @select_function="select_function"

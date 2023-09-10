@@ -4,6 +4,32 @@
 
  #side_pane {
     border-right: 1px solid #ccc;
+    width: 375px;
     grid-row: 2;
     grid-column: 1;
 }
+
+/**
+ * Custom table widths
+ */
+
+
+.functions_table td {
+    width: 100px;
+}
+.functions_table tr:first-child td {
+    border-top: none;
+}
+.functions_table td:first-child {
+    border-left: none;
+    width: 150px;
+}
+.functions_table td:last-child {
+    border-right: none;
+    width: 80px;
+}
+
+.file_headers_table {
+    margin: 14px 18px;
+}
+

@@ -18,13 +18,15 @@ var SidePane = {
             ],
 
             file_headers_columns: [
-                {raw: ''}
+                {name: 'Field', raw: 'field'},
+                {name: 'Value', raw: 'value'}
             ]
         };
     },
 
     props: {
         functions_list: Array,
+        header_info: Array,
         current_function: Number
     },
 
@@ -57,10 +59,23 @@ var SidePane = {
                     :rows="functions_list"
                     :has_pagination="true"
                     :pagination_thresold="350"
+                    custom_class="functions_table"
                     :has_visible_headers="true"
                     :has_selectable_rows="true"
                     :selected_row_index="current_function"
                     @select_row="select_function" />
+            </template>
+            <template v-else-if="current_tab == 'file_headers'">
+                <SearchableTable
+                    :has_search_bar="false"
+                    :columns="file_headers_columns"
+                    :rows="header_info"
+                    :has_pagination="false"
+                    :pagination_thresold="null"
+                    custom_class="file_headers_table"
+                    :has_visible_headers="true"
+                    :has_selectable_rows="false"
+                    :selected_row_index="null" />
             </template>
         </div>
     </div>`

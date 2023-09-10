@@ -26,6 +26,12 @@ from project_meta import ProjectSubdirManager
 from pre_render_graph import draw_stuff
 from hbc_file_parser import HBCReader
 
+def format_size(size, decimal_places=2):
+    for unit in ['B', 'KiB', 'MiB']:
+        if size < 1024.0 or unit == 'MiB':
+            return f"{size:.{decimal_places}f} {unit}"
+        size /= 1024.0
+
 class ServerConnection:
 
     reader : HBCReader
@@ -57,6 +63,12 @@ class ServerConnection:
 
         return {
             'file_metadata': self.project.read_metadata(),
+            'header_info': [
+                {'field': 'File size', 'value': format_size(self.reader.header.fileLength)},
+                {'field': 'String count', 'value': str(self.reader.header.stringCount)},
+                {'field': 'Function count', 'value': str(self.reader.header.functionCount)},
+                {'field': 'String section size', 'value': format_size(self.reader.header.stringStorageSize)}
+            ],
             'functions_list': [
                 {
                     'name': self.reader.strings[function.functionName] or 'fun_%08x' % function.offset,

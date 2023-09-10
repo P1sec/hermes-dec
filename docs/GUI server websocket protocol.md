@@ -36,6 +36,12 @@ S->C {
         "orig_name": "index.android.bundle",
         "raw_disk_path": "/home/marin/.local/share/HermesDec/by-date/2023-04-07T08:33:56-indexandroidbundle/index.android.bundle"
     },
+    "header_info": [
+        {"field": "File size", "value": "xx KiB"}
+        {"field": "String count", "value": "492382"},
+        {"field": "Function count", "value": "23212"},
+        {"field": "String section size", "value": "xx KiB"}
+    ],
     "functions_list": [{"name": "fun_000001", "offset": '%08x' % 0x40234, size: 42}, ...]
 }
 // The "functions_list" attribute in the corresponding JSON object should be indexable
