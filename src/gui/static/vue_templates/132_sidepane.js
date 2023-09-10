@@ -59,7 +59,7 @@ var SidePane = {
                     :pagination_thresold="350"
                     :has_visible_headers="true"
                     :has_selectable_rows="true"
-                    :selected_row_id="current_function"
+                    :selected_row_index="current_function"
                     @select_row="select_function" />
             </template>
         </div>

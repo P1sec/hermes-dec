@@ -119,7 +119,7 @@ var AppRoot = {
                     this.dl.file_metadata = message.file_metadata;
                     this.dl.functions_list = message.functions_list;
 
-                    this.hash_data.current_function = this.hash_data.current_function || 0;
+                    this.hash_data.current_function = parseInt(this.hash_data.current_function, 10) || 0;
                     this.hash_data.current_tab = this.hash_data.current_tab || 'disasm_view';
                     break;
                 
@@ -177,7 +177,7 @@ var AppRoot = {
             if(this.hash_data.current_function != this.sync_data.current_function) {
                 this.socket.send(JSON.stringify({
                     type: 'analyze_function',
-                    function_id: parseInt(this.hash_data.current_function, 10)
+                    function_id: parseInt(this.hash_data.current_function, 10) || 0
                 }));
             }
         },
