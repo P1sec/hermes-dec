@@ -40,7 +40,7 @@ var SidePane = {
         }
     },
 
-    template: `<div class="tab_view side_pane">
+    template: `<div class="tab_view" id="side_pane">
         <div class="tab_list">
             <template v-for="tab of tab_names">
                 <div :class="tab.raw == current_tab ? 'tab tab_current' : 'tab'"

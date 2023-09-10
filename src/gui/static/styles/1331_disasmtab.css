@@ -2,6 +2,10 @@
  * Canvas styling
  */
 
+ #canvas {
+    position: relative;
+ }
+
  #canvas_svg {
     position: absolute;
     top: 0;
@@ -11,7 +15,7 @@
 
 #canvas_grid {
     position: absolute;
-    top: 9px;
+    top: 0;
     left: 0;
     padding: 19px;
     z-index: 2;

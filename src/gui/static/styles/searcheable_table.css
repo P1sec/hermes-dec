@@ -1,17 +1,4 @@
-/**
- * General table styling
- */
 
- table {
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 12px;
-    border-collapse: collapse;
-}
-
-th, td {
-    border: 1px solid #ccc;
-    padding: 7px;
-}
 
 /*
  * Search bar styling
@@ -21,8 +8,6 @@ th, td {
     padding: 9px;
     padding-top: 4px;
 }
-
-/* Todo... */
 
  /**
  * Table layouts

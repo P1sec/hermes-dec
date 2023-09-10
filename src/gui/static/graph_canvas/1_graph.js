@@ -40,7 +40,5 @@ class Graph {
 
         this.svg_root.setAttribute('width', this.grid_root.scrollWidth);
         this.svg_root.setAttribute('height', this.grid_root.scrollHeight);
-
-        this.grid_root.style.position = 'static';
     }
 }

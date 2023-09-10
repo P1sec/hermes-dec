@@ -1,0 +1,9 @@
+/**
+ * Side pane
+ */
+
+ #side_pane {
+    border-right: 1px solid #ccc;
+    grid-row: 2;
+    grid-column: 1;
+}

@@ -34,13 +34,9 @@
 
 .tab_contents {
     flex-grow: 1;
-    padding-top: 9px;
+    margin-top: 9px;
 }
 
 .scrollable_area {
     overflow: auto;
-}
-
-.main_pane .tab_contents.scrollable_area {
-    position: relative;
 }
