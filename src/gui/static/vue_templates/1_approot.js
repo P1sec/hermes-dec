@@ -34,8 +34,7 @@ var AppRoot = {
                 recent_files: null, // (Home view) (Retrieved from the "recent_files" wire message)
 
                 file_metadata: null, // (Main view > Top bar) (Retrieved from the "file_opened" wire message)
-                functions_list: null, // (Main view > Sidebar) (Retrieved from the "file_opened" wire message - TODO paginate this w/ scroll event handler?)
-                header_info: null, // (Main view > Sidebar) (Retrieved from the "file_opened" wire message)
+                table_data_map: null, // (Main view > Sidebar) Maps {table_name: table_data_obj} for each retrieved table
 
                 disasm_blocks: null, // (Main view > Body > Disasm tab) (Retrieved from the "analyzed_function" wire message),
 
@@ -118,11 +117,17 @@ var AppRoot = {
                     this.sync_data.file_hash = message.file_metadata.file_hash;
 
                     this.dl.file_metadata = message.file_metadata;
-                    this.dl.functions_list = message.functions_list;
-                    this.dl.header_info = message.header_info;
 
                     this.hash_data.current_function = parseInt(this.hash_data.current_function, 10) || 0;
                     this.hash_data.current_tab = this.hash_data.current_tab || 'disasm_view';
+                    break;
+                
+                case 'table_data':
+                    if(!this.dl.table_data_map) {
+                        this.dl.table_data_map = {};
+                    }
+                    this.dl.table_data_map[message.table] = message;
+                    // WIP ... REFERENCE TABLE_DATA_MAP
                     break;
                 
                 case 'analyzed_function':
@@ -204,6 +209,15 @@ var AppRoot = {
             this.current_file_obj = file;
             this.open_hash(file_hash);
         },
+        load_table(table_name, text_filter, current_row, page) {
+            this.socket.send(JSON.stringify({
+                type: 'get_table_data',
+                table: table_name,
+                text_filter: text_filter,
+                current_row: current_row,
+                page: page
+            }));
+        },
         open_hash(file_hash) {
             this.hash_data.file_hash = file_hash;
         },
@@ -241,13 +255,13 @@ var AppRoot = {
         <template v-else>
             <WorkView
                 :file_metadata="dl.file_metadata"
-                :functions_list="dl.functions_list"
-                :header_info="dl.header_info"
+                :table_data_map="dl.table_data_map"
                 :current_function="hash_data.current_function"
                 :function_is_syncing="hash_data.current_function != sync_data.current_function"
                 :current_tab="hash_data.current_tab"
                 :disasm_blocks="dl.disasm_blocks"
                 @switch_file="switch_file"
+                @load_table="load_table"
                 @select_function="select_function"
                 @select_function_command="select_function_command"
                 @set_current_tab="set_current_tab" />

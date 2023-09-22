@@ -12,9 +12,9 @@ var SidePane = {
             ],
 
             functions_list_columns: [
-                {name: 'Name', raw: 'name', is_searcheable: true},
-                {name: 'Offset', raw: 'offset', is_searcheable: true},
-                {name: 'Size', raw: 'size', is_searcheable: true}
+                {name: 'Name', raw: 'name', is_searcheable: 'rawstring'},
+                {name: 'Offset', raw: 'offset', is_searcheable: 'offset'},
+                {name: 'Size', raw: 'size', is_searcheable: 'no'}
             ],
 
             file_headers_columns: [
@@ -25,18 +25,23 @@ var SidePane = {
     },
 
     props: {
-        functions_list: Array,
-        header_info: Array,
+        table_data_map: Object,
         current_function: Number
     },
 
-    emits: ['select_function'],
+    emits: [
+        'select_function',
+        'load_table'
+    ],
 
     components: {
         SearchableTable
     },
 
     methods: {
+        load_table(...args) {
+            this.$emit('load_table', ...args);
+        },
         select_function(function_id) {
             this.$emit('select_function', function_id);
         }
@@ -53,29 +58,23 @@ var SidePane = {
         </div>
         <div class="tab_contents searcheable_table_layout">
             <template v-if="current_tab == 'functions_list'">
-                <SearchableTable
-                    :has_search_bar="true"
-                    :columns="functions_list_columns"
-                    :rows="functions_list"
-                    :has_pagination="true"
-                    :pagination_thresold="350"
-                    custom_class="functions_table"
-                    :has_visible_headers="true"
-                    :has_selectable_rows="true"
+                <SearchableTable    
+                    :table_data_map="table_data_map"
+                    table_name="functions_list"
+                    custom_css_class="functions_table"
                     :selected_row_index="current_function"
+
+                    @load_table="load_table"
                     @select_row="select_function" />
             </template>
             <template v-else-if="current_tab == 'file_headers'">
                 <SearchableTable
-                    :has_search_bar="false"
-                    :columns="file_headers_columns"
-                    :rows="header_info"
-                    :has_pagination="false"
-                    :pagination_thresold="null"
-                    custom_class="file_headers_table"
-                    :has_visible_headers="true"
-                    :has_selectable_rows="false"
-                    :selected_row_index="null" />
+                    :table_data_map="table_data_map"
+                    table_name="header_info"
+                    custom_css_class="file_headers_table"
+                    :selected_row_index="null"
+
+                    @load_table="load_table" />
             </template>
         </div>
     </div>`

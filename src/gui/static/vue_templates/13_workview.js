@@ -1,8 +1,7 @@
 var WorkView = {
     props: {
         file_metadata: Object,
-        functions_list: Array,
-        header_info: Array,
+        table_data_map: Object,
         current_function: Number,
         function_is_syncing: Boolean,
         current_tab: String,
@@ -13,6 +12,7 @@ var WorkView = {
         'switch_file',
         'select_function',
         'select_function_command',
+        'load_table',
         'set_current_tab'
     ],
 
@@ -26,6 +26,10 @@ var WorkView = {
     },
 
     methods: {
+        load_table(...args) {
+            this.$emit('load_table', ...args);
+        },
+
         select_function(function_id) {
             this.$emit('select_function', function_id);
         },
@@ -47,8 +51,8 @@ var WorkView = {
             @switch_file="$emit('switch_file')" />
         <SidePane
             :current_function="current_function"
-            :functions_list="functions_list"
-            :header_info="header_info"
+            :table_data_map="table_data_map"
+            @load_table="load_table"
             @select_function="select_function" />
         <template v-if="function_is_syncing">
             <h1 style="margin-left: 26px">Loading function data...</h1>

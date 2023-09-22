@@ -1,15 +1,24 @@
 #!/usr/bin/python3
 #-*- encoding: Utf-8 -*-
 from typing import Optional, Any, List, Dict, Set, Union, Sequence
+from os.path import join, dirname, realpath, exists, getsize
 from os import makedirs, readlink, symlink, listdir
-from os.path import join, exists, getsize
 from appdirs import user_data_dir
 from unidecode import unidecode
 from datetime import datetime
 from json import load, dump
 from hashlib import sha256
 from shutil import rmtree
+from sys import path
 from re import sub
+
+GUI_DIR = realpath(dirname(__file__))
+SRC_DIR = realpath(GUI_DIR + '/..')
+PARSERS_DIR = realpath(SRC_DIR + '/parsers')
+
+path.insert(0, PARSERS_DIR)
+
+from hbc_file_parser import HBCReader
 
 """
     TODO :

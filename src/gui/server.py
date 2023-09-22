@@ -14,6 +14,11 @@ PARSERS_DIR = realpath(SRC_DIR + '/parsers')
 path.insert(0, DECOMPILATION_DIR)
 path.insert(0, GUI_DIR)
 
+from paginated_table import RAW_TABLE_MODEL_NAME_TO_OBJ
+from project_meta import ProjectSubdirManager
+from pre_render_graph import draw_stuff
+from index_files import Indexer
+
 from defs import HermesDecompiler, DecompiledFunctionBody
 from pass1_set_metadata import pass1_set_metadata
 from pass1b_make_basic_blocks import pass1b_make_basic_blocks
@@ -22,15 +27,7 @@ from pass1c_visit_code_paths import pass1c_visit_code_paths
 path.insert(0, PARSERS_DIR)
 
 from hbc_bytecode_parser import parse_hbc_bytecode
-from project_meta import ProjectSubdirManager
-from pre_render_graph import draw_stuff
 from hbc_file_parser import HBCReader
-
-def format_size(size, decimal_places=2):
-    for unit in ['B', 'KiB', 'MiB']:
-        if size < 1024.0 or unit == 'MiB':
-            return f"{size:.{decimal_places}f} {unit}"
-        size /= 1024.0
 
 class ServerConnection:
 
@@ -58,26 +55,13 @@ class ServerConnection:
         self.project.write_or_update_metadata({
             'bytecode_version': self.reader.header.version
         })
+
+        self.search_index = Indexer(self.reader, self.project.subdir_path)
     
     def get_metadata(self) -> dict:
 
         return {
-            'file_metadata': self.project.read_metadata(),
-            'header_info': [
-                {'field': 'File size', 'value': format_size(self.reader.header.fileLength)},
-                {'field': 'String count', 'value': str(self.reader.header.stringCount)},
-                {'field': 'Function count', 'value': str(self.reader.header.functionCount)},
-                {'field': 'String section size', 'value': format_size(self.reader.header.stringStorageSize)}
-            ],
-            'functions_list': [
-                {
-                    'name': self.reader.strings[function.functionName] or 'fun_%08x' % function.offset,
-                    'offset': '%08x' % function.offset,
-                    'size': function.bytecodeSizeInBytes
-                }
-                for function in self.reader.function_headers
-                # WIP ..
-            ]
+            'file_metadata': self.project.read_metadata()
         }
 
 
@@ -140,6 +124,25 @@ async def socket_server(socket):
                     'type': 'recent_files',
                     **ProjectSubdirManager.get_recent_files_data()
                 }))
+            
+            elif msg_type == 'get_table_data':
+
+                table_name = msg['table']
+
+                if table_name not in RAW_TABLE_MODEL_NAME_TO_OBJ:
+                    raise NotImplementedError('[!] Unimplemented table model: %s' % table_name)
+
+                table_model = RAW_TABLE_MODEL_NAME_TO_OBJ[table_name]()
+
+                await socket.send(dumps({
+                    'type': 'table_data',
+                    **table_model.get_json_response(
+                        server_connection = connection,
+                        current_row_idx = msg.get('current_row'),
+                        current_page_if_not_current_row = msg.get('page'),
+                        search_query = msg.get('text_filter')
+                    )
+                }))
         
             elif msg_type == 'analyze_function':
 
@@ -178,7 +181,7 @@ async def socket_server(socket):
                 # WIP ..
 
             # elif msg_type == 'XX SEE. MD DOC':
-                # WIP TODO ..
+                # XX
 
             # await websocket.send(message)
 

@@ -35,17 +35,39 @@ S->C {
         "file_size": 3482132,
         "orig_name": "index.android.bundle",
         "raw_disk_path": "/home/marin/.local/share/HermesDec/by-date/2023-04-07T08:33:56-indexandroidbundle/index.android.bundle"
-    },
-    "header_info": [
-        {"field": "File size", "value": "xx KiB"}
-        {"field": "String count", "value": "492382"},
-        {"field": "Function count", "value": "23212"},
-        {"field": "String section size", "value": "xx KiB"}
-    ],
-    "functions_list": [{"name": "fun_000001", "offset": '%08x' % 0x40234, size: 42}, ...]
+    }
 }
-// The "functions_list" attribute in the corresponding JSON object should be indexable
-// the same way as in the Hermes bytecode file format.
+
+C->S
+{
+    "type": "get_table_data",
+    "table": "functions",
+    "text_filter": "xx" or null,
+    "current_row": 21,
+    "page": 42
+}
+
+S->C
+{
+    "type": "table_data",
+    "table": "functions",
+    "result_count": 452,
+    "pages": 12,
+    "current_page": 1,
+    "model": {
+        "has_search_bar": true,
+        "has_pagination": true,
+        "pagination_thresold": 350,
+        "columns": [
+            'Name', 'Offset'
+        ],
+        "has_visible_headers": true,
+        "has_selectable_rows": true
+    },
+    "displayed_rows": [{
+        "id": 42,
+        "cells": ["fun_000001", '%08x', '42']
+    }, ...]}
 
 C->S {"type": "analyze_function", "function_id": 49}
 // Will return disassembly graph + cross-references + decompiled code with clickable expandable "..." buttons for nested closures for a given function
