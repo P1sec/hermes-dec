@@ -42,6 +42,9 @@ var SidePane = {
         load_table(...args) {
             this.$emit('load_table', ...args);
         },
+        select_string(string_id) {
+            alert('WIP display x-refs here');
+        },
         select_function(function_id) {
             this.$emit('select_function', function_id);
         }
@@ -66,6 +69,16 @@ var SidePane = {
 
                     @load_table="load_table"
                     @select_row="select_function" />
+            </template>
+            <template v-else-if="current_tab == 'strings_list'">
+                <SearchableTable    
+                    :table_data_map="table_data_map"
+                    table_name="strings_list"
+                    custom_css_class="strings_table"
+                    :selected_row_index="null"
+
+                    @load_table="load_table"
+                    @select_row="select_string" />
             </template>
             <template v-else-if="current_tab == 'file_headers'">
                 <SearchableTable

@@ -91,6 +91,69 @@ class TableModel:
         return result
 
 @register_table_model
+class StringsList(TableModel):
+    RAW_NAME = 'strings_list'
+
+    def query_rows(self,
+            server_connection : 'ServerConnection',
+            current_row_idx : Optional[int] = None,
+            current_page_if_not_current_row : Optional[int] = None,
+            search_query : Optional[str] = None
+            ) -> RawFetchResult:
+        
+        string_count = server_connection.reader.header.stringCount
+
+        # Do search query filtering here
+        if search_query and search_query.strip():
+            matching_string_ids : List[int] = server_connection.search_index.find_strings_from_substring(
+                search_query.strip())
+
+        # Handle the absence of search query
+        else:
+
+            matching_string_ids = [i for i in range(string_count)]
+        
+        # Do pagination filtering and counting here
+
+        total_results = len(matching_string_ids)
+        if self.has_pagination:
+            page_count = max(1, ceil(total_results / self.pagination_thresold))
+            current_page = min(page_count, current_page_if_not_current_row or 1)
+
+            displayed_string_ids = matching_string_ids[
+                (current_page - 1) * self.pagination_thresold:
+                current_page * self.pagination_thresold]
+
+        else:
+            page_count = 1
+            current_page = 1
+            displayed_string_ids = matching_string_ids
+
+        strings = server_connection.reader.strings
+
+        displayed_rows : List[Dict[str, Any]] = [{
+            'id': string_id,
+            'cells': (
+                str(string_id),
+                strings[string_id]
+            )
+        } for string_id in displayed_string_ids] # [{'id': 49, 'cells': ['a', 'b', 'c']}, ...]
+
+        result = RawFetchResult(
+            result_count = total_results,
+            pages = page_count,
+            current_page = current_page,
+            displayed_rows = displayed_rows
+        )
+
+        return result
+
+    columns = [
+        ColumnModel('Id', 'id'),
+        ColumnModel('Name', 'name')
+    ]
+
+@register_table_model
 class FunctionsList(TableModel):
     RAW_NAME = 'functions_list'
 

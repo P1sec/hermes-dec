@@ -90,13 +90,11 @@ class Indexer:
 
     
     def indexate_in_memory(self):
-        """
         self.raw_strings_blob = ''
         self.raw_strings_indexes : List[int] = []
         for string in self.reader.strings:
-            self.raw_strings_indexes.append(len(self.raw_string_blob))
+            self.raw_strings_indexes.append(len(self.raw_strings_blob))
             self.raw_strings_blob += string + '\x00'
-        """
 
         self.raw_functions_blob = ''
         self.raw_functions_indexes : List[int] = []
@@ -105,6 +103,25 @@ class Indexer:
             raw_func_name = self.reader.strings[function_header.functionName]
             self.raw_functions_blob += raw_func_name + '\x00' + '%08x' % function_header.offset + '\x00'
     
+    # Return a list of possible string IDs from a given
+    # searched substring
+    def find_strings_from_substring(self, token : str) -> str:
+
+        string_ids : Set[str] = set()
+
+        haystack = token
+        pos = 0
+        while True:
+            needle = self.raw_strings_blob.find(haystack, pos)
+            if needle == -1:
+                break
+            string_id = bisect(self.raw_strings_indexes, needle) - 1
+            pos = needle + len(token)
+            
+            string_ids.add(string_id)
+
+        return sorted(string_ids)
+
     # Return a list of possible function IDs from a given
     # searched string, which may either represent a
     # raw hex function address or a function name
