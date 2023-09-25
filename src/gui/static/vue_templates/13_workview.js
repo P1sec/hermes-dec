@@ -54,13 +54,11 @@ var WorkView = {
             :table_data_map="table_data_map"
             @load_table="load_table"
             @select_function="select_function" />
-        <template v-if="function_is_syncing">
-            <h1 style="margin-left: 26px">Loading function data...</h1>
-        </template>
-        <template v-else-if="current_function != null">
+        <template v-if="current_function != null">
             <MainPane
                 :current_function="current_function"
                 :current_tab="current_tab"
+                :function_is_syncing="function_is_syncing"
                 :disasm_blocks="disasm_blocks"
                 @set_current_tab="set_current_tab" />
         </template>

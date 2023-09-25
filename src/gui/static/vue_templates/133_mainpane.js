@@ -2,6 +2,7 @@ var MainPane = {
     props: {
         current_function: Number,
         current_tab: String,
+        function_is_syncing: Boolean,
         disasm_blocks: Object
     },
 
@@ -32,7 +33,10 @@ var MainPane = {
                 </div>
             </template>
         </div>
-        <div class="tab_contents scrollable_area">
+        <template v-if="function_is_syncing">
+            <h1 style="margin-left: 26px">Loading function data...</h1>
+        </template>
+        <div class="tab_contents scrollable_area" v-else>
             <template v-if="current_tab == 'disasm_view' && disasm_blocks">
                 <DisasmTab
                     :current_function="current_function"
