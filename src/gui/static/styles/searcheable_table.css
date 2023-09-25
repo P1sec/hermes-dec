@@ -32,11 +32,14 @@
     word-break: break-all;
 }
 
-.searchable_table tr.unselected_row:hover {
+.unselectable_table {
+    cursor: default;
+}
+.selectable_table tr.unselected_row:hover {
     background: #eee;
     cursor: pointer;
 }
-.searchable_table tr.selected_row {
+.selectable_table tr.selected_row {
     background: #f1f1f1;
     cursor: default;
 }

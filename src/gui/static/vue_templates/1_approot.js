@@ -210,6 +210,10 @@ var AppRoot = {
             this.open_hash(file_hash);
         },
         load_table(table_name, text_filter, current_row, page) {
+            if(this.dl.table_data_map && this.dl.table_data_map[table_name]) {
+                // Ensure that the loading spinner is displayed:
+                this.dl.table_data_map[table_name].reloading = true;
+            }
             this.socket.send(JSON.stringify({
                 type: 'get_table_data',
                 table: table_name,

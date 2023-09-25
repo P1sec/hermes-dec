@@ -41,6 +41,7 @@
             var root_component = app.mount('#app_root');
 
             app.config.errorHandler = (err) => {
+                console.log('=> JavaScript error: ', err)
                 alert('JavaScript error: ' + err)
             };
             // ^^ TODO

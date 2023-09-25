@@ -120,11 +120,6 @@ class FunctionsList(TableModel):
             page_count = max(1, ceil(total_results / self.pagination_thresold))
             current_page = min(page_count, current_page_if_not_current_row or 1)
 
-            # Handle the presence of a selected row
-
-            if self.has_pagination and current_row_idx in matching_function_ids:
-                current_page = ceil(matching_function_ids.index(current_row_idx) / self.pagination_thresold) + 1
-            
             displayed_function_ids = matching_function_ids[
                 (current_page - 1) * self.pagination_thresold:
                 current_page * self.pagination_thresold]

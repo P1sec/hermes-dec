@@ -17,8 +17,9 @@
 .functions_table td {
     width: 100px;
 }
-.functions_table tr:first-child td {
-    border-top: none;
+.functions_table {
+    margin-top: 5px;
+    border-top: 1px solid #ccc;
 }
 .functions_table td:first-child {
     border-left: none;
