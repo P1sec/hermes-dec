@@ -1,7 +1,10 @@
 #!/usr/bin/python3
 #-*- encoding: Utf-8 -*-
+from logging import getLogger, debug, DEBUG
 from os.path import realpath, dirname
 from argparse import ArgumentParser
+from datetime import datetime
+from time import time
 import sys
 
 SCRIPT_DIR = dirname(realpath(__file__))
@@ -44,15 +47,28 @@ def decompile_function(state : HermesDecompiler, function_id : int, **kwargs):
     if dehydrated.function_object.hasExceptionHandler:
         dehydrated.exc_handlers = state.hbc_reader.function_id_to_exc_handlers[function_id]
 
-    pass1_set_metadata(state, dehydrated)
-    pass1b_make_basic_blocks(state, dehydrated)
-    pass1c_visit_code_paths(state, dehydrated)
-    
-    pass2_transform_code(state, dehydrated)
-    
-    pass3_parse_forin_loops(state, dehydrated)
-    
-    pass4_name_closure_vars(state, dehydrated)
+    debug('')
+    debug('[%s] Decompiling function #%d ("%s")...' % (
+        datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+        function_id,
+        state.hbc_reader.strings[dehydrated.function_object.functionName]
+    ))
+
+    for step in [
+        pass1_set_metadata,
+        pass1b_make_basic_blocks,
+        pass1c_visit_code_paths, # <-- Used only for generating the graph
+        pass2_transform_code,
+        pass3_parse_forin_loops,
+        pass4_name_closure_vars
+    ]:
+        start_time = time()
+        step(state, dehydrated)
+        debug('[%s]   Ran "%s" in %0.5f seconds...' % (
+            datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            step.__name__,
+            time() - start_time
+        ))
 
     dehydrated.output_code(state)
     
@@ -80,10 +96,14 @@ def main():
 
     args = ArgumentParser()
     
+    args.add_argument('-d', '--debug', action = 'store_true')
     args.add_argument('input_file')
     args.add_argument('output_file', nargs = '?')
     
     args = args.parse_args()
+
+    if args.debug:
+        getLogger().setLevel(DEBUG)
     
     state = HermesDecompiler()
     state.input_file = args.input_file
@@ -98,7 +118,7 @@ def main():
             
             print()
             print('[+] Decompiled output wrote to "%s"' % state.output_file)
-            print()
+            print() 
         else:
             sys.stdout.reconfigure(encoding='utf-8')
             do_decompilation(state, file_handle)

@@ -35,7 +35,7 @@ class BaseFunctionXRef(Base):
 
     function_id = Column(Integer, index = True)
 
-    type = Column(String)
+    type = Column(String, index = True)
     insn_original_pos = Column(Integer)
     insn_operand_idx = Column(Integer)
 

@@ -3,6 +3,7 @@
 from typing import List, Set, Dict, Tuple, Optional, Sequence, Union, Any
 from os.path import dirname, realpath
 from dataclasses import dataclass
+from enum import IntEnum
 from sys import path
 from re import sub
 import sys
@@ -27,6 +28,17 @@ class HermesDecompiler:
     
     function_header : object # For the function being transformed to dehydrated state
     indent_level : int = 0 # Used while producing decompilation output
+
+# Output to the upper-lever class (WIP)
+class DecompiledFunctionTextChunkType(IntEnum):
+    RAW_TEXT = 1
+    CLOSURE_REF = 2
+
+
+class DecompiledFunctionTextChunk:
+    function_id : int
+
+    # WIP ..
 
 # This should encompass the scope for a HBC assembly-level basic
 # block (retranscribed as a for(;;) switch { case X: } case in

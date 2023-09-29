@@ -4,6 +4,8 @@ from asyncio import Future, run, get_running_loop
 from os.path import dirname, realpath
 from json import loads, dumps
 from websockets import serve
+from threading import Thread
+from asyncio import Queue
 from sys import path
 
 GUI_DIR = realpath(dirname(__file__))
@@ -28,6 +30,8 @@ path.insert(0, PARSERS_DIR)
 
 from hbc_bytecode_parser import parse_hbc_bytecode
 from hbc_file_parser import HBCReader
+
+queue = asyncio.Queue()
 
 class ServerConnection:
 
@@ -74,6 +78,10 @@ async def socket_server(socket):
         **ProjectSubdirManager.get_recent_files_data()
     }))
 
+    # TODO
+    # Implement some kind of select()
+    # here from thread-multiprocess issued
+    # messages from the indexing part
     async for msg in socket:
         
         if type(msg) == bytes:

@@ -2,15 +2,12 @@
 #-*- encoding: Utf-8 -*-
 from ctypes import LittleEndianStructure, c_bool, c_char, c_wchar, c_uint8, c_uint16, c_uint32
 from typing import List, Set, Sequence, Tuple, Any, Union, Dict, Optional
-from logging import log, getLogger, DEBUG
 from dataclasses import dataclass
 from enum import IntEnum, IntFlag
 from io import BytesIO
 from re import sub
 
 from pretty_print import pretty_print_structure
-
-getLogger().setLevel(DEBUG)
 
 
 """
