@@ -52,8 +52,20 @@ class BasicBlock:
     start_address : int
     end_address : int
 
+    def __repr__(self):
+        out = '['
+        out += '%08x' % self.start_address + ' -> '
+        out += '%08x' % self.end_address + ' : '
+        out += '%s' % self.insn_count + ' insns'
+        if self.max_acc_insn_weight:
+            out += ' weight ' + '%s' % self.max_acc_insn_weight
+        out += ']'
+        return out
+
     # Individual number of instructions in the basic block
     insn_count : int
+
+    # (pass1c algorithm:)
 
     # Number of instructions that will be gone through
     # when taking the longest possible code path to
@@ -82,7 +94,7 @@ class BasicBlock:
 
     # These flags should indicate whether we have
     # encountered cycling in
-    # "graph_traversers/step2_visite_code_paths.py"
+    # "graph_traversers/step1c_visite_code_paths.py"
     # (which indicates the presence of a loop):
     may_be_cycling_anchor : bool = False
     may_be_cycling_target : bool = False
