@@ -77,7 +77,8 @@ def draw_stuff(instructions : List[ParsedInstruction], dehydrated : DecompiledFu
         # Recursively iterate through children blocks:
 
         child_nodes = sorted(basic_block.child_nodes + basic_block.error_handling_child_nodes,
-            key = lambda block: (-block.max_acc_insn_weight, block.start_address))
+            key = lambda block: (block.start_address)) # -block.max_acc_insn_weight,
+                # ^ TODO: Reintegrate this opti
 
         child_nodes = list(filter(lambda block: (not block.rendered) and (not block.marked_to_render),
             child_nodes))

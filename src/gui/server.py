@@ -179,7 +179,7 @@ async def socket_server(socket):
 
                 pass1_set_metadata(state, dehydrated)
                 pass1b_make_basic_blocks(state, dehydrated)
-                pass1c_visit_code_paths(state, dehydrated)
+                # pass1c_visit_code_paths(state, dehydrated) # Commented right now
 
                 # - Return the resulting pre-rendered/displayed graph as
                 #   serialized JSON. (WIP...)

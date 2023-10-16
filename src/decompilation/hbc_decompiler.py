@@ -57,7 +57,7 @@ def decompile_function(state : HermesDecompiler, function_id : int, **kwargs):
     for step in [
         pass1_set_metadata,
         pass1b_make_basic_blocks,
-        pass1c_visit_code_paths, # <-- Used only for generating the graph
+        # pass1c_visit_code_paths, # <-- Commented right now
         pass2_transform_code,
         pass3_parse_forin_loops,
         pass4_name_closure_vars

@@ -7,6 +7,12 @@ from collections import defaultdict
 from defs import HermesDecompiler, BasicBlock, DecompiledFunctionBody
 from hbc_bytecode_parser import parse_hbc_bytecode
 
+"""
+    Please see the "docs/Pass1c Cycling detection + Block Distance from root
+    Weighting Algo.md" file for documentation regarding the functioning of the
+    algorithms present in the current file.
+"""
+
 
 PER_BLOCK_PIXELS = 12 * 5
 PER_INSN_PIXELS = 12
@@ -18,11 +24,16 @@ class CycleDetectorAlgState:
     # State of sub-algo 1:
     branches : List['CodeExplorationPath'] # Contains references to parents with fork points
 
-    def __init__(self, visitable_nodes):
+    function_body : DecompiledFunctionBody
+
+    def __init__(self, function_body : DecompiledFunctionBody):
+        self.function_body = function_body
+        self.all_nodes = []
         self.branches = []
 
-    def do_needed_fork_and_merge_ops(self):
-        xx_wip
+    def do_initial_linking(self):
+        for node in self.all_nodes:
+            node.do_initial_linking()
 
 # Pass1c algorithm calculation steps:
 #   - Sub-algo 1: detect cycling points in the graph.
@@ -32,138 +43,82 @@ class CycleDetectorAlgState:
 
 class VisitableNode:
 
-    # In sub-algo 1:
-    #
-    # At a given moment, a visitable node may either be
-    # tip-of-branch or not tip-of-branch (branch = code exploration path).
-    #
-    # At a given moment, the tip-of-branches are stored in the
-    # global state of the algorithm (through the fact that
-    # the branches are stored in the "alg_state.branches"
-    # list)
-    #
-    # The only initial branch is just composed of the root node of the tree.
-    #
-    # Branches fork when, a child has been linked (found/marked as
-    # a visited child) in a tip-of-branch node, but other non-visited
-    # children remain.
-    #
-    # Branches merge when, after any update of the ongoing branches,
-    # the same node has gotten to be the end of two branches.
-    #  => This is done so that the new algorithm is *way* less greedy
-    #     than the former one.
-    #
-    # Branches end when, all the children of a given tip-of-branch
-    # have been marked visited. They are then suppressed from "alg_state.branches".
-    #
-    # Child nodes are marked cycling during the update process of a
-    # branch (simple update or consequential merge), when they
-    # already been seen in a given branch.
-    #
-    # The sub-algorithm 1 ends when, all branches have ended in
-    # the global state ("alg_state.branches" is empty).
-
     alg_state : CycleDetectorAlgState
 
-    underlying_node : [BasicBlock]
+    wrapped : ['BasicBlock']
 
-    unvisited_children : Set[BasicBlock]
-    visited_children : Set[BasicBlock]
+    unvisited_children : Set['VisitableNode']
+    visited_children : Set['VisitableNode']
 
-    cycling_visited_children : Set[BasicBlock]
+    cycling_visited_children : Set['VisitableNode']
 
-    part_of_code_paths : ['CodeExplorationPath']
+    # The present object may only be the tip of
+    # one branch at the time
+    current_tip_of : Optional['CodeExplorationPath']
+
+    # part_of_code_paths : Set['CodeExplorationPath']
 
     # Comment for now: Will only be useful in sub-algo 2
     # temp_max_insn_acc : int
 
-    def __init__(self, node, parent_path, alg_state):
-        self.underlying_node = node
-        self.unvisited_children = set(node.child_nodes + node.error_handling_child_nodes)
-        self.part_of_code_paths = defaultdict(set)
+    def __init__(self, node, alg_state):
+        self.wrapped = node
+        self.current_tip_of = None
+        self.cycling_visited_children = set()
+        # self.part_of_code_paths = set()
+        self.visited_children = set()
         self.alg_state = alg_state
+        self.alg_state.all_nodes.append(self)
+    
+    def do_initial_linking(self):
+        self.unvisited_children = set(
+            self.alg_state.all_nodes[
+                self.alg_state.function_body.basic_blocks.index(unwrapped_item)]
+            for unwrapped_item in self.wrapped.child_nodes + self.wrapped.error_handling_child_nodes
+        )
 
-    # This function is called by the main routine of
-    # sub-algorithm 1 when the current node has been
-    # pre-identified as a potentiel child of any of
-    # the current tip-of-branch nodes (see the definition above)
-    # and pre-sorted so that we visit nodes upper in
-    # the global basic blocks tree first, and that we
-    # maintain less code exploration paths/branches in
-    # memory in parallel, and that our algorithm is more
-    # BFS than DFS and hence shorter to execute in the
-    # use case of sub-algorithm 1 overall.
-    #
-    # It should first check whether the passed other node
-    # of the tree is actually part of the unvisited
-    # children of the present tip-of-branch node.
-    #
-    # If this is the case,
-    # - We should mark the concerned child as visited
-    #   in our local state
-    # - We should check whether all the children of the
-    #   current object are now considered visited in
-    #   our local state, and act upon it:
-    #   (This should be performed by "alg_state.do_needed_fork_and_merge_ops")
-    #   - We should check for necessity of fork action
-    #     (are there still unvisited nodes present within
-    #      the local state for the current object right now?)
-    #   - We should change the tip-of-branch the current
-    #     node is part of (leaving a forked copy if there
-    #     are still unvisited child nodes referenced in
-    #     the local state for the current node)
-    #   - We should check for necessity of merge action
-    #     (comparing all the branch present in the
-    #      "alg_state.branches" array and checking
-    #       whether, with the new tip-of-branches in
-    #       presence, there are now code paths to be
-    #       merged together)
-    #   - We should perform the merge if this is the
-    #     case, retaining nodes
-    # - We should check for potential cycling across
-    #   the branches having the checked over child
-    #   as their (new) tip, after the fork and
-    #   merge operations described above have been
-    #   conducted
-    # - We should perform a partial burn action if there
-    #   is indeed cycling
-    #    - And check for the necessity of fork-and-merge
-    #      action again
-    #     (call "alg_state.do_needed_fork_and_merge_ops" again)
-    # - We should perform the delete branch action if the
-    #   new tip-of-branch has no child
-    #
-    def match_against_children(self, other_node):
-        if other_node in self.unvisited_children:
-            self.unvisited_children.discard(other_node)
-            self.visited_children.add(other_node)
+    # See the "docs/Pass1c Cycling detection + Block Distance
+    # from root Weighting Algo.md" documentation for a detailed
+    # description of the algorithm departing from this function
 
-            self.do_needed_fork_and_merge_ops()
-            if self.do_cycling_and_burn_check_ops(self):
-                self.do_needed_fork_and_merge_ops()
-            self.do_prune_if_no_tip_of_branch()
+    def match_against_child(self, other_node):
+        assert other_node in self.unvisited_children
 
-    def do_needed_fork_and_merge_ops(self):
-        self.alg_state.do_needed_fork_and_merge_ops()
-    
-    # Returns True if any partial burn operation (as
-    # described in the top comment of the class) has
-    # been performed
-    def do_cycling_and_burn_check_ops(self, other_node) -> bool:
-        if xx:
-            self.set_cycling_pair(other_node)
-            xx
-    
-    def set_cycling_pair(self, other_node):
-        self.cycling_visited_children.add(other_node)
-        self.node.may_be_cycling_anchor = True
-        other_node.may_be_cycling_target = True
-    
-    def partial_burn_op(self):
-        xx
-    
-    def do_prune_if_no_tip_of_branch(self):
-        xx
+        self.unvisited_children.discard(other_node)
+        self.visited_children.add(other_node)
+
+        assert self.current_tip_of
+
+        # Do a forking merge op:
+        if self.unvisited_children and other_node.current_tip_of:
+            other_node.current_tip_of.copy_merge(self.current_tip_of)
+        # Do a non-forking merge op:
+        elif other_node.current_tip_of:
+            other_node.current_tip_of.copy_merge(self.current_tip_of)
+            self.current_tip_of.prune_self()
+        # Do a fork with modified tip op:
+        elif self.unvisited_children:
+            self.current_tip_of.fork_with_new_tip(other_node)
+        # Do a change tip op:
+        else:
+            self.current_tip_of.append_tip(other_node)
+
+        # Do pruning if now cycling (and mark as cycling)
+        will_create_cycle = other_node in other_node.current_tip_of.children[:-1]
+
+        if will_create_cycle:
+            self.cycling_visited_children.add(other_node)
+            self.wrapped.may_be_cycling_anchor = True
+            other_node.wrapped.may_be_cycling_target = True
+
+            other_node.current_tip_of.prune_self()
+        
+        # Do pruning in all cases
+        if other_node.current_tip_of and not other_node.unvisited_children:
+            other_node.current_tip_of.prune_self()
+        
+        if self.current_tip_of and not self.unvisited_children:
+            self.current_tip_of.prune_self()
 
     # Props (i/o) to be used from the BasicBlocks object:
 
@@ -182,11 +137,48 @@ class VisitableNode:
 
 class CodeExplorationPath:
 
-    children : List[BasicBlock]
+    children : List[VisitableNode]
 
-    def __init__(self, initial_node):
+    alg_state : CycleDetectorAlgState
 
-        self.children = [initial_node]
+    def __init__(self, children, alg_state):
+
+        self.children = children
+        self.alg_state = alg_state
+        self.alg_state.branches.append(self)
+
+        assert not children[-1].current_tip_of
+        children[-1].current_tip_of = self
+    
+    def copy_merge(self, other_branch : 'Self'):
+        non_common_descents = [
+            node for node in self.children
+            if node not in other_branch.children
+        ]
+
+        other_branch.children = (other_branch.children[:-1] +
+            non_common_descents + # Right?
+            other_branch.children[-1:])
+    
+    def prune_self(self):
+        assert self.children[-1].current_tip_of == self
+
+        self.children[-1].current_tip_of = None
+        self.alg_state.branches.remove(self)
+    
+    def fork_with_new_tip(self, other_node : VisitableNode):
+        assert self.children[-1].current_tip_of == self
+        assert not other_node.current_tip_of
+        
+        CodeExplorationPath(self.children + [other_node], self.alg_state)
+    
+    def append_tip(self, other_node : VisitableNode):
+        assert self.children[-1].current_tip_of == self
+        assert not other_node.current_tip_of
+        
+        self.children[-1].current_tip_of = None
+        self.children.append(other_node)
+        other_node.current_tip_of = self
 
 def pass1c_visit_code_paths(state : HermesDecompiler, function_body : DecompiledFunctionBody):
 
@@ -197,7 +189,7 @@ def pass1c_visit_code_paths(state : HermesDecompiler, function_body : Decompiled
             - Useful for detecting loops in the control flow-enabled decompilation
               process later
         
-        - Sub-algorithm 2: Calculate the "max_acc_insn_weight" value (see
+        - Sub-algorithm 2 (TODO): Calculate the "max_acc_insn_weight" value (see
             defs.py) for each basic block
             - Useful for visually sorting the order of blocks in the
               web UI graph
@@ -206,90 +198,8 @@ def pass1c_visit_code_paths(state : HermesDecompiler, function_body : Decompiled
     
     """
 
-    """
-        WIP sub-algorithm 1 (only to detect and list cycling points):
-        (explained more in the comments about the "VisitableNode"
-        class definition below)
-
-        <NEW MAKET>
-            (Pre-step but seldom useful: If there is no backward jump
-            in the subroutine, there is no cycling, exit the current algorithm)
-
-            Define a list of exploration paths, with the initial exploration
-            path only containing the root of the graph.
-
-            We'll do a kind of weighted BFS-alike algorithm with a queue
-            of vertices (nodes) that we will,
-                a. at each iteration, process with
-                    aa. filtering temporarily only which have a parent
-                        in an existing exploration path AND had not
-                        all their childs? parents? both? visited
-                    ab. (and keeping these sorted upon origin position in
-                         the code)
-                    ac. Obviously process the nodes that have only one
-                        extra parent to be visited first!
-                    ad. (Put point which have been determined to cycle
-                         the farthest possible in the list?)
-
-                        ^ Likely use a pattern like this
-
-                        sorted(
-                            x,
-                            (
-                                key1,
-                                -key2,
-                                -key3,
-                                key4,
-                                key5,
-                                ..
-                            )
-                        )
-                    
-                    (...)
-                    a3. Keep track of the max read instruction path
-                        (still in the structure) in the meantime
-
-                    a4x. Whenever we branch to 2+ unvisited nodes in the
-                         graph, split exploration paths
-                            (Each exploration path having n parents with
-                            split points, resembling a bit the principle
-                            of Git commit trees)
-                    a4y. Whenever a node/edge have had all their inbound
-                         paths visited, visit back up to split points
-                         and see which exploration paths to merge
-                    
-                    (...)
-                    a4z. Merge cycling points whenever required
-
-            (In the end we'll have a list of the cycling points in the graph
-                + possibly imperfect max insn weights calculated everywhere)
-        </NEW MAKET>
-
-        <REMINDER>
-            Queue = FIFO = Premier entré (mis à la fin de la queue en premier),
-                premier dehors (sorti du début de la queue en premier)
-            Stack (pile) = LIFO = Dernier entré (mis en haut de la pile en dernier),
-                premier dehors (sorti du haut de la pile en premier)
-            
-            BFS = Breadth-first search = Algo de parcours de graphe par recherche
-                sur la largeur en premier = itère horizontalement puis verticalement,
-                utilise une queue
-            DFS = Depth-first search = Algo de parcours de graphe par recherche
-                sur la profondeur en premier = itère verticalement puis horizontalement
-                
-            Vertice = Sommet = Point/Nœud du graphe
-            Edge = Tige = Trait/Lien du graphe
-
-        </REMINDER>
-        
-    """
-
     all_nodes = function_body.basic_blocks
     root_node = all_nodes[0]
-
-    all_nodes_set = set(all_nodes)
-
-    root_child_nodes = root_node.child_nodes + root_node.error_handling_child_nodes
 
     # Check whether there is no backward jump into the
     # basic block graphes: in this case, there is no
@@ -314,70 +224,36 @@ def pass1c_visit_code_paths(state : HermesDecompiler, function_body : Decompiled
 
     root_node.max_acc_insn_weight = root_node.insn_count
 
-    state = CycleDetectorAlgState()
+    state = CycleDetectorAlgState(function_body)
 
-    state.visited_nodes.add(root_node)
-    state.unvisited_nodes = all_nodes_set - state.visited_nodes
+    for node in all_nodes:
+        VisitableNode(node, state) # <- state.all_nodes
+    CodeExplorationPath([state.all_nodes[0]], state) # <- state.branches
 
-    code_path = CodeExplorationPath()
-    code_path.children.append(root_node)
+    state.do_initial_linking()
 
-    state.exploration_paths.append(code_path)
+    while state.branches:
 
-    state.next_child_nodes = root_child_nodes
+        nodes_to_explore = set()
+        for branch in state.branches:
+            nodes_to_explore |= branch.children[-1].unvisited_children
 
-    while state.next_child_nodes:
+        assert nodes_to_explore
 
-        state.next_child_nodes = sorted(
-            state.next_child_nodes,
-            lambda block: (
-                block in state.visited_nodes,
-                len(block.parent_nodes),
-                block.start_address
+        nodes_to_explore = sorted(
+            nodes_to_explore,
+            key = lambda block: (
+                # TODO: Opti this
+                # len(block.wrapped.parent_nodes) +
+                #     len(block.wrapped.error_handling_parent_nodes),
+                block.wrapped.start_address
             )
         )
 
-        next_node = state.next_child_nodes.pop(0)
+        next_node = nodes_to_explore.pop(0)
 
-        state.visited_nodes.add(next_node)
-        state.unvisited_nodes.discard(next_node)
-        state.next_child_nodes.discard(next_node)
-
-        state.next_child_nodes |= next_node.child_nodes + next_node.error_handling_child_nodes
-
-        # Handle self-cycling nodes
-        if next_node in next_node.child_nodes:
-            next_node.may_be_cycling_anchor = True
-            next_node.may_be_cycling_target = True
-        
-        # Handle normal cycling path + continuation path
-        for exploration_path in state.exploration_paths:
-            if next_node in (exploration_path.children[-1].child_nodes +
-                exploration_path.children[-1].error_handling_child_nodes):
-
-            if next_node in exploration_path.children:
-
-                exploration_path.children.append(next_node)
-
-                # Handle when all the children in the tip of the
-                # currently iterated over node have been visited,
-                # leveraging the state.node_to_visited_children property
-
-                state.node_to_visited_children[next_node].add(xx)
-
-                # (..xx Update state.node_to_exploration_paths_included)
-                state.node_to_exploration_paths_included[next_node].add(xx)
-                xx
-
-                # If other child nodes of the completed item have not been
-                # visited yet, perform fork action when needed
-                state.node_to_exploration_paths_included[next_node].add(xx)
-                xx
-
-        # Handle handling loops by allowing to restack already visited nods
-
-        pass # WIP XX
-
-    
-
+        for branch in state.branches:
+            if next_node in branch.children[-1].unvisited_children:
+                branch.children[-1].match_against_child(next_node)
+                break
 

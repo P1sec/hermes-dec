@@ -86,6 +86,9 @@ class BasicBlock:
     # going the block with the largest "max_acc_insn_weight"
     # should be preferred to be main, and the block with
     # the smallest value should be preferred to be conditional)
+    #
+    # (This is temporarily deprecated, and will
+    # be reintegrated if deemed useful)
     max_acc_insn_weight : int = 0
 
     # State that will be used in "pre_render_graph.py":
@@ -94,7 +97,7 @@ class BasicBlock:
 
     # These flags should indicate whether we have
     # encountered cycling in
-    # "graph_traversers/step1c_visite_code_paths.py"
+    # "graph_traversers/step1c_visit_code_paths.py"
     # (which indicates the presence of a loop):
     may_be_cycling_anchor : bool = False
     may_be_cycling_target : bool = False
