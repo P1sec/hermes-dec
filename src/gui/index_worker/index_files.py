@@ -1,10 +1,17 @@
 #!/usr/bin/python3
 #-*- encoding: Utf-8 -*-
 from typing import List, Sequence, Tuple, Dict, Set, Union, Optional
-from os.path import dirname, realpath
+from os.path import dirname, realpath, exists, join
+from os import getpid, unlink, kill
+from tempfile import gettempdir
 from datetime import datetime
+from json import load, dump
+from logging import warning
+from random import randint
 from bisect import bisect
+from signal import SIGINT
 from sys import path
+import platform
 
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
@@ -38,6 +45,108 @@ from def_classes import Instruction, Operand, OperandMeaning
     bytecode file and for the corresponding list of functions.
 
 """
+
+class IndexerSubprocessSocketClient:
+
+    xx
+
+class IndexerSubprocessSocketServer:
+
+    def __init__(self):
+
+        XX create_datagram_endpoint
+
+        xx
+
+LOCK_FILE_PATH = join(gettempdir(), 'hermes_dec_runfile.jso')
+
+class IndexerSubprocessLockFileServer:
+
+class IndexerSubprocessLockFileClient:
+
+    # This methods creates the lock file if it
+    # doesn't exists, killing any leftover
+    # process if required.
+
+    # Please see the "docs/GUI index worker socket
+    # comm.md" file for documentation about this
+    # class.
+
+    def __init__(self):
+
+        lock_file_exists = exists(LOCK_FILE_PATH)
+
+        # Handle any leftover lock file
+
+        if lock_file_exists:
+            with open(LOCK_FILE_PATH) as fd:
+                existing_json = load(fd)
+
+            if existing_json['main_worker_pid'] != getpid():
+                try:
+                    kill(existing_json['main_worker_pid'], SIGINT)
+                    warning('Killing existing server process: %d' % existing_json['main_worker_pid'])
+                except Exception:
+                    pass
+
+                if (isinstance(existing_json['main_worker_port'], str) and
+                    exists(existing_json['main_worker_port'])):
+                    unlink(existing_json['main_worker_port'])
+
+                for worker in existing_json.get('index_workers', []):
+                    try:
+                        kill(worker['pid'], SIGINT)
+                    except Exception:
+                        pass
+
+                    if (isinstance(worker['port'], str) and
+                        exists(worker['port'])):
+                        unlink(worker['port'])
+            else:
+                return
+
+        has_unix_sockets = platform.system() in ('Linux', 'Darwin')
+
+        if has_unix_sockets:
+            server_port = join(gettempdir(), 'hermes_dec_%d.sock' % getpid())
+        else:
+            MIN_PORT_RANGE = 40000
+            MAX_PORT_RANGE = 59999
+            server_port = randint(MIN_PORT_RANGE, MAX_PORT_RANGE)        
+
+        initial_contents = {
+            'main_worker_pid': getpid(),
+            'main_worker_port': server_port,
+            'index_workers': []
+        }
+
+        # Write the lock file
+
+        with open(LOCK_FILE_PATH, 'w') as fd:
+            dump(initial_contents, fd)
+
+        # TODO also kill this process atexit()
+
+        
+        XX
+
+class IndexerSubprocess:
+
+    def __init__(self):
+
+        # TODO - Check for lock file
+
+        IndexerSubprocessLockFileClient(XX)
+
+        # --> Next point
+
+        # TODO - Spawn subprocess
+
+        # TODO - Open UDP communication in
+        # another thread
+
+        # TODO - Return a communication queue from the caller
+        # With a loop here also looking for timeouts
 
 
 class Indexer:

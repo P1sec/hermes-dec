@@ -45,7 +45,7 @@ class TableModel:
     has_selectable_rows : bool = True
 
     def query_rows(self,
-            server_connection : 'ServerConnection' = None, # From "server.py", allows to reference
+            server_connection : 'WebsocketClient' = None, # From "server.py", allows to reference
                 # the "search_index" (index_files.Indexer) and "reader" (hbc_file_parser.HBCReader)
                 # attributes
             current_row_idx : Optional[int] = None, # Current row if selected,
@@ -58,7 +58,7 @@ class TableModel:
         raise NotImplementedError('Please subclass me')
     
     def get_json_response(self,
-            server_connection : 'ServerConnection' = None, # From "server.py", allows to reference
+            server_connection : 'WebsocketClient' = None, # From "server.py", allows to reference
                 # the "search_index" (index_files.Indexer) and "reader" (hbc_file_parser.HBCReader)
                 # attributes
             current_row_idx : Optional[int] = None, # Current row if selected,
@@ -95,7 +95,7 @@ class StringsList(TableModel):
     RAW_NAME = 'strings_list'
 
     def query_rows(self,
-            server_connection : 'ServerConnection',
+            server_connection : 'WebsocketClient',
             current_row_idx : Optional[int] = None,
             current_page_if_not_current_row : Optional[int] = None,
             search_query : Optional[str] = None
@@ -158,7 +158,7 @@ class FunctionsList(TableModel):
     RAW_NAME = 'functions_list'
 
     def query_rows(self,
-            server_connection : 'ServerConnection',
+            server_connection : 'WebsocketClient',
             current_row_idx : Optional[int] = None,
             current_page_if_not_current_row : Optional[int] = None,
             search_query : Optional[str] = None
@@ -229,7 +229,7 @@ class HeaderInfo(TableModel):
     has_selectable_rows = False
 
     def query_rows(self,
-            server_connection : 'ServerConnection',
+            server_connection : 'WebsocketClient',
             current_row_idx : Optional[int] = None,
             current_page_if_not_current_row : Optional[int] = None,
             search_query : Optional[str] = None
