@@ -1,23 +1,23 @@
 This document presents the interprocess communication used for the decompiler/index worker to communicate with the main Websocket server worker over the `hermes-dec` GUI.
 
-Communication is done over unidirectional unbuffered process pipe (stdout) communication, and passing CLI arguments + UNIX signal for cancelling on the other side.
+Communication is done over unidirectional unbuffered process pipe (stdout) communication, and passing CLI arguments + watching the present of an otherwise input pipe (stdin) for cancelling cleanly on the other side whenever the parent process gets terminated.
 
 ## Subprocess args
 
 The subprocess shall have the following arguments:
 
 ```
-argv[0]: Python interpreter
-argv[1]: Worker script full path
-argv[2]: Data folder path
-argv[3]: Raw .HBC file path
+orig_argv[0]: Python interpreter
+orig_argv[1]: Worker script full path
+orig_argv[2]: Data folder path
+orig_argv[3]: Raw .HBC file path
 ```
 
 ## Cancel signal (parent->child)
 
 Just a SIGINT/simulated CTRL+C should be used for ending out the subprocess when needed (for example when the parent process gets interrupted itself)
 
-We should maybe simulate `prctl(PR_SET_PDEATHSIG` on Linux (in addition to our `atexit` call) to do this cleanly.
+The child watches the presence of an otherwise unused stdin pipe in a background/daemon thread, and interrupts its main thread whenever the stdin pipe gets broken.
 
 ## Child end signal (child->parent)
 
@@ -31,12 +31,12 @@ The following message types shall be implemented, and serialized with a `\n` end
 Example: ```json
 {
     "type": "indexing_state",
-    "state": "began_indexing" | "indexing_strings" | "indexing_functions" | "decompiling_code" | "fully_indexed" | "XXX",
-    "process_percent": 95
+    "state": "indexing_functions" (Later: | "decompiling_code") | "fully_indexed" (Later: | "XXX"),
+    (Later: "process_percent": 95)
 }
 ```
 
-- `indexing_status_log`: transmit a readable log string about the indexing status of the document
+- (Later: ) `indexing_status_log`: transmit a readable log string about the indexing status of the document
 Example: ``json
 {
     "type": "indexing_status_log",

@@ -24,7 +24,7 @@ var MainPane = {
 
     emits: ['set_current_tab'],
 
-    template: `<div class="main_pane tab_view">
+    template: `<div class="tab_view">
         <div class="tab_list">
             <template v-for="tab of tab_names">
                 <div :class="tab.raw == current_tab ? 'tab tab_current' : 'tab'"

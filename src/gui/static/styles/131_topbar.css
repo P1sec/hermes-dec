@@ -1,0 +1,16 @@
+/**
+ * Top bar
+ */
+
+ #top_bar {
+    padding: 7px;
+    border-bottom: 1px solid #ccc;
+    font-family: monospace;
+    font-size: 14px;
+    grid-row: 1;
+    grid-column: 1 / 3;
+}
+
+#top_bar_switch_file_button {
+    float: right;
+}

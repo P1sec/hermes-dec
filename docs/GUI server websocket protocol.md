@@ -38,6 +38,17 @@ S->C {
     }
 }
 
+S->C {
+    "type": "console_log",
+    "data": "Raw text\n"
+}
+
+
+S->C {
+    "type": "console_error_log",
+    "data": "Raw text\n"
+}
+
 C->S
 {
     "type": "get_table_data",

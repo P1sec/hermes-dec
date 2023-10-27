@@ -5,7 +5,8 @@ var WorkView = {
         current_function: Number,
         function_is_syncing: Boolean,
         current_tab: String,
-        disasm_blocks: Object
+        disasm_blocks: Object,
+        console_text: String
     },
 
     emits: [
@@ -42,6 +43,7 @@ var WorkView = {
     components: {
         TopBar,
         SidePane,
+        LogConsole,
         MainPane
     },
 
@@ -62,5 +64,6 @@ var WorkView = {
                 :disasm_blocks="disasm_blocks"
                 @set_current_tab="set_current_tab" />
         </template>
+        <LogConsole :data="console_text || ''" />
     </div>`
 };

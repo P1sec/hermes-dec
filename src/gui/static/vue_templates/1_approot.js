@@ -38,7 +38,7 @@ var AppRoot = {
 
                 disasm_blocks: null, // (Main view > Body > Disasm tab) (Retrieved from the "analyzed_function" wire message),
 
-                strings_list: null // (Main view > Body > Strings tab) (to be implemented/considered - TODO paginate this?)
+                console_text: null // (Main view > Log console) (Concatenated and retrieved from the "console_log" and "console_error_log" wire messages)
             }
         }
     },
@@ -120,6 +120,16 @@ var AppRoot = {
 
                     this.hash_data.current_function = parseInt(this.hash_data.current_function, 10) || 0;
                     this.hash_data.current_tab = this.hash_data.current_tab || 'disasm_view';
+                    break;
+                
+                case 'console_log':
+                    if(!this.dl.console_text) this.dl.console_text = '';
+                    this.dl.console_text += message.data.trimRight() + '\n';
+                    break;
+                
+                case 'console_error_log':
+                    if(!this.dl.console_text) this.dl.console_text = '';
+                    this.dl.console_text += '[!] ' + message.data.trimRight() + '\n';
                     break;
                 
                 case 'table_data':
@@ -264,6 +274,7 @@ var AppRoot = {
                 :function_is_syncing="hash_data.current_function != sync_data.current_function"
                 :current_tab="hash_data.current_tab"
                 :disasm_blocks="dl.disasm_blocks"
+                :console_text="dl.console_text"
                 @switch_file="switch_file"
                 @load_table="load_table"
                 @select_function="select_function"

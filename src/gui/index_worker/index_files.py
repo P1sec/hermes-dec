@@ -2,21 +2,27 @@
 #-*- encoding: Utf-8 -*-
 from typing import List, Sequence, Tuple, Dict, Set, Union, Optional
 from os.path import dirname, realpath, exists, join
-from os import getpid, unlink, kill
+from sys import path, stdin, argv
 from tempfile import gettempdir
 from datetime import datetime
+from threading import Thread
 from json import load, dump
 from logging import warning
+from os import getpid, kill
 from random import randint
 from bisect import bisect
-from signal import SIGINT
-from sys import path
-import platform
+from json import dumps
+
+try:
+    from signal import CTRL_C_EVENT as SIGINT
+except ImportError:
+    from signal import SIGINT
 
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 
-GUI_DIR = realpath(dirname(__file__))
+INDEX_WORKER_DIR = realpath(dirname(__file__))
+GUI_DIR = realpath(INDEX_WORKER_DIR + '/..')
 SRC_DIR = realpath(GUI_DIR + '/..')
 PARSERS_DIR = realpath(SRC_DIR + '/parsers')
 HBC_OPCODES_DIR = realpath(PARSERS_DIR + '/hbc_opcodes')
@@ -46,110 +52,18 @@ from def_classes import Instruction, Operand, OperandMeaning
 
 """
 
-class IndexerSubprocessSocketClient:
+INDEXER_ENTRY_SCRIPT = realpath(__file__)
 
-    xx
+class DatabaseIndexReader:
 
-class IndexerSubprocessSocketServer:
+    def __init__(self, reader : HBCReader, dir_path : str):
 
-    def __init__(self):
+        self.reader = reader
+        self.file_path = dir_path + '/database.sqlite3'
+    
+    # To be implemented...
 
-        XX create_datagram_endpoint
-
-        xx
-
-LOCK_FILE_PATH = join(gettempdir(), 'hermes_dec_runfile.jso')
-
-class IndexerSubprocessLockFileServer:
-
-class IndexerSubprocessLockFileClient:
-
-    # This methods creates the lock file if it
-    # doesn't exists, killing any leftover
-    # process if required.
-
-    # Please see the "docs/GUI index worker socket
-    # comm.md" file for documentation about this
-    # class.
-
-    def __init__(self):
-
-        lock_file_exists = exists(LOCK_FILE_PATH)
-
-        # Handle any leftover lock file
-
-        if lock_file_exists:
-            with open(LOCK_FILE_PATH) as fd:
-                existing_json = load(fd)
-
-            if existing_json['main_worker_pid'] != getpid():
-                try:
-                    kill(existing_json['main_worker_pid'], SIGINT)
-                    warning('Killing existing server process: %d' % existing_json['main_worker_pid'])
-                except Exception:
-                    pass
-
-                if (isinstance(existing_json['main_worker_port'], str) and
-                    exists(existing_json['main_worker_port'])):
-                    unlink(existing_json['main_worker_port'])
-
-                for worker in existing_json.get('index_workers', []):
-                    try:
-                        kill(worker['pid'], SIGINT)
-                    except Exception:
-                        pass
-
-                    if (isinstance(worker['port'], str) and
-                        exists(worker['port'])):
-                        unlink(worker['port'])
-            else:
-                return
-
-        has_unix_sockets = platform.system() in ('Linux', 'Darwin')
-
-        if has_unix_sockets:
-            server_port = join(gettempdir(), 'hermes_dec_%d.sock' % getpid())
-        else:
-            MIN_PORT_RANGE = 40000
-            MAX_PORT_RANGE = 59999
-            server_port = randint(MIN_PORT_RANGE, MAX_PORT_RANGE)        
-
-        initial_contents = {
-            'main_worker_pid': getpid(),
-            'main_worker_port': server_port,
-            'index_workers': []
-        }
-
-        # Write the lock file
-
-        with open(LOCK_FILE_PATH, 'w') as fd:
-            dump(initial_contents, fd)
-
-        # TODO also kill this process atexit()
-
-        
-        XX
-
-class IndexerSubprocess:
-
-    def __init__(self):
-
-        # TODO - Check for lock file
-
-        IndexerSubprocessLockFileClient(XX)
-
-        # --> Next point
-
-        # TODO - Spawn subprocess
-
-        # TODO - Open UDP communication in
-        # another thread
-
-        # TODO - Return a communication queue from the caller
-        # With a loop here also looking for timeouts
-
-
-class Indexer:
+class DatabaseIndexGenerator:
 
     def __init__(self, reader : HBCReader, dir_path : str):
 
@@ -161,13 +75,23 @@ class Indexer:
 
         Base.metadata.create_all(bind = self.engine)
 
-        self.indexate_in_memory()
         self.indexate_xrefs()
+
+        print(dumps({
+            'type': 'indexing_state',
+            'state': 'fully_indexed'
+        }), flush = True)
     
     def indexate_xrefs(self):
         with self.Session() as session:
             meta_block = session.query(DatabaseMetadataBlock).first()
             if not meta_block or meta_block.database_format < XREF_DB_FORMAT_VERSION:
+
+                print(dumps({
+                    'type': 'indexing_state',
+                    'state': 'indexing_functions'
+                }), flush = True)
+
                 DatabaseMetadataBlock.__table__.drop(self.engine)
                 Base.metadata.create_all(bind = self.engine)
                 # Register cross-reference from all across the file:
@@ -256,19 +180,41 @@ class Indexer:
                 meta_block.last_open_time = datetime.now()
             session.commit()
 
-    
-    def indexate_in_memory(self):
+if __name__ == '__main__':
+    # Interrupt the indexing process in case of parent death
+
+    def watch_for_parent_death_thread():
+        try:
+            while stdin.readline():
+                pass
+        finally:
+            kill(getpid(), SIGINT)
+
+    Thread(target = watch_for_parent_death_thread, daemon = True).start()
+
+    # Run the foreground indexer
+
+    reader = HBCReader()
+    with open(argv[2], 'rb') as fd:
+        reader.read_whole_file(fd)
+
+        DatabaseIndexGenerator(reader, argv[1])
+
+class MemoryIndex:
+
+    def __init__(self, reader : HBCReader):
+
         self.raw_strings_blob = ''
         self.raw_strings_indexes : List[int] = []
-        for string in self.reader.strings:
+        for string in reader.strings:
             self.raw_strings_indexes.append(len(self.raw_strings_blob))
             self.raw_strings_blob += string.lower() + '\x00'
 
         self.raw_functions_blob = ''
         self.raw_functions_indexes : List[int] = []
-        for function_header in self.reader.function_headers:
+        for function_header in reader.function_headers:
             self.raw_functions_indexes.append(len(self.raw_functions_blob))
-            raw_func_name = self.reader.strings[function_header.functionName]
+            raw_func_name = reader.strings[function_header.functionName]
             self.raw_functions_blob += raw_func_name.lower() + '\x00' + '%08x' % function_header.offset + '\x00'
     
     # Return a list of possible string IDs from a given

@@ -41,6 +41,7 @@ LOCAL_SHARE_PATH = user_data_dir('HermesDec', 'P1Security')
 BY_HASH_PATH = join(LOCAL_SHARE_PATH, 'by-hash')
 BY_DATE_PATH = join(LOCAL_SHARE_PATH, 'by-date')
 
+
 class ProjectSubdirManager:
 
     @classmethod
