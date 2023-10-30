@@ -4,7 +4,7 @@
 
  #work_view {
     display: grid;
-    grid-template-rows: 32px 1fr 214px;
+    grid-template-rows: 32px 1fr 194px;
     grid-template-columns: max-content 1fr;
 
     position: absolute;

@@ -12,10 +12,10 @@ S->C {"type": "recent_files", recent_files: [
 
 C->S {"type": "open_file_by_hash", "file_hash": "<sha256 HEX>"} (load saved context)
 
-S->C {"type": "file_hash_unknown"}
+S->C {"type": "file_hash_unknown", "file_hash": "<sha256 HEX>"}
 
 // (Implement first:)
-C->S {"type": "begin_tranfer", "file_name": "x.index.bundle OR apk"}
+C->S {"type": "begin_tranfer", "file_name": "x.index.bundle OR apk", "file_hash": "<sha256 HEX>"}
 (Raw binary buffer websocket transmission...)
 C->S {"type": "end_transfer"}
 

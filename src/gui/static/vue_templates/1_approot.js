@@ -100,7 +100,8 @@ var AppRoot = {
 
                     this.socket.send(JSON.stringify({
                         type: 'begin_transfer',
-                        file_name: file.name
+                        file_name: file.name,
+                        file_hash: message.file_hash
                     }));
 
                     var chunk_size = 1 * 1024 * 1024;
@@ -238,7 +239,7 @@ var AppRoot = {
         open_hash_command() {
             this.socket.send(JSON.stringify({
                 type: 'open_file_by_hash',
-                hash: this.hash_data.file_hash
+                file_hash: this.hash_data.file_hash
             }));
         }
     },

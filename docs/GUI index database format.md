@@ -28,13 +28,13 @@ In order to *implement viewing decompiled code with cross-references in the code
 
 - In `server.py` entry point -> `WebsocketServer.handle_ws_client`
   - `server.py` -> `WebsocketClient.create_file`
-    - `project_meta.py` -> `ProjectSubdirManager.new_with_name`
+    - `project_meta.py` -> `ProjectInstanceManager.new_with_name`
       - `self.subdir_path` = `join(user_data_dir('HermesDec', 'P1Security'), self.gen_unique_dirname(name))`
         - Creates: `self.subdir_path` = `/home/marin/.local/share/HermesDec/by-date/2023-09-06T20:53:55-samplehbc/' + '{index.android.bundle,metadata.json}`
   - `server.py` -> `WebsocketClient.parse_file`
-    - `project_meta.py` -> `ProjectSubdirManager.save_to_disk`
-      - `project_meta.py` -> `ProjectSubdirManager.write_or_update_metadata` (writes `metadata.json` in the project directory)
-    - `ProjectSubdirManager.write_or_update_metadata` also called here for updating the bytecode version
+    - `project_meta.py` -> `ProjectInstanceManager.save_to_disk`
+      - `project_meta.py` -> `ProjectInstanceManager.write_or_update_metadata` (writes `metadata.json` in the project directory)
+    - `ProjectInstanceManager.write_or_update_metadata` also called here for updating the bytecode version
   - `server.py` -> `WebsocketClient.spawn_indexer`
     - (xxx: code to write with ensure_future(asyncio.spawn_subprocess XX) + launching subprocess as described in the GUI index worker pipe IPC.md" file + watching the output and doing communication with the Websocket and local object state when needed)
 
