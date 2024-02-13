@@ -487,7 +487,7 @@ def pass2_transform_code(state : HermesDecompiler, function_body : DecompiledFun
             lines.append(TS([LHRT(op1), AT(), RT('Object.create'), LPT(), RHRT(op2), RPT()],
                 assembly = [instruction]))
         elif instruction.inst.name == 'Not':
-            lines.append(TS([LHRT(op1), AT(), RT('-'), RHRT(op2)],
+            lines.append(TS([LHRT(op1), AT(), RT('!'), RHRT(op2)],
                 assembly = [instruction]))
         elif instruction.inst.name == 'ProfilePoint':
             lines.append(TS([], assembly = [instruction]))
