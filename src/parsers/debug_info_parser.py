@@ -30,7 +30,7 @@ def read_varint(buf : BytesIO) -> Optional[int]: # From "decodeSLEB128" in the L
     
     return result
     
-def print_debug_info(buf : BytesIO):
+def print_debug_info(buf : BytesIO, version : int):
     
     while True:
         function_index = read_varint(buf)
@@ -53,6 +53,9 @@ def print_debug_info(buf : BytesIO):
                 break
             line_delta = read_varint(buf)
             column_delta = read_varint(buf)
+            if version >= 94:
+                scope_address = read_varint(buf)
+                env_register = read_varint(buf)
             statement_delta = 0
             if line_delta & 1:
                 statement_delta = read_varint(buf)
@@ -63,9 +66,15 @@ def print_debug_info(buf : BytesIO):
             current_column += column_delta
             current_statement += statement_delta
             
-            print('  Address %d: Line %d - Column %d - Statement %d' % (
-                current_address, current_line,
-                current_column, current_statement))
+            if version >= 94:
+                print('  Address %d: Line %d - Column %d - Statement %d - Scope address %d - Env register %d' % (
+                    current_address, current_line,
+                    current_column, current_statement,
+                    scope_address, env_register))
+            else:
+                print('  Address %d: Line %d - Column %d - Statement %d' % (
+                    current_address, current_line,
+                    current_column, current_statement))
             
             # print('  Address delta:', address_delta)
             # print('  Line delta:', line_delta)

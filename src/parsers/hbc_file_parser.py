@@ -912,7 +912,7 @@ def main():
             pretty_print_structure(item)
 
         hbc_reader.sources_data_storage.seek(0)
-        print_debug_info(hbc_reader.sources_data_storage)
+        print_debug_info(hbc_reader.sources_data_storage, hbc_reader.header.version)
 
         print('  => Sources data:', hbc_reader.sources_data_storage.getvalue().hex())
         print('  => Scope descriptor raw data:', hbc_reader.scope_desc_data_storage.getvalue().hex())
