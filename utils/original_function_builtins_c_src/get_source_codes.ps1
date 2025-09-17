@@ -6,11 +6,19 @@ Set-Location -Path $PSScriptRoot
 # Source the shared git tags and mapping
 . "$PSScriptRoot\..\git_tags.ps1"
 
+function verlte($a, $b) {
+    $v = @($a, $b) | Sort-Object {[version]($_ -replace '[^0-9.]', '')}
+    $minimal = ($v[0] -replace '[^0-9.]', '')
+    $first = ($a -replace '[^0-9.]', '')
+    $result = $first -eq $minimal
+    return $result
+}
+
 foreach ($git_tag in $GIT_TAGS) {
     $hbc_version = $TAG_TO_VERSION[$git_tag]
     Write-Host "Downloading files for $git_tag..."
     if (-not $hbc_version) {
-        if ([string]::Compare($git_tag, 'v0.3.0') -le 0) {
+        if (verlte $git_tag 'v0.3.0') {
             $url = "https://raw.githubusercontent.com/facebook/hermes/$git_tag/include/hermes/Inst/Builtins.def"
         } else {
             $url = "https://raw.githubusercontent.com/facebook/hermes/$git_tag/include/hermes/FrontEndDefs/Builtins.def"

@@ -11,7 +11,6 @@ function verlte($a, $b) {
     $minimal = ($v[0] -replace '[^0-9.]', '')
     $first = ($a -replace '[^0-9.]', '')
     $result = $first -eq $minimal
-    Write-Host "V=$v A=$a B=$b First=$first Second=$minimal"
     return $result
 }
 
