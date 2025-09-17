@@ -15,4 +15,4 @@ Remove-Item -Force -ErrorAction SilentlyContinue .\original_hermes_bytecode_c_sr
 # & .\original_regex_bytecode_c_src\get_source_codes.ps1
 
 # Run the Python parser
-& .\hermes_bytecode_structs_parser.py
+python ..\hermes_bytecode_structs_parser.py

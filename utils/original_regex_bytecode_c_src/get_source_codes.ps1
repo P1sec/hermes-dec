@@ -1,6 +1,6 @@
 # This script fetches various bits of Hermes source code to the current directory, for exploratory use.
 $ErrorActionPreference = "Stop"
-Set-Location -Path $PSScriptRoot
+Push-Location -Path $PSScriptRoot
 
 # Source the shared git tags and mapping
 . "$PSScriptRoot\..\git_tags.ps1"
@@ -13,3 +13,5 @@ foreach ($git_tag in $GIT_TAGS) {
     $out = "RegexBytecode-$hbc_version.h"
     Invoke-WebRequest -Uri $url -OutFile $out -UseBasicParsing
 }
+
+Pop-Location
