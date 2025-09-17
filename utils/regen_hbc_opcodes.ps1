@@ -16,3 +16,5 @@ Remove-Item -Force -ErrorAction SilentlyContinue .\original_hermes_bytecode_c_sr
 
 # Run the Python parser
 python ..\hermes_bytecode_structs_parser.py
+
+Pop-Location

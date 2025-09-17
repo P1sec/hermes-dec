@@ -1,1 +1,2 @@
-* -crlf
+*.def -crlf
+*.h -crlf
