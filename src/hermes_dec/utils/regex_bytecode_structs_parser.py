@@ -57,15 +57,17 @@ def find_typerefs(
     if node.kind == CursorKind.CXX_BASE_SPECIFIER:
         visiting_baseclass = True
     elif node.kind == CursorKind.STRUCT_DECL and (
-        (node.spelling.endswith("Insn") and node.spelling != "Insn")
-        or "BracketRange" in node.spelling
+        (node.spelling.endswith('Insn') and node.spelling != 'Insn')
+        or 'BracketRange' in node.spelling
     ):
         struct = OpcodeStructure(node.spelling, [])
         opcode_name_to_structure[node.spelling] = struct
     elif struct and node.kind == CursorKind.FIELD_DECL:
         # help(node)
         # exit()
-        field = OpcodeStructureField(node.spelling, node.type.spelling, None, None)
+        field = OpcodeStructureField(
+            node.spelling, node.type.spelling, None, None
+        )
         if node.is_bitfield():
             field.bit_len = node.get_bitfield_width()
         if node.type.get_declaration().kind.is_declaration():
@@ -75,15 +77,18 @@ def find_typerefs(
             if (
                 underlying_type
                 and underlying_type != node.spelling
-                and "__" not in underlying_type
+                and '__' not in underlying_type
             ):
-                field.field_type, field.real_type = underlying_type, field.field_type
+                field.field_type, field.real_type = (
+                    underlying_type,
+                    field.field_type,
+                )
         struct.fields.append(field)
     elif (
         struct
         and visiting_baseclass
         and node.kind == CursorKind.TYPE_REF
-        and node.spelling != "struct hermes::regex::Insn"
+        and node.spelling != 'struct hermes::regex::Insn'
     ):
         for otherchild in node.type.get_declaration().get_children():
             find_typerefs(otherchild, indent + 1, struct, field, False)
@@ -93,40 +98,41 @@ def find_typerefs(
 
 
 # INPUT_FILE_NAME = '/home/marin/hermes/include/hermes/Regex/RegexBytecode.h'
-INPUT_FILE_NAME = "/home/marin/hermes-dec/src/hermes_dec/parsers/original_regex_bytecode_c_src/RegexBytecode-v0.12.0.h"
+INPUT_FILE_NAME = '/home/marin/hermes-dec/src/hermes_dec/parsers/original_regex_bytecode_c_src/RegexBytecode-v0.12.0.h'
 # INPUT_FILE_NAME = '/home/marin/hermes-dec/src/hermes_dec/parsers/original_regex_bytecode_c_src/RegexBytecode-v0.0.1.h'
+
 
 def main():
 
     index = Index.create()
-    tu = index.parse(INPUT_FILE_NAME, args=["-x", "c++"])
-    print("Translation unit:", tu.spelling)
+    tu = index.parse(INPUT_FILE_NAME, args=['-x', 'c++'])
+    print('Translation unit:', tu.spelling)
     find_typerefs(tu.cursor)
 
     print()
-    print("=" * 12)
+    print('=' * 12)
     print()
-    print("=== Decoded structures: ===")
+    print('=== Decoded structures: ===')
     print()
 
     print()
     for opcode_name, structure in opcode_name_to_structure.items():
-        print("class %s(LittleEndianStructure):" % opcode_name)
-        print("    _pack_ = True")
+        print('class %s(LittleEndianStructure):' % opcode_name)
+        print('    _pack_ = True')
         if structure.fields:
-            print("    _fields_ = [")
+            print('    _fields_ = [')
             for field_index, field in enumerate(structure.fields):
                 readable_type = {
-                    "bool": "c_bool",
-                    "char": "c_char",
-                    "char16_t": "c_wchar",
-                    "uint8_t": "c_uint8",
-                    "uint16_t": "c_uint16",
-                    "uint32_t": "c_uint32",
+                    'bool': 'c_bool',
+                    'char': 'c_char',
+                    'char16_t': 'c_wchar',
+                    'uint8_t': 'c_uint8',
+                    'uint16_t': 'c_uint16',
+                    'uint32_t': 'c_uint32',
                 }[field.field_type]
 
                 if field.bit_len:
-                    readable_type += ", %d" % field.bit_len
+                    readable_type += ', %d' % field.bit_len
 
                 if field.real_type:
                     print(
@@ -134,7 +140,9 @@ def main():
                         % (
                             field.field_name,
                             readable_type,
-                            "," if field_index + 1 < len(structure.fields) else "",
+                            ','
+                            if field_index + 1 < len(structure.fields)
+                            else '',
                             field.real_type,
                         )
                     )
@@ -144,24 +152,27 @@ def main():
                         % (
                             field.field_name,
                             readable_type,
-                            "," if field_index + 1 < len(structure.fields) else "",
+                            ','
+                            if field_index + 1 < len(structure.fields)
+                            else '',
                         )
                     )
-            print("    ]")
+            print('    ]')
         print()
 
     parsed_inst_names = sorted(
         set(
-            opcode_name.replace("Insn", "")
+            opcode_name.replace('Insn', '')
             for opcode_name in opcode_name_to_structure.keys()
         )
-        - {"BracketRange32"}
+        - {'BracketRange32'}
     )
 
-    print("=")
+    print('=')
     print()
 
-    print("~")
+    print('~')
+
 
 if __name__ == '__main__':
     main()

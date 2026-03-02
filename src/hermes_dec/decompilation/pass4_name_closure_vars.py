@@ -75,9 +75,13 @@ def pass4_name_closure_vars(
                 line.tokens = []  # Silence this instruction in the produced decompiled code
 
             elif isinstance(token, NewInnerEnvironmentToken):
-                outer_environment = function_body.local_items[token.parent_register]
+                outer_environment = function_body.local_items[
+                    token.parent_register
+                ]
                 function_body.local_items[token.dest_register] = Environment(
-                    outer_environment, (outer_environment.nesting_quantity + 1), {}
+                    outer_environment,
+                    (outer_environment.nesting_quantity + 1),
+                    {},
                 )
 
             elif isinstance(token, GetEnvironmentToken):
@@ -95,8 +99,10 @@ def pass4_name_closure_vars(
                     ]
 
             elif isinstance(token, StoreToEnvironment):
-                varname = "_closure%d_slot%d" % (
-                    function_body.local_items[token.env_register].nesting_quantity,
+                varname = '_closure%d_slot%d' % (
+                    function_body.local_items[
+                        token.env_register
+                    ].nesting_quantity,
                     token.slot_index,
                 )
 
@@ -106,20 +112,24 @@ def pass4_name_closure_vars(
                         token.env_register
                     ].slot_index_to_varname
                 ):
-                    function_body.local_items[token.env_register].slot_index_to_varname[
-                        token.slot_index
-                    ] = varname
+                    function_body.local_items[
+                        token.env_register
+                    ].slot_index_to_varname[token.slot_index] = varname
                     line.tokens = [
-                        RT("var " + varname),
+                        RT('var ' + varname),
                         AT(),
                         RHRT(token.value_register),
                     ]
 
                 else:  # This a closure-referenced variable reassignment
-                    line.tokens = [RT(varname), AT(), RHRT(token.value_register)]
+                    line.tokens = [
+                        RT(varname),
+                        AT(),
+                        RHRT(token.value_register),
+                    ]
 
             elif isinstance(token, LoadFromEnvironmentToken):
-                var_name = "_closure%d_slot%d" % (
+                var_name = '_closure%d_slot%d' % (
                     function_body.local_items[token.register].nesting_quantity,
                     token.slot_index,
                 )

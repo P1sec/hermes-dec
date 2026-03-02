@@ -71,11 +71,11 @@ class SLPArray:
         stringified_items: List[str] = []
         for item in self.items:
             if item.tag_type == TagType.NullTag:
-                string = "null"
+                string = 'null'
             elif item.tag_type == TagType.TrueTag:
-                string = "true"
+                string = 'true'
             elif item.tag_type == TagType.FalseTag:
-                string = "false"
+                string = 'false'
             elif item.tag_type == TagType.NumberTag:
                 string = str(item.value)
             elif item.tag_type in (
@@ -119,15 +119,15 @@ def unpack_slp_array(data: bytes, num_items: int) -> SLPArray:
             elif tag_type == TagType.FalseTag:
                 values.append(False)
             elif tag_type == TagType.NumberTag:
-                values.append(unpack("<d", data.read(8))[0])
+                values.append(unpack('<d', data.read(8))[0])
             elif tag_type == TagType.LongStringTag:
-                values.append(int.from_bytes(data.read(4), "little"))
+                values.append(int.from_bytes(data.read(4), 'little'))
             elif tag_type == TagType.ShortStringTag:
-                values.append(int.from_bytes(data.read(2), "little"))
+                values.append(int.from_bytes(data.read(2), 'little'))
             elif tag_type == TagType.ByteStringTag:
-                values.append(int.from_bytes(data.read(1), "little"))
+                values.append(int.from_bytes(data.read(1), 'little'))
             elif tag_type == TagType.IntegerTag:
-                values.append(int.from_bytes(data.read(4), "little"))
+                values.append(int.from_bytes(data.read(4), 'little'))
             else:
                 raise ValueError
 

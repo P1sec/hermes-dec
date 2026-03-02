@@ -29,8 +29,16 @@ from hermes_dec.parsers.hbc_opcodes import (
     hbc92,
     hbc95,
 )
-from hermes_dec.parsers.serialized_literal_parser import unpack_slp_array, SLPArray, SLPValue, TagType
-from hermes_dec.parsers.hbc_opcodes.def_classes import OperandMeaning, Instruction
+from hermes_dec.parsers.serialized_literal_parser import (
+    unpack_slp_array,
+    SLPArray,
+    SLPValue,
+    TagType,
+)
+from hermes_dec.parsers.hbc_opcodes.def_classes import (
+    OperandMeaning,
+    Instruction,
+)
 
 
 class ParsedInstruction:
@@ -44,60 +52,69 @@ class ParsedInstruction:
     switch_jump_table: Optional[List[int]]
     original_pos: int
     next_pos: int
-    hbc_reader: "HBCReader"
+    hbc_reader: 'HBCReader'
 
     def __repr__(self):
         operands = [
-            "%s: %s"
+            '%s: %s'
             % (
                 (
                     self.inst.operands[index].operand_meaning.name
                     if self.inst.operands[index].operand_meaning
                     else self.inst.operands[index].operand_type.name
                 ),
-                getattr(self, "arg%d" % (index + 1)),
+                getattr(self, 'arg%d' % (index + 1)),
             )
             for index in range(len(self.inst.operands))
         ]
 
-        comment = ""
+        comment = ''
         for operand_index, operand in enumerate(self.inst.operands):
             if operand.operand_meaning:
-                operand_value = getattr(self, "arg%d" % (operand_index + 1))
+                operand_value = getattr(self, 'arg%d' % (operand_index + 1))
                 if operand.operand_meaning == OperandMeaning.string_id:
-                    comment += "  # String: %r (%s)" % (
+                    comment += '  # String: %r (%s)' % (
                         self.hbc_reader.strings[operand_value],
                         self.hbc_reader.string_kinds[operand_value].name,
                     )
                 elif operand.operand_meaning == OperandMeaning.bigint_id:
                     comment += (
-                        "  # BigInt: %s"
+                        '  # BigInt: %s'
                         % (self.hbc_reader.bigint_values[operand_value])
                     )
                 elif operand.operand_meaning == OperandMeaning.function_id:
-                    function_header = self.hbc_reader.function_headers[operand_value]
+                    function_header = self.hbc_reader.function_headers[
+                        operand_value
+                    ]
                     comment += (
-                        "  # Function: [#%d %s of %d bytes]: %d params @ offset 0x%08x"
+                        '  # Function: [#%d %s of %d bytes]: %d params @ offset 0x%08x'
                         % (
                             operand_value,
-                            self.hbc_reader.strings[function_header.functionName],
+                            self.hbc_reader.strings[
+                                function_header.functionName
+                            ],
                             function_header.bytecodeSizeInBytes,
                             function_header.paramCount,
                             function_header.offset,
                         )
                     )
-            elif operand.operand_type.name in ("Addr8", "Addr32"):
-                operand_value = getattr(self, "arg%d" % (operand_index + 1))
-                comment += "  # Address: %08x" % (self.original_pos + operand_value)
-        if self.inst.name in ("NewArrayWithBuffer", "NewArrayWithBufferLong"):
-            comment += "  # Array: [%s]" % ", ".join(
+            elif operand.operand_type.name in ('Addr8', 'Addr32'):
+                operand_value = getattr(self, 'arg%d' % (operand_index + 1))
+                comment += '  # Address: %08x' % (
+                    self.original_pos + operand_value
+                )
+        if self.inst.name in ('NewArrayWithBuffer', 'NewArrayWithBufferLong'):
+            comment += '  # Array: [%s]' % ', '.join(
                 unpack_slp_array(
                     self.hbc_reader.arrays[self.arg4 :], self.arg3
                 ).to_strings(self.hbc_reader.strings)
             )
-        elif self.inst.name in ("NewObjectWithBuffer", "NewObjectWithBufferLong"):
-            comment += "  # Object: {%s}" % ", ".join(
-                "%s: %s" % (key, value)
+        elif self.inst.name in (
+            'NewObjectWithBuffer',
+            'NewObjectWithBufferLong',
+        ):
+            comment += '  # Object: {%s}' % ', '.join(
+                '%s: %s' % (key, value)
                 for key, value in zip(
                     unpack_slp_array(
                         self.hbc_reader.object_keys[self.arg4 :], self.arg3
@@ -107,22 +124,28 @@ class ParsedInstruction:
                     ).to_strings(self.hbc_reader.strings),
                 )
             )
-        elif self.inst.name in ("CallBuiltin", "CallBuiltinLong", "GetBuiltinClosure"):
+        elif self.inst.name in (
+            'CallBuiltin',
+            'CallBuiltinLong',
+            'GetBuiltinClosure',
+        ):
             builtin_number = self.arg2
-            builtin_functions = get_builtin_functions(self.hbc_reader.parser_module)
-            comment += "  # Built-in function: [#%d %s]" % (
+            builtin_functions = get_builtin_functions(
+                self.hbc_reader.parser_module
+            )
+            comment += '  # Built-in function: [#%d %s]' % (
                 builtin_number,
                 builtin_functions[builtin_number],
             )
-        elif self.inst.name == "SwitchImm":
-            comment += "  # Jump table: [%s]" % ", ".join(
-                "%08x" % value for value in self.switch_jump_table
+        elif self.inst.name == 'SwitchImm':
+            comment += '  # Jump table: [%s]' % ', '.join(
+                '%08x' % value for value in self.switch_jump_table
             )
 
-        return f"{'%08x' % self.original_pos}: <{self.inst.name}>: <{', '.join(operands)}>{comment}"
+        return f'{"%08x" % self.original_pos}: <{self.inst.name}>: <{", ".join(operands)}>{comment}'
 
 
-def get_parser(bytecode_version: int) -> "module":
+def get_parser(bytecode_version: int) -> 'module':
     parser_module_tbl = {
         51: hbc51,
         58: hbc58,
@@ -160,16 +183,16 @@ def get_parser(bytecode_version: int) -> "module":
 
     if bytecode_version < 72:
         warning(
-            "This file uses an ancient Hermes bytecode format, which "
-            + "is not supported."
+            'This file uses an ancient Hermes bytecode format, which '
+            + 'is not supported.'
         )
 
     elif bytecode_version > 96:
         warning(
             (
-                "Bytecode version %d corresponds to a development or "
-                + "recent version of the Hermes bytecode and is not "
-                + "formally supported by the current tool."
+                'Bytecode version %d corresponds to a development or '
+                + 'recent version of the Hermes bytecode and is not '
+                + 'formally supported by the current tool.'
             )
             % bytecode_version
         )
@@ -182,7 +205,7 @@ def get_parser(bytecode_version: int) -> "module":
     return parser_module
 
 
-def get_builtin_functions(parser_module: "module") -> List[str]:
+def get_builtin_functions(parser_module: 'module') -> List[str]:
 
     return parser_module._builtin_function_names
 
@@ -192,12 +215,14 @@ def get_builtin_functions(parser_module: "module") -> List[str]:
 
 
 def parse_hbc_bytecode(
-    function_header: object, hbc_reader: "HBCReader"
+    function_header: object, hbc_reader: 'HBCReader'
 ) -> Iterator[Instruction]:
 
     hbc_reader.file_buffer.seek(function_header.offset)
 
-    buf = BytesIO(hbc_reader.file_buffer.read(function_header.bytecodeSizeInBytes))
+    buf = BytesIO(
+        hbc_reader.file_buffer.read(function_header.bytecodeSizeInBytes)
+    )
 
     while True:
         original_pos = buf.tell()
@@ -223,11 +248,11 @@ def parse_hbc_bytecode(
         result.next_pos = original_pos + inst.binary_size
         result.hbc_reader = hbc_reader
 
-        for operand in ("arg1", "arg2", "arg3", "arg4", "arg5", "arg6"):
+        for operand in ('arg1', 'arg2', 'arg3', 'arg4', 'arg5', 'arg6'):
             if hasattr(structure, operand):
                 setattr(result, operand, getattr(structure, operand))
 
-        if inst.name == "SwitchImm":
+        if inst.name == 'SwitchImm':
             result.switch_jump_table = []
             hbc_reader.file_buffer.seek(
                 function_header.offset + original_pos + structure.arg2
@@ -236,7 +261,7 @@ def parse_hbc_bytecode(
 
             for jump_table_entry in range(structure.arg4, structure.arg5 + 1):
                 result.switch_jump_table.append(
-                    int.from_bytes(hbc_reader.file_buffer.read(4), "little")
+                    int.from_bytes(hbc_reader.file_buffer.read(4), 'little')
                     + original_pos
                 )
 

@@ -24,12 +24,12 @@ class OperandType:
 
         self.name = name
         self.c_type = {
-            "int8_t": c_int8,
-            "int32_t": c_int32,
-            "uint8_t": c_uint8,
-            "uint16_t": c_uint16,
-            "uint32_t": c_uint32,
-            "double": c_double,
+            'int8_t': c_int8,
+            'int32_t': c_int32,
+            'uint8_t': c_uint8,
+            'uint16_t': c_uint16,
+            'uint32_t': c_uint32,
+            'double': c_double,
         }[c_type]
 
 
@@ -54,7 +54,11 @@ class Instruction:
     has_ret_target: bool
 
     def __init__(
-        self, name: str, opcode: int, args: List[OperandType], module_ref: "module"
+        self,
+        name: str,
+        opcode: int,
+        args: List[OperandType],
+        module_ref: 'module',
     ):
 
         self.name = name
@@ -62,7 +66,7 @@ class Instruction:
         self.operands = [Operand(arg, None) for arg in args]
         self.has_ret_target = False
 
-        module_ref["_instructions"].append(self)
+        module_ref['_instructions'].append(self)
 
         self.structure = type(
             name,
@@ -70,7 +74,7 @@ class Instruction:
             dict(
                 _pack_=True,
                 _fields_=[
-                    ("arg%d" % (pos + 1), operand.c_type)
+                    ('arg%d' % (pos + 1), operand.c_type)
                     for pos, operand in enumerate(args)
                 ],
             ),

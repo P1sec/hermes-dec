@@ -4,11 +4,17 @@ from typing import List, Tuple, Dict, Set, Sequence, Union, Optional, Any
 from os.path import dirname, realpath
 from collections import defaultdict
 
-from hermes_dec.decompilation.defs import HermesDecompiler, BasicBlock, DecompiledFunctionBody
+from hermes_dec.decompilation.defs import (
+    HermesDecompiler,
+    BasicBlock,
+    DecompiledFunctionBody,
+)
 from hermes_dec.parsers.hbc_bytecode_parser import parse_hbc_bytecode
 
 
-def pass1_set_metadata(state: HermesDecompiler, function_body: DecompiledFunctionBody):
+def pass1_set_metadata(
+    state: HermesDecompiler, function_body: DecompiledFunctionBody
+):
 
     function_body.function_name = state.hbc_reader.strings[
         function_body.function_object.functionName
@@ -27,11 +33,13 @@ def pass1_set_metadata(state: HermesDecompiler, function_body: DecompiledFunctio
     if function_body.function_object.hasExceptionHandler:
         for handler_count, handler in enumerate(function_body.exc_handlers):
             function_body.try_starts[handler.start].append(
-                "try_start_%d" % handler_count
+                'try_start_%d' % handler_count
             )
-            function_body.try_ends[handler.end].append("try_end%d" % handler_count)
+            function_body.try_ends[handler.end].append(
+                'try_end%d' % handler_count
+            )
             function_body.catch_targets[handler.target].append(
-                "catch_target%d" % handler_count
+                'catch_target%d' % handler_count
             )
 
     # As well as Jump, Switch, Yield
@@ -39,22 +47,26 @@ def pass1_set_metadata(state: HermesDecompiler, function_body: DecompiledFunctio
     for instruction in parse_hbc_bytecode(
         function_body.function_object, state.hbc_reader
     ):
-        if instruction.inst.name[0] == "J" or instruction.inst.name.startswith(
-            "SaveGenerator"
+        if instruction.inst.name[0] == 'J' or instruction.inst.name.startswith(
+            'SaveGenerator'
         ):
             function_body.jump_anchors[instruction.next_pos] = instruction
-            function_body.jump_targets.add(instruction.original_pos + instruction.arg1)
+            function_body.jump_targets.add(
+                instruction.original_pos + instruction.arg1
+            )
 
-        elif instruction.inst.name == "SwitchImm":
+        elif instruction.inst.name == 'SwitchImm':
             function_body.jump_anchors[instruction.next_pos] = instruction
-            function_body.jump_targets.add(instruction.original_pos + instruction.arg3)
+            function_body.jump_targets.add(
+                instruction.original_pos + instruction.arg3
+            )
             for jump_target in instruction.switch_jump_table:
                 function_body.jump_targets.add(jump_target)
 
-        elif instruction.inst.name == "Ret":
+        elif instruction.inst.name == 'Ret':
             function_body.ret_anchors[instruction.next_pos] = instruction
 
-        elif instruction.inst.name == "Throw":
+        elif instruction.inst.name == 'Throw':
             function_body.throw_anchors[instruction.next_pos] = instruction
 
     """
@@ -108,7 +120,9 @@ def pass1_set_metadata(state: HermesDecompiler, function_body: DecompiledFunctio
         may_have_fallen_through = True
         if basic_block_end in function_body.ret_anchors:
             may_have_fallen_through = False
-            basic_block.anchor_instruction = function_body.ret_anchors[basic_block_end]
+            basic_block.anchor_instruction = function_body.ret_anchors[
+                basic_block_end
+            ]
             basic_block.is_unconditional_return_end = True
         elif basic_block_end in function_body.throw_anchors:
             may_have_fallen_through = False
@@ -120,23 +134,29 @@ def pass1_set_metadata(state: HermesDecompiler, function_body: DecompiledFunctio
             op = function_body.jump_anchors[basic_block_end]
             basic_block.anchor_instruction = op
             op_name = op.inst.name
-            if op_name in ("Jmp", "JmpLong"):
+            if op_name in ('Jmp', 'JmpLong'):
                 may_have_fallen_through = False
-                basic_block.jump_targets_for_anchor = [op.original_pos + op.arg1]
+                basic_block.jump_targets_for_anchor = [
+                    op.original_pos + op.arg1
+                ]
                 basic_block.is_unconditional_jump_anchor = True
-            elif op_name == "SwitchImm":
+            elif op_name == 'SwitchImm':
                 may_have_fallen_through = False
                 basic_block.jump_targets_for_anchor = sorted(
                     {op.original_pos + op.arg3, *op.switch_jump_table}
                 )
                 basic_block.if_switch_action_anchor = True
-            elif op_name in ("SaveGenerator", "SaveGeneratorLong"):
+            elif op_name in ('SaveGenerator', 'SaveGeneratorLong'):
                 may_have_fallen_through = True
-                basic_block.jump_targets_for_anchor = [op.original_pos + op.arg1]
+                basic_block.jump_targets_for_anchor = [
+                    op.original_pos + op.arg1
+                ]
                 basic_block.is_yield_action_anchor = True
-            elif op_name[0] == "J":
+            elif op_name[0] == 'J':
                 may_have_fallen_through = True
-                basic_block.jump_targets_for_anchor = [op.original_pos + op.arg1]
+                basic_block.jump_targets_for_anchor = [
+                    op.original_pos + op.arg1
+                ]
                 basic_block.is_conditional_jump_anchor = True
             else:
                 raise ValueError
@@ -166,13 +186,27 @@ def pass1_set_metadata(state: HermesDecompiler, function_body: DecompiledFunctio
                 <= error_handler.start
                 < basic_block.end_address
             ) or (
-                basic_block.start_address < error_handler.end <= basic_block.end_address
+                basic_block.start_address
+                < error_handler.end
+                <= basic_block.end_address
             ):
-                error_handler_block = start_to_basic_block[error_handler.target]
+                error_handler_block = start_to_basic_block[
+                    error_handler.target
+                ]
 
-                if error_handler_block not in basic_block.error_handling_child_nodes:
-                    basic_block.error_handling_child_nodes.append(error_handler_block)
-                if basic_block not in error_handler_block.error_handling_parent_nodes:
-                    error_handler_block.error_handling_parent_nodes.append(basic_block)
+                if (
+                    error_handler_block
+                    not in basic_block.error_handling_child_nodes
+                ):
+                    basic_block.error_handling_child_nodes.append(
+                        error_handler_block
+                    )
+                if (
+                    basic_block
+                    not in error_handler_block.error_handling_parent_nodes
+                ):
+                    error_handler_block.error_handling_parent_nodes.append(
+                        basic_block
+                    )
 
     # WIP...

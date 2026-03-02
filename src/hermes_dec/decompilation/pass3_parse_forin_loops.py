@@ -145,13 +145,15 @@ def pass3_parse_forin_loops(
                     if weird_case:
                         continue
 
-            function_body.nested_frames.append(NestedFrame(begin_address, end_address))
+            function_body.nested_frames.append(
+                NestedFrame(begin_address, end_address)
+            )
 
             line.tokens = [
-                RT("for"),
+                RT('for'),
                 LPT(),
                 LHRT(lines[other_index].tokens[0].next_value_register),
-                RT(" in "),
+                RT(' in '),
                 RHRT(line.tokens[0].obj_register),
                 RPT(),
             ]

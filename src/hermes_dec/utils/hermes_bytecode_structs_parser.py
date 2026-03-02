@@ -8,47 +8,55 @@ from os import listdir
 
 UTILS_DIR = dirname(realpath(__file__))
 MODULE_DIR = dirname(realpath(UTILS_DIR))
-PARSERS_DIR = realpath(join(MODULE_DIR, "parsers"))
+PARSERS_DIR = realpath(join(MODULE_DIR, 'parsers'))
+
 
 def main():
 
     git_tags = sorted(
-        file_name.split("-")[1].split(".def")[0]
-        for file_name in listdir(UTILS_DIR + "/original_function_builtins_c_src/")
-        if file_name.endswith(".def")
+        file_name.split('-')[1].split('.def')[0]
+        for file_name in listdir(
+            UTILS_DIR + '/original_function_builtins_c_src/'
+        )
+        if file_name.endswith('.def')
     )
 
     for git_tag in git_tags:
         INPUT_FILE_NAME = (
-            UTILS_DIR + "/original_hermes_bytecode_c_src/BytecodeList-%s.def" % git_tag
+            UTILS_DIR
+            + '/original_hermes_bytecode_c_src/BytecodeList-%s.def' % git_tag
         )
 
         INPUT_BUILTINS_FILE_NAMES = (
-            UTILS_DIR + "/original_function_builtins_c_src/Builtins-%s.def" % git_tag
+            UTILS_DIR
+            + '/original_function_builtins_c_src/Builtins-%s.def' % git_tag
         )
 
         INPUT_VERSION_FILE_NAME = (
-            UTILS_DIR + "/original_hermes_bytecode_c_src/BytecodeVersion-%s.h" % git_tag
+            UTILS_DIR
+            + '/original_hermes_bytecode_c_src/BytecodeVersion-%s.h' % git_tag
         )
 
         with open(INPUT_VERSION_FILE_NAME) as fd:
             version_file_contents = fd.read()
         bytecode_version: int = int(
-            search(r"BYTECODE_VERSION = (\d+)", version_file_contents).group(1)
+            search(r'BYTECODE_VERSION = (\d+)', version_file_contents).group(1)
         )
 
         builtin_function_names: List[str] = []
         with open(INPUT_BUILTINS_FILE_NAMES) as fd:
             for line in fd:
-                if line.split("(")[0] in (
-                    "BUILTIN_METHOD",
-                    "PRIVATE_BUILTIN",
-                    "JS_BUILTIN",
+                if line.split('(')[0] in (
+                    'BUILTIN_METHOD',
+                    'PRIVATE_BUILTIN',
+                    'JS_BUILTIN',
                 ):
-                    operands = line.split("(")[1].split(")")[0].split(", ")
-                    builtin_function_names.append(".".join(operands))
+                    operands = line.split('(')[1].split(')')[0].split(', ')
+                    builtin_function_names.append('.'.join(operands))
 
-        OUTPUT_FILE_NAME = PARSERS_DIR + "/hbc_opcodes/hbc%d.py" % bytecode_version
+        OUTPUT_FILE_NAME = (
+            PARSERS_DIR + '/hbc_opcodes/hbc%d.py' % bytecode_version
+        )
 
         out_source = '''#!/usr/bin/env python3
     """
@@ -78,26 +86,26 @@ def main():
         # version 0.12.0 (https://github.com/facebook/hermes/commit/c20d7d8)
         # in order to improve disassembly output readability if needed.
 
-        if "OPERAND_FUNCTION_ID(CallDirect, 3)" not in input_source:
+        if 'OPERAND_FUNCTION_ID(CallDirect, 3)' not in input_source:
             input_source += """
     OPERAND_FUNCTION_ID(CallDirect, 3)
     OPERAND_FUNCTION_ID(CreateClosure, 3)
     OPERAND_FUNCTION_ID(CreateClosureLongIndex, 3)
     """
 
-            if "CreateGeneratorClosure" in input_source:
+            if 'CreateGeneratorClosure' in input_source:
                 input_source += """
     OPERAND_FUNCTION_ID(CreateGeneratorClosure, 3)
     OPERAND_FUNCTION_ID(CreateGeneratorClosureLongIndex, 3)
     """
 
-            if "CreateGenerator" in input_source:
+            if 'CreateGenerator' in input_source:
                 input_source += """
     OPERAND_FUNCTION_ID(CreateGenerator, 3)
     OPERAND_FUNCTION_ID(CreateGeneratorLongIndex, 3)
     """
 
-            if "CreateAsyncClosure" in input_source:
+            if 'CreateAsyncClosure' in input_source:
                 input_source += """
     OPERAND_FUNCTION_ID(CreateAsyncClosure, 3)
     OPERAND_FUNCTION_ID(CreateAsyncClosureLongIndex, 3)
@@ -106,40 +114,42 @@ def main():
         lines = input_source.splitlines()
 
         for line in lines:
-            line = match("^((?:DEFINE|OPERAND)[^(]+?)\((.+?)\)", line)
+            line = match('^((?:DEFINE|OPERAND)[^(]+?)\((.+?)\)', line)
 
             if line:
                 directive, args = line.groups()
-                args = args.split(", ")
+                args = args.split(', ')
 
                 # print('=>', directive, args)
 
-                if directive.startswith("DEFINE_OPERAND_TYPE"):
-                    out_source = out_source[:-1]  # No endline before that for readibility
+                if directive.startswith('DEFINE_OPERAND_TYPE'):
+                    out_source = out_source[
+                        :-1
+                    ]  # No endline before that for readibility
                     out_source += f"{args[0]} = OperandType('{args[0]}', '{args[1]}')\n\n"
-                elif directive.startswith("DEFINE_OPCODE"):
+                elif directive.startswith('DEFINE_OPCODE'):
                     out_source += f"{args[0]} = Instruction('{args[0]}', {opcode_count}, [{', '.join(args[1:])}], globals())\n\n"
                     opcode_count += 1
-                elif directive.startswith("DEFINE_JUMP"):
+                elif directive.startswith('DEFINE_JUMP'):
                     args += {
-                        "DEFINE_JUMP_1": ["Addr8"],
-                        "DEFINE_JUMP_2": ["Addr8", "Reg8"],
-                        "DEFINE_JUMP_3": ["Addr8", "Reg8", "Reg8"],
+                        'DEFINE_JUMP_1': ['Addr8'],
+                        'DEFINE_JUMP_2': ['Addr8', 'Reg8'],
+                        'DEFINE_JUMP_3': ['Addr8', 'Reg8', 'Reg8'],
                     }[directive]
                     out_source += f"{args[0]} = Instruction('{args[0]}', {opcode_count}, [{', '.join(args[1:])}], globals())\n"
                     out_source += f"{args[0]}Long = Instruction('{args[0]}Long', {opcode_count + 1}, [{', '.join(['Addr32'] + args[2:])}], globals())\n\n"
                     opcode_count += 2
-                elif directive.startswith("DEFINE_RET_TARGET"):
+                elif directive.startswith('DEFINE_RET_TARGET'):
                     out_source = out_source.strip()
-                    out_source += f"\n{args[0]}.has_ret_target = True\n\n"
-                elif directive.startswith("OPERAND_"):
+                    out_source += f'\n{args[0]}.has_ret_target = True\n\n'
+                elif directive.startswith('OPERAND_'):
                     operand_meaning = {
-                        "OPERAND_BIGINT_ID": "OperandMeaning.bigint_id",
-                        "OPERAND_FUNCTION_ID": "OperandMeaning.function_id",
-                        "OPERAND_STRING_ID": "OperandMeaning.string_id",
+                        'OPERAND_BIGINT_ID': 'OperandMeaning.bigint_id',
+                        'OPERAND_FUNCTION_ID': 'OperandMeaning.function_id',
+                        'OPERAND_STRING_ID': 'OperandMeaning.string_id',
                     }[directive]
                     # out_source = out_source.strip()
-                    out_source += f"{args[0]}.operands[{(int(args[1]) - 1)}].operand_meaning = {operand_meaning}\n\n"
+                    out_source += f'{args[0]}.operands[{(int(args[1]) - 1)}].operand_meaning = {operand_meaning}\n\n'
 
         out_source += """_opcode_to_instruction : Dict[int, Instruction] = {v.opcode: v for v in _instructions}
     _name_to_instruction : Dict[str, Instruction] = {v.name: v for v in _instructions}
@@ -150,15 +160,16 @@ def main():
         %s
     ]
 
-    """ % ",\n    ".join(repr(string) for string in builtin_function_names)
+    """ % ',\n    '.join(repr(string) for string in builtin_function_names)
 
-        with open(OUTPUT_FILE_NAME, "w", encoding="utf-8") as fd:
+        with open(OUTPUT_FILE_NAME, 'w', encoding='utf-8') as fd:
             fd.write(out_source)
 
         print()
-        print("[+]  Wrote File => %s" % OUTPUT_FILE_NAME)
+        print('[+]  Wrote File => %s' % OUTPUT_FILE_NAME)
 
     print()
+
 
 if __name__ == '__main__':
     main()

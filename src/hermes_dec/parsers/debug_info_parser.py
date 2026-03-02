@@ -29,9 +29,9 @@ def read_varint(
     if byte & 0x40:
         result = int.from_bytes(
             (((-1 << shift) | result) & 0xFFFFFFFF_FFFFFFFF).to_bytes(
-                8, "little", signed=False
+                8, 'little', signed=False
             ),
-            "little",
+            'little',
             signed=True,
         )
 
@@ -48,9 +48,9 @@ def print_debug_info(buf: BytesIO, version: int):
         current_column = read_varint(buf)
 
         print()
-        print("Function index:", function_index)
-        print("Start line:", current_line)
-        print("Start column:", current_column)
+        print('Function index:', function_index)
+        print('Start line:', current_line)
+        print('Start column:', current_column)
 
         current_address = 0
         current_statement = 0
@@ -76,7 +76,7 @@ def print_debug_info(buf: BytesIO, version: int):
 
             if version >= 94:
                 print(
-                    "  Address %d: Line %d - Column %d - Statement %d - Scope address %d - Env register %d"
+                    '  Address %d: Line %d - Column %d - Statement %d - Scope address %d - Env register %d'
                     % (
                         current_address,
                         current_line,
@@ -88,8 +88,13 @@ def print_debug_info(buf: BytesIO, version: int):
                 )
             else:
                 print(
-                    "  Address %d: Line %d - Column %d - Statement %d"
-                    % (current_address, current_line, current_column, current_statement)
+                    '  Address %d: Line %d - Column %d - Statement %d'
+                    % (
+                        current_address,
+                        current_line,
+                        current_column,
+                        current_statement,
+                    )
                 )
 
             # print('  Address delta:', address_delta)

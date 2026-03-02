@@ -12,7 +12,10 @@ SRC_DIR = dirname(realpath(MODULE_DIR))
 
 sys.path.insert(0, SRC_DIR)
 
-from hermes_dec.parsers.hbc_bytecode_parser import ParsedInstruction, get_builtin_functions
+from hermes_dec.parsers.hbc_bytecode_parser import (
+    ParsedInstruction,
+    get_builtin_functions,
+)
 from hermes_dec.parsers.hbc_file_parser import HBCReader
 
 
@@ -24,7 +27,9 @@ class HermesDecompiler:
 
     hbc_reader: HBCReader
 
-    function_header: object  # For the function being transformed to dehydrated state
+    function_header: (
+        object  # For the function being transformed to dehydrated state
+    )
     indent_level: int = 0  # Used while producing decompilation output
 
 
@@ -69,25 +74,25 @@ class BasicBlock:
     # These attributes will be used to build
     # the decompiler's graph structure
 
-    child_nodes: List["BasicBlock"]
-    parent_nodes: List["BasicBlock"]
+    child_nodes: List['BasicBlock']
+    parent_nodes: List['BasicBlock']
 
-    error_handling_child_nodes: List["BasicBlock"]
-    error_handling_parent_nodes: List["BasicBlock"]
+    error_handling_child_nodes: List['BasicBlock']
+    error_handling_parent_nodes: List['BasicBlock']
 
     # These attributes should be added at steps 3+
     # of the graph traversal process (using
     # instruction pattern maching, etc)
 
-    do_expr_at_begin: Optional["XXX_TODO"]
-    if_expr_at_begin: Optional["XXX_TODO"]
-    else_if_expr_at_begin: Optional["XXX_TODO"]
-    else_expr_at_begin: Optional["XXX_TODO"]
-    switch_expr_at_begin: Optional["XXX_TODO"]
-    while_expr_at_begin: Optional["XXX_TODO"]
-    for_expr_at_begin: Optional["XXX_TODO"]
-    while_expr_at_end_matching_block: Optional["XXX_TODO"]
-    closing_brace_at_end_matching_block: Optional["XXX_TODO"]
+    do_expr_at_begin: Optional['XXX_TODO']
+    if_expr_at_begin: Optional['XXX_TODO']
+    else_if_expr_at_begin: Optional['XXX_TODO']
+    else_expr_at_begin: Optional['XXX_TODO']
+    switch_expr_at_begin: Optional['XXX_TODO']
+    while_expr_at_begin: Optional['XXX_TODO']
+    for_expr_at_begin: Optional['XXX_TODO']
+    while_expr_at_end_matching_block: Optional['XXX_TODO']
+    closing_brace_at_end_matching_block: Optional['XXX_TODO']
 
     # Whether this basic block should still be visible in the
     # decompiled code (switch this attribute to False when
@@ -107,7 +112,7 @@ class NestedFrame:
 
 @dataclass
 class Environment:
-    parent_environment: Optional["Environment"] = None
+    parent_environment: Optional['Environment'] = None
     nesting_quantity: int = 0
     slot_index_to_varname: Dict[int, str] = None
 
@@ -117,7 +122,7 @@ class DecompiledFunctionBody:
     function_name: str
     function_id: int
     function_object: object
-    exc_handlers: "HBCExceptionHandlerInfo"
+    exc_handlers: 'HBCExceptionHandlerInfo'
 
     try_starts: Dict[int, List[str]]
     try_ends: Dict[int, List[str]]
@@ -146,37 +151,38 @@ class DecompiledFunctionBody:
     basic_blocks: List[BasicBlock]
     nested_frames: List[NestedFrame]
 
-    statements: List["TokenString"]
+    statements: List['TokenString']
 
     # Output decompiled code for this function to stdout
     def output_code(self, state: HermesDecompiler):
-        output = ""
+        output = ''
 
         if not self.is_global:  # Don't prototype the global function
             if self.is_async:
-                output += "async "
-            output += "function"
+                output += 'async '
+            output += 'function'
             if self.is_generator:
-                output += "*"
+                output += '*'
             if not (self.is_closure or self.is_generator):
                 assert self.function_name
-                output += " " + self.function_name
+                output += ' ' + self.function_name
             elif self.is_generator:
-                output += " "
-            output += "("
-            output += ", ".join(
-                "a" + str(index) for index in range(self.function_object.paramCount - 1)
+                output += ' '
+            output += '('
+            output += ', '.join(
+                'a' + str(index)
+                for index in range(self.function_object.paramCount - 1)
             )
             # TODO: Handle function arguments properly otherwise
-            output += ") {"
+            output += ') {'
             if self.is_closure or self.is_generator:
                 if self.function_name:
-                    output += " // Original name: " + self.function_name
+                    output += ' // Original name: ' + self.function_name
                     if self.environment_id is not None:
-                        output += ", environment: r" + str(self.environment_id)
+                        output += ', environment: r' + str(self.environment_id)
                 elif self.environment_id is not None:
-                    output += " // Environment: r" + str(self.environment_id)
-            output += "\n"
+                    output += ' // Environment: r' + str(self.environment_id)
+            output += '\n'
             state.indent_level += 1
 
         nested_frame_starts = [
@@ -194,16 +200,19 @@ class DecompiledFunctionBody:
         ]
 
         if len(basic_block_starts) > 1:
-            output += " " * (state.indent_level * 4)
-            output += "_fun%d: for(var _fun%d_ip = 0; ; ) switch(_fun%d_ip) {\n" % (
-                self.function_id,
-                self.function_id,
-                self.function_id,
+            output += ' ' * (state.indent_level * 4)
+            output += (
+                '_fun%d: for(var _fun%d_ip = 0; ; ) switch(_fun%d_ip) {\n'
+                % (
+                    self.function_id,
+                    self.function_id,
+                    self.function_id,
+                )
             )
             state.indent_level += 1
 
         sys.stdout.write(output)
-        output = ""
+        output = ''
 
         # Process each statement, including nested functions
 
@@ -214,35 +223,35 @@ class DecompiledFunctionBody:
                 while pos in nested_frame_ends:
                     nested_frame_ends.pop(nested_frame_ends.index(pos))
                     state.indent_level -= 1
-                    output += (" " * (state.indent_level * 4)) + "}\n"
+                    output += (' ' * (state.indent_level * 4)) + '}\n'
 
                 if len(basic_block_starts) > 1 and pos in basic_block_starts:
-                    output += "case %d:" % pos
+                    output += 'case %d:' % pos
 
                     if pos in self.try_starts:
                         for label in self.try_starts[pos]:
-                            output += " // %s" % label
+                            output += ' // %s' % label
                     if pos in self.try_ends:
                         for label in self.try_ends[pos]:
-                            output += " // %s" % label
+                            output += ' // %s' % label
                     if pos in self.catch_targets:
                         for label in self.catch_targets[pos]:
-                            output += " // %s" % label
+                            output += ' // %s' % label
 
-                    output += "\n"
+                    output += '\n'
 
                 while pos in nested_frame_starts:
                     nested_frame_starts.pop(nested_frame_starts.index(pos))
-                    output += (" " * (state.indent_level * 4)) + "{\n"
+                    output += (' ' * (state.indent_level * 4)) + '{\n'
                     state.indent_level += 1
 
                 sys.stdout.write(output)
-                output = ""
+                output = ''
 
             if statement.tokens:
-                sys.stdout.write(" " * (state.indent_level * 4))
+                sys.stdout.write(' ' * (state.indent_level * 4))
                 is_block = statement.tokens[:2] == [
-                    RawToken("for"),
+                    RawToken('for'),
                     LeftParenthesisToken(),
                 ]
                 while statement.tokens:
@@ -250,11 +259,13 @@ class DecompiledFunctionBody:
                     if isinstance(op, FunctionTableIndex):
                         op.closure_decompile(self)
                     elif isinstance(op, JumpNotCondition):
-                        conditions = "".join(str(token) for token in statement.tokens)
+                        conditions = ''.join(
+                            str(token) for token in statement.tokens
+                        )
                         statement.tokens = []
-                        if conditions == "false":
+                        if conditions == 'false':
                             sys.stdout.write(
-                                "_fun%d_ip = %d; continue _fun%d"
+                                '_fun%d_ip = %d; continue _fun%d'
                                 % (
                                     self.function_id,
                                     op.target_address,
@@ -263,15 +274,15 @@ class DecompiledFunctionBody:
                             )
                         else:
                             is_block = True
-                            sys.stdout.write("if(")
-                            if "(" in conditions or " " in conditions:
-                                sys.stdout.write("!(%s)" % conditions)
-                            elif conditions[0] == "!":
+                            sys.stdout.write('if(')
+                            if '(' in conditions or ' ' in conditions:
+                                sys.stdout.write('!(%s)' % conditions)
+                            elif conditions[0] == '!':
                                 sys.stdout.write(conditions[1:])
                             else:
-                                sys.stdout.write("!" + conditions)
+                                sys.stdout.write('!' + conditions)
                             sys.stdout.write(
-                                ") { _fun%d_ip = %d; continue _fun%d }"
+                                ') { _fun%d_ip = %d; continue _fun%d }'
                                 % (
                                     self.function_id,
                                     op.target_address,
@@ -279,11 +290,13 @@ class DecompiledFunctionBody:
                                 )
                             )
                     elif isinstance(op, JumpCondition):
-                        conditions = "".join(str(token) for token in statement.tokens)
+                        conditions = ''.join(
+                            str(token) for token in statement.tokens
+                        )
                         statement.tokens = []
-                        if conditions == "true":
+                        if conditions == 'true':
                             sys.stdout.write(
-                                "_fun%d_ip = %d; continue _fun%d"
+                                '_fun%d_ip = %d; continue _fun%d'
                                 % (
                                     self.function_id,
                                     op.target_address,
@@ -292,10 +305,10 @@ class DecompiledFunctionBody:
                             )
                         else:
                             is_block = True
-                            sys.stdout.write("if(")
+                            sys.stdout.write('if(')
                             sys.stdout.write(conditions)
                             sys.stdout.write(
-                                ") { _fun%d_ip = %d; continue _fun%d }"
+                                ') { _fun%d_ip = %d; continue _fun%d }'
                                 % (
                                     self.function_id,
                                     op.target_address,
@@ -305,22 +318,22 @@ class DecompiledFunctionBody:
                     else:
                         sys.stdout.write(str(op))
                 if is_block:
-                    sys.stdout.write("\n")
+                    sys.stdout.write('\n')
                 else:
-                    sys.stdout.write(";\n")
+                    sys.stdout.write(';\n')
 
         if len(basic_block_starts) > 1:
             state.indent_level -= 1
-            sys.stdout.write(" " * (state.indent_level * 4) + "}\n")
+            sys.stdout.write(' ' * (state.indent_level * 4) + '}\n')
 
         if not self.is_global:
             state.indent_level -= 1
-            sys.stdout.write(" " * (state.indent_level * 4) + "}")
+            sys.stdout.write(' ' * (state.indent_level * 4) + '}')
 
 
 @dataclass
 class TokenString:
-    tokens: List["Token"]
+    tokens: List['Token']
     assembly: ParsedInstruction
 
 
@@ -351,13 +364,13 @@ class StartGenerator(Token):
 @dataclass
 class ReturnDirective(Token):
     def __str__(self):
-        return "return "
+        return 'return '
 
 
 @dataclass
 class ThrowDirective(Token):
     def __str__(self):
-        return "throw "
+        return 'throw '
 
 
 @dataclass
@@ -365,25 +378,25 @@ class LeftHandRegToken(Token):
     register: int
 
     def __str__(self):
-        return "r%d" % self.register
+        return 'r%d' % self.register
 
 
 @dataclass
 class AssignmentToken(Token):
     def __str__(self):
-        return " = "
+        return ' = '
 
 
 @dataclass
 class LeftParenthesisToken(Token):
     def __str__(self):
-        return "("
+        return '('
 
 
 @dataclass
 class RightParenthesisToken(Token):
     def __str__(self):
-        return ")"
+        return ')'
 
 
 @dataclass
@@ -394,7 +407,7 @@ class CatchBlockStart(Token):
 @dataclass
 class DotAccessorToken(Token):
     def __str__(self):
-        return "."
+        return '.'
 
 
 @dataclass
@@ -402,7 +415,7 @@ class BindToken(Token):
     register: int
 
     def __str__(self):
-        return ".bind(r%d)" % self.register
+        return '.bind(r%d)' % self.register
 
 
 @dataclass
@@ -410,7 +423,7 @@ class RightHandRegToken(Token):
     register: int
 
     def __str__(self):
-        return "r%d" % self.register
+        return 'r%d' % self.register
 
 
 @dataclass
@@ -521,13 +534,13 @@ class FunctionTableIndex(Token):
 
         # Is this anything else?
         sys.stdout.write(
-            "<Function #%d: %s>"
+            '<Function #%d: %s>'
             % (
                 self.function_id,
-                ", ".join(
-                    "%s: %s" % (key, value)
+                ', '.join(
+                    '%s: %s' % (key, value)
                     for key, value in self.__dict__.items()
-                    if key != "state" and value
+                    if key != 'state' and value
                 ),
             )
         )

@@ -18,7 +18,7 @@ from hermes_dec.parsers.hbc_file_parser import HBCReader, StringKind
 
 def do_disassemble(input_file: str):
 
-    with open(input_file, "rb") as file_descriptor:
+    with open(input_file, 'rb') as file_descriptor:
         hbc_reader = HBCReader()
 
         hbc_reader.read_whole_file(file_descriptor)
@@ -52,24 +52,38 @@ def do_disassemble(input_file: str):
 
         # TODO : Print the JSON data generated above, one line per entry I guess?
 
-        for function_count, function_header in enumerate(hbc_reader.function_headers):
+        for function_count, function_header in enumerate(
+            hbc_reader.function_headers
+        ):
             # pretty_print_structure(function_header)
-            exception_info = ""
+            exception_info = ''
             if function_header.hasExceptionHandler:
-                exception_data = hbc_reader.function_id_to_exc_handlers[function_count]
-                exception_info = "\n  [Exception handlers:"
+                exception_data = hbc_reader.function_id_to_exc_handlers[
+                    function_count
+                ]
+                exception_info = '\n  [Exception handlers:'
                 for exception_item in exception_data:
-                    exception_info += " [start=" + hex(exception_item.start) + ", "
-                    exception_info += "end=" + hex(exception_item.end) + ", "
-                    exception_info += "target=" + hex(exception_item.target) + "]"
-                exception_info += " ]"
+                    exception_info += (
+                        ' [start=' + hex(exception_item.start) + ', '
+                    )
+                    exception_info += 'end=' + hex(exception_item.end) + ', '
+                    exception_info += (
+                        'target=' + hex(exception_item.target) + ']'
+                    )
+                exception_info += ' ]'
 
-            debug_info = ""
+            debug_info = ''
             if function_header.hasDebugInfo:
-                debug_data = hbc_reader.function_id_to_debug_offsets[function_count]
-                debug_info = "\n  [Debug offsets: "
-                debug_info += "source_locs=" + hex(debug_data.source_locations) + ", "
-                debug_info += "scope_desc_data=" + hex(debug_data.scope_desc_data) + "]"
+                debug_data = hbc_reader.function_id_to_debug_offsets[
+                    function_count
+                ]
+                debug_info = '\n  [Debug offsets: '
+                debug_info += (
+                    'source_locs=' + hex(debug_data.source_locations) + ', '
+                )
+                debug_info += (
+                    'scope_desc_data=' + hex(debug_data.scope_desc_data) + ']'
+                )
 
             print(
                 '=> [Function #%d "%s" of %d bytes]: %d params, frame size=%d, env size=%d, read index sz=%d, write index sz=%d, strict=%r, exc handler=%r, debug info=%r  @ offset 0x%08x%s%s'
@@ -92,17 +106,20 @@ def do_disassemble(input_file: str):
             )
 
             print()
-            print("Bytecode listing:")
+            print('Bytecode listing:')
             print()
             for instruction in parse_hbc_bytecode(function_header, hbc_reader):
-                print("==>", repr(instruction))
+                print('==>', repr(instruction))
             print()
             print()
-            print("=" * 15)
+            print('=' * 15)
             print()
 
             # Safety checks:
-            assert function_header.unused == 0 and function_header.paramCount < 100
+            assert (
+                function_header.unused == 0
+                and function_header.paramCount < 100
+            )
 
 
 def main():
@@ -111,14 +128,14 @@ def main():
 
     args = ArgumentParser()
 
-    args.add_argument("input_file")
-    args.add_argument("output_file", nargs="?")  # , default = '/dev/stdout'
+    args.add_argument('input_file')
+    args.add_argument('output_file', nargs='?')  # , default = '/dev/stdout'
 
     args = args.parse_args()
 
     if args.output_file:
         stdout = sys.stdout
-        with open(args.output_file, "w", encoding="utf-8") as sys.stdout:
+        with open(args.output_file, 'w', encoding='utf-8') as sys.stdout:
             do_disassemble(args.input_file)
         sys.stdout = stdout
 
@@ -127,9 +144,9 @@ def main():
         print()
 
     else:
-        sys.stdout.reconfigure(encoding="utf-8")
+        sys.stdout.reconfigure(encoding='utf-8')
         do_disassemble(args.input_file)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

@@ -13,9 +13,17 @@ sys.path.insert(0, SRC_DIR)
 from hermes_dec.parsers.hbc_file_parser import HBCReader
 from hermes_dec.decompilation.pass1_set_metadata import pass1_set_metadata
 from hermes_dec.decompilation.pass2_transform_code import pass2_transform_code
-from hermes_dec.decompilation.pass3_parse_forin_loops import pass3_parse_forin_loops
-from hermes_dec.decompilation.pass4_name_closure_vars import pass4_name_closure_vars
-from hermes_dec.decompilation.defs import HermesDecompiler, FunctionTableIndex, DecompiledFunctionBody
+from hermes_dec.decompilation.pass3_parse_forin_loops import (
+    pass3_parse_forin_loops,
+)
+from hermes_dec.decompilation.pass4_name_closure_vars import (
+    pass4_name_closure_vars,
+)
+from hermes_dec.decompilation.defs import (
+    HermesDecompiler,
+    FunctionTableIndex,
+    DecompiledFunctionBody,
+)
 
 """
     Entry points for the Hermes HBC Decompiler
@@ -31,7 +39,9 @@ def decompile_function(state: HermesDecompiler, function_id: int, **kwargs):
 
     dehydrated.function_id = function_id
     dehydrated.function_object = state.hbc_reader.function_headers[function_id]
-    dehydrated.is_global = function_id == state.hbc_reader.header.globalCodeIndex
+    dehydrated.is_global = (
+        function_id == state.hbc_reader.header.globalCodeIndex
+    )
 
     # Used within FunctionTableIndex.closure_decompile to
     # provide extra context about the current function:
@@ -78,8 +88,8 @@ def main():
 
     args = ArgumentParser()
 
-    args.add_argument("input_file")
-    args.add_argument("output_file", nargs="?")
+    args.add_argument('input_file')
+    args.add_argument('output_file', nargs='?')
 
     args = args.parse_args()
 
@@ -87,10 +97,10 @@ def main():
     state.input_file = args.input_file
     state.output_file = args.output_file
 
-    with open(state.input_file, "rb") as file_handle:
+    with open(state.input_file, 'rb') as file_handle:
         if state.output_file:
             stdout = sys.stdout
-            with open(state.output_file, "w", encoding="utf-8") as sys.stdout:
+            with open(state.output_file, 'w', encoding='utf-8') as sys.stdout:
                 do_decompilation(state, file_handle)
             sys.stdout = stdout
 
@@ -98,9 +108,9 @@ def main():
             print('[+] Decompiled output wrote to "%s"' % state.output_file)
             print()
         else:
-            sys.stdout.reconfigure(encoding="utf-8")
+            sys.stdout.reconfigure(encoding='utf-8')
             do_decompilation(state, file_handle)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

@@ -26,8 +26,15 @@ SRC_DIR = dirname(realpath(MODULE_DIR))
 sys.path.insert(0, SRC_DIR)
 
 # The following imports are made from the current directory:
-from hermes_dec.parsers.hbc_bytecode_parser import parse_hbc_bytecode, get_parser, ParsedInstruction
-from hermes_dec.parsers.regexp_bytecode_parser import decompile_regex, parse_regex
+from hermes_dec.parsers.hbc_bytecode_parser import (
+    parse_hbc_bytecode,
+    get_parser,
+    ParsedInstruction,
+)
+from hermes_dec.parsers.regexp_bytecode_parser import (
+    decompile_regex,
+    parse_regex,
+)
 from hermes_dec.parsers.pretty_print import pretty_print_structure
 from hermes_dec.parsers.debug_info_parser import print_debug_info
 
@@ -58,7 +65,9 @@ from hermes_dec.parsers.debug_info_parser import print_debug_info
         read from bottom to top.
 """
 
-HEADER_MAGIC = int.from_bytes("Ἑρμῆ".encode("utf-16be"), "big")  # 0x1f1903c103bc1fc6
+HEADER_MAGIC = int.from_bytes(
+    'Ἑρμῆ'.encode('utf-16be'), 'big'
+)  # 0x1f1903c103bc1fc6
 
 LATEST_BYTECODE_VERSION = 89
 
@@ -87,8 +96,8 @@ class HBCReader:
 
     header: object
     function_headers: List[object]
-    function_id_to_exc_handlers: Dict[int, List["HBCExceptionHandlerInfo"]]
-    function_id_to_debug_offsets: Dict[int, "DebugOffsets"]
+    function_id_to_exc_handlers: Dict[int, List['HBCExceptionHandlerInfo']]
+    function_id_to_debug_offsets: Dict[int, 'DebugOffsets']
     string_kinds: List[StringKind]
     identifier_hashes: List[int]
 
@@ -96,7 +105,7 @@ class HBCReader:
     overflow_string_table: List[object]
     strings: List[str]
 
-    parser_module: "module"
+    parser_module: 'module'
     file_buffer: BufferedReader
 
     # The following bytes can be sliced and decoded to "SLPArray"
@@ -131,64 +140,76 @@ class HBCReader:
             _pack_ = True
 
         fields = [
-            ("magic", c_uint64),
-            ("version", c_uint32),
+            ('magic', c_uint64),
+            ('version', c_uint32),
             (
-                "sourceHash",
+                'sourceHash',
                 c_uint8 * SHA1_NUM_BYTES,
             ),  # This is a hash from the actual plain-text JS source.
-            ("fileLength", c_uint32),  # Until the end of the BytecodeFileFooter.
-            ("globalCodeIndex", c_uint32),
-            ("functionCount", c_uint32),
-            ("stringKindCount", c_uint32),  # Number of string kind entries.
-            ("identifierCount", c_uint32),  # Number of strings which are identifiers.
-            ("stringCount", c_uint32),  # Number of strings in the string table.
             (
-                "overflowStringCount",
+                'fileLength',
+                c_uint32,
+            ),  # Until the end of the BytecodeFileFooter.
+            ('globalCodeIndex', c_uint32),
+            ('functionCount', c_uint32),
+            ('stringKindCount', c_uint32),  # Number of string kind entries.
+            (
+                'identifierCount',
+                c_uint32,
+            ),  # Number of strings which are identifiers.
+            (
+                'stringCount',
+                c_uint32,
+            ),  # Number of strings in the string table.
+            (
+                'overflowStringCount',
                 c_uint32,
             ),  # Number of strings in the overflow table.
-            ("stringStorageSize", c_uint32),  # Bytes in the blob of string contents.
+            (
+                'stringStorageSize',
+                c_uint32,
+            ),  # Bytes in the blob of string contents.
         ]
 
         if bytecode_version >= 87:
             fields += [
                 (
-                    "bigIntCount",
+                    'bigIntCount',
                     c_uint32,
                 ),  # Added in version 0.12.0 - Bytecode version 87 # number of bigints in the bigint table.
                 (
-                    "bigIntStorageSize",
+                    'bigIntStorageSize',
                     c_uint32,
                 ),  # Added in version 0.12.0 - Bytecode version 87 # Bytes in the bigint table.
             ]
 
         fields += [
-            ("regExpCount", c_uint32),
-            ("regExpStorageSize", c_uint32),
-            ("arrayBufferSize", c_uint32),
-            ("objKeyBufferSize", c_uint32),
-            ("objValueBufferSize", c_uint32),
+            ('regExpCount', c_uint32),
+            ('regExpStorageSize', c_uint32),
+            ('arrayBufferSize', c_uint32),
+            ('objKeyBufferSize', c_uint32),
+            ('objValueBufferSize', c_uint32),
             (
-                "cjsModuleOffset" if bytecode_version < 78 else "segmentID",
+                'cjsModuleOffset' if bytecode_version < 78 else 'segmentID',
                 c_uint32,
             ),  # Was called "cjsModuleOffset" before version 0.8.0 - Bytecode version 78 # The ID of this segment.
-            ("cjsModuleCount", c_uint32),  # Number of modules.
+            ('cjsModuleCount', c_uint32),  # Number of modules.
         ]
 
         if bytecode_version >= 84:
             fields += [
                 (
-                    "functionSourceCount",
+                    'functionSourceCount',
                     c_uint32,
                 )  # Added in version 0.8.1 - Bytecode version 84 # Number of function sources preserved.
             ]
 
         fields += [
-            ("debugInfoOffset", c_uint32),
+            ('debugInfoOffset', c_uint32),
             # Options (TODO: Are we decoding it correctly, in the right order?):
-            ("staticBuiltins", c_uint8, 1),
-            ("cjsModulesStaticallyResolved", c_uint8, 1),
-            ("hasAsync", c_uint8, 1),
+            ('staticBuiltins', c_uint8, 1),
+            ('cjsModulesStaticallyResolved', c_uint8, 1),
+            ('hasAsync', c_uint8, 1),
         ]
 
         # After these fields, padding bytes should align
@@ -236,25 +257,25 @@ class HBCReader:
 
             _fields_ = [
                 # First word
-                ("offset", c_uint32, 25),
-                ("paramCount", c_uint32, 7),
+                ('offset', c_uint32, 25),
+                ('paramCount', c_uint32, 7),
                 # Second word
-                ("bytecodeSizeInBytes", c_uint32, 15),
-                ("functionName", c_uint32, 17),
+                ('bytecodeSizeInBytes', c_uint32, 15),
+                ('functionName', c_uint32, 17),
                 # Third word
-                ("infoOffset", c_uint32, 25),
-                ("frameSize", c_uint32, 7),
+                ('infoOffset', c_uint32, 25),
+                ('frameSize', c_uint32, 7),
                 # Fourth word, with flags below
-                ("environmentSize", c_uint8),
-                ("highestReadCacheIndex", c_uint8),
-                ("highestWriteCacheIndex", c_uint8),
+                ('environmentSize', c_uint8),
+                ('highestReadCacheIndex', c_uint8),
+                ('highestWriteCacheIndex', c_uint8),
                 # Flags
-                ("prohibitInvoke", c_uint8, 2),  # See enum: ProhibitInvoke
-                ("strictMode", c_uint8, 1),
-                ("hasExceptionHandler", c_uint8, 1),
-                ("hasDebugInfo", c_uint8, 1),
-                ("overflowed", c_uint8, 1),
-                ("unused", c_uint8, 2),
+                ('prohibitInvoke', c_uint8, 2),  # See enum: ProhibitInvoke
+                ('strictMode', c_uint8, 1),
+                ('hasExceptionHandler', c_uint8, 1),
+                ('hasDebugInfo', c_uint8, 1),
+                ('overflowed', c_uint8, 1),
+                ('unused', c_uint8, 2),
             ]
 
         return CTypesReader
@@ -266,25 +287,25 @@ class HBCReader:
 
             _fields_ = [
                 # First word
-                ("offset", c_uint32),
-                ("paramCount", c_uint32),
+                ('offset', c_uint32),
+                ('paramCount', c_uint32),
                 # Second word
-                ("bytecodeSizeInBytes", c_uint32),
-                ("functionName", c_uint32),
+                ('bytecodeSizeInBytes', c_uint32),
+                ('functionName', c_uint32),
                 # Third word
-                ("infoOffset", c_uint32),
-                ("frameSize", c_uint32),
+                ('infoOffset', c_uint32),
+                ('frameSize', c_uint32),
                 # Fourth word, with flags below
-                ("environmentSize", c_uint32),
-                ("highestReadCacheIndex", c_uint8),
-                ("highestWriteCacheIndex", c_uint8),
+                ('environmentSize', c_uint32),
+                ('highestReadCacheIndex', c_uint8),
+                ('highestWriteCacheIndex', c_uint8),
                 # Flags
-                ("prohibitInvoke", c_uint8, 2),  # See enum: ProhibitInvoke
-                ("strictMode", c_uint8, 1),
-                ("hasExceptionHandler", c_uint8, 1),
-                ("hasDebugInfo", c_uint8, 1),
-                ("overflowed", c_uint8, 1),
-                ("unused", c_uint8, 2),
+                ('prohibitInvoke', c_uint8, 2),  # See enum: ProhibitInvoke
+                ('strictMode', c_uint8, 1),
+                ('hasExceptionHandler', c_uint8, 1),
+                ('hasDebugInfo', c_uint8, 1),
+                ('overflowed', c_uint8, 1),
+                ('unused', c_uint8, 2),
             ]
 
         return CTypesReader
@@ -300,9 +321,9 @@ class HBCReader:
             _pack_ = True
 
         if self.header.version >= 71:
-            fields = [("count", c_uint32, 31), ("kind", c_uint32, 1)]
+            fields = [('count', c_uint32, 31), ('kind', c_uint32, 1)]
         else:
-            fields = [("count", c_uint32, 30), ("kind", c_uint32, 2)]
+            fields = [('count', c_uint32, 30), ('kind', c_uint32, 2)]
 
         CTypesReader._fields_ = fields
 
@@ -337,20 +358,20 @@ class HBCReader:
 
         if self.header.version >= 56:
             fields = [
-                ("isUTF16", c_uint32, 1),
-                ("offset", c_uint32, 23),
-                ("length", c_uint32, 8),
+                ('isUTF16', c_uint32, 1),
+                ('offset', c_uint32, 23),
+                ('length', c_uint32, 8),
             ]
         else:
             fields = [
-                ("isUTF16", c_uint32, 1),
+                ('isUTF16', c_uint32, 1),
                 (
-                    "isIdentifier",
+                    'isIdentifier',
                     c_uint32,
                     1,
                 ),  # Was removed because "Only used for asserts"
-                ("offset", c_uint32, 22),
-                ("length", c_uint32, 8),
+                ('offset', c_uint32, 22),
+                ('length', c_uint32, 8),
             ]
 
         CTypesReader._fields_ = fields
@@ -364,7 +385,7 @@ class HBCReader:
 
         class CTypesReader(LittleEndianStructure):
             _pack_ = True
-            _fields_ = [("offset", c_uint32), ("length", c_uint32)]
+            _fields_ = [('offset', c_uint32), ('length', c_uint32)]
 
         return CTypesReader
 
@@ -372,7 +393,7 @@ class HBCReader:
 
         class CTypesReader(LittleEndianStructure):
             _pack_ = True
-            _fields_ = [("symbol_id", c_uint32), ("offset", c_uint32)]
+            _fields_ = [('symbol_id', c_uint32), ('offset', c_uint32)]
 
         return CTypesReader
 
@@ -380,7 +401,7 @@ class HBCReader:
 
         class CTypesReader(LittleEndianStructure):
             _pack_ = True
-            _fields_ = [("function_id", c_uint32), ("string_id", c_uint32)]
+            _fields_ = [('function_id', c_uint32), ('string_id', c_uint32)]
 
         return CTypesReader
 
@@ -391,25 +412,25 @@ class HBCReader:
 
         if self.header.version >= 91:
             fields = [
-                ("filename_count", c_uint32),
-                ("filename_storage_size", c_uint32),
-                ("file_region_count", c_uint32),
+                ('filename_count', c_uint32),
+                ('filename_storage_size', c_uint32),
+                ('file_region_count', c_uint32),
                 (
-                    "scope_desc_data_offset",
+                    'scope_desc_data_offset',
                     c_uint32,
                 ),  # lexical_data_offset before up to version 91 and in version 93
-                ("textified_data_offset", c_uint32),
-                ("string_table_offset", c_uint32),
-                ("debug_data_size", c_uint32),
+                ('textified_data_offset', c_uint32),
+                ('string_table_offset', c_uint32),
+                ('debug_data_size', c_uint32),
             ]
 
         else:
             fields = [
-                ("filename_count", c_uint32),
-                ("filename_storage_size", c_uint32),
-                ("file_region_count", c_uint32),
-                ("scope_desc_data_offset", c_uint32),
-                ("debug_data_size", c_uint32),
+                ('filename_count', c_uint32),
+                ('filename_storage_size', c_uint32),
+                ('file_region_count', c_uint32),
+                ('scope_desc_data_offset', c_uint32),
+                ('debug_data_size', c_uint32),
             ]
 
         CTypesReader._fields_ = fields
@@ -421,9 +442,9 @@ class HBCReader:
         class CTypesReader(LittleEndianStructure):
             _pack_ = True
             _fields_ = [
-                ("from_address", c_uint32),
-                ("filename_id", c_uint32),
-                ("source_mapping_id", c_uint32),
+                ('from_address', c_uint32),
+                ('filename_id', c_uint32),
+                ('source_mapping_id', c_uint32),
             ]
 
         return CTypesReader
@@ -432,7 +453,11 @@ class HBCReader:
 
         class CTypesReader(LittleEndianStructure):
             _pack_ = True
-            _fields_ = [("start", c_uint32), ("end", c_uint32), ("target", c_uint32)]
+            _fields_ = [
+                ('start', c_uint32),
+                ('end', c_uint32),
+                ('target', c_uint32),
+            ]
 
         return CTypesReader
 
@@ -443,16 +468,19 @@ class HBCReader:
 
         if self.header.version >= 91:
             fields = [
-                ("source_locations", c_uint32),
+                ('source_locations', c_uint32),
                 (
-                    "scope_desc_data",
+                    'scope_desc_data',
                     c_uint32,
                 ),  # lexical_data before up to version 91 and in version 93
-                ("textified_callees", c_uint32),
+                ('textified_callees', c_uint32),
             ]
 
         else:
-            fields = [("source_locations", c_uint32), ("scope_desc_data", c_uint32)]
+            fields = [
+                ('source_locations', c_uint32),
+                ('scope_desc_data', c_uint32),
+            ]
 
         CTypesReader._fields_ = fields
 
@@ -475,18 +503,18 @@ class HBCReader:
         # decoding the header fields)
 
         self.file_buffer.seek(0)
-        magic = int.from_bytes(self.file_buffer.read(8), "little")
+        magic = int.from_bytes(self.file_buffer.read(8), 'little')
         if magic != HEADER_MAGIC:
             raise ValueError(
-                "This file does not have the magic header for a Hermes bytecode file."
+                'This file does not have the magic header for a Hermes bytecode file.'
             )
 
-        version = int.from_bytes(self.file_buffer.read(4), "little")
+        version = int.from_bytes(self.file_buffer.read(4), 'little')
         self.parser_module = get_parser(version)
 
         self.file_buffer.read(SHA1_NUM_BYTES)  # Skip file hash
 
-        file_size = int.from_bytes(self.file_buffer.read(4), "little")
+        file_size = int.from_bytes(self.file_buffer.read(4), 'little')
 
         # Check the SHA-1 footer located at the end of the .HBC
         # bytecode file (the single-field BytecodeFileFooter structure)
@@ -532,7 +560,9 @@ class HBCReader:
 
             # Read the overflowed header, if any:
             if function_header.overflowed:
-                new_offset = (function_header.infoOffset << 16) | function_header.offset
+                new_offset = (
+                    function_header.infoOffset << 16
+                ) | function_header.offset
                 function_header = reader_large()
 
                 self.file_buffer.seek(new_offset)
@@ -549,9 +579,12 @@ class HBCReader:
             if function_header.hasExceptionHandler:
                 self.align_over_padding()
 
-                exc_headers_count = int.from_bytes(self.file_buffer.read(4), "little")
+                exc_headers_count = int.from_bytes(
+                    self.file_buffer.read(4), 'little'
+                )
                 exc_headers = (
-                    self.get_exception_handler_info_reader() * exc_headers_count
+                    self.get_exception_handler_info_reader()
+                    * exc_headers_count
                 )()
                 self.file_buffer.readinto(exc_headers)
 
@@ -565,7 +598,9 @@ class HBCReader:
                 debug_header = self.get_debug_offsets_reader()()
                 self.file_buffer.readinto(debug_header)
 
-                self.function_id_to_debug_offsets[function_count] = debug_header
+                self.function_id_to_debug_offsets[function_count] = (
+                    debug_header
+                )
 
             self.file_buffer.seek(before_pos)
 
@@ -584,14 +619,16 @@ class HBCReader:
 
             # Decode the run-length encoding instead of
             # storing the raw structure:
-            self.string_kinds += [StringKind(string_kind.kind)] * string_kind.count
+            self.string_kinds += [
+                StringKind(string_kind.kind)
+            ] * string_kind.count
 
     def read_identifier_hashes(self):
 
         self.align_over_padding()
 
         self.identifier_hashes = [
-            int.from_bytes(self.file_buffer.read(4), "little")
+            int.from_bytes(self.file_buffer.read(4), 'little')
             for identifier_count in range(self.header.identifierCount)
         ]
 
@@ -600,7 +637,8 @@ class HBCReader:
         self.align_over_padding()
 
         self.small_string_table = (
-            self.get_small_string_table_entry_reader() * self.header.stringCount
+            self.get_small_string_table_entry_reader()
+            * self.header.stringCount
         )()
 
         self.file_buffer.readinto(self.small_string_table)
@@ -610,7 +648,8 @@ class HBCReader:
         self.align_over_padding()
 
         self.overflow_string_table = (
-            self.get_offset_length_pair_reader() * self.header.overflowStringCount
+            self.get_offset_length_pair_reader()
+            * self.header.overflowStringCount
         )()
 
         self.file_buffer.readinto(self.overflow_string_table)
@@ -621,7 +660,9 @@ class HBCReader:
 
         self.align_over_padding()
 
-        string_storage = BytesIO(self.file_buffer.read(self.header.stringStorageSize))
+        string_storage = BytesIO(
+            self.file_buffer.read(self.header.stringStorageSize)
+        )
 
         for string_count in range(self.header.stringCount):
             info = self.small_string_table[string_count]
@@ -637,9 +678,9 @@ class HBCReader:
             string = string_storage.read(length)
             assert len(string) == length
             if is_utf_16:
-                string = string.decode("utf-16", errors="surrogatepass")
+                string = string.decode('utf-16', errors='surrogatepass')
             else:
-                string = "".join(chr(char) for char in string)
+                string = ''.join(chr(char) for char in string)
 
             self.strings.append(string)
 
@@ -652,7 +693,9 @@ class HBCReader:
         self.object_keys = self.file_buffer.read(self.header.objKeyBufferSize)
 
         self.align_over_padding()
-        self.object_values = self.file_buffer.read(self.header.objValueBufferSize)
+        self.object_values = self.file_buffer.read(
+            self.header.objValueBufferSize
+        )
 
     def read_bigints(self):
 
@@ -670,7 +713,8 @@ class HBCReader:
 
         self.bigint_values = [
             int.from_bytes(
-                bigint_data[entry.offset : entry.offset + entry.length], "little"
+                bigint_data[entry.offset : entry.offset + entry.length],
+                'little',
             )
             for entry in bigint_table
         ]
@@ -698,14 +742,18 @@ class HBCReader:
 
         self.align_over_padding()
 
-        if self.header.cjsModulesStaticallyResolved and self.header.version < 77:
+        if (
+            self.header.cjsModulesStaticallyResolved
+            and self.header.version < 77
+        ):
             self.cjs_modules = [
-                int.from_bytes(self.file_buffer.read(4), "little")
+                int.from_bytes(self.file_buffer.read(4), 'little')
                 for module_count in range(self.header.cjsModuleCount)
             ]
         else:
             self.cjs_modules = (
-                self.get_symbol_offset_pair_reader() * self.header.cjsModuleCount
+                self.get_symbol_offset_pair_reader()
+                * self.header.cjsModuleCount
             )()
 
             self.file_buffer.readinto(self.cjs_modules)
@@ -715,7 +763,8 @@ class HBCReader:
         self.align_over_padding()
 
         self.function_sources = (
-            self.get_function_source_entry_reader() * self.header.functionSourceCount
+            self.get_function_source_entry_reader()
+            * self.header.functionSourceCount
         )()
 
         self.file_buffer.readinto(self.function_sources)
@@ -728,7 +777,9 @@ class HBCReader:
         self.file_buffer.readinto(self.debug_info_header)
 
         reader = self.get_offset_length_pair_reader()
-        self.debug_string_table = (reader * self.debug_info_header.filename_count)()
+        self.debug_string_table = (
+            reader * self.debug_info_header.filename_count
+        )()
         self.file_buffer.readinto(self.debug_string_table)
 
         self.debug_string_storage = BytesIO(
@@ -736,7 +787,9 @@ class HBCReader:
         )
 
         reader = self.get_debug_file_region_reader()
-        self.debug_file_regions = (reader * self.debug_info_header.file_region_count)()
+        self.debug_file_regions = (
+            reader * self.debug_info_header.file_region_count
+        )()
         self.file_buffer.readinto(self.debug_file_regions)
 
         if self.header.version < 91:
@@ -837,11 +890,11 @@ def main():
 
     args = ArgumentParser()
 
-    args.add_argument("input_file")
+    args.add_argument('input_file')
 
     args = args.parse_args()
 
-    with open(args.input_file, "rb") as file_descriptor:
+    with open(args.input_file, 'rb') as file_descriptor:
         hbc_reader = HBCReader()
 
         hbc_reader.read_whole_file(file_descriptor)
@@ -877,13 +930,17 @@ def main():
         """
 
         print()
-        for string_kind, string in zip(hbc_reader.string_kinds, hbc_reader.strings):
-            print("=> %s: %s " % (string_kind, repr(string)))
+        for string_kind, string in zip(
+            hbc_reader.string_kinds, hbc_reader.strings
+        ):
+            print('=> %s: %s ' % (string_kind, repr(string)))
 
-        for function_count, function_header in enumerate(hbc_reader.function_headers):
+        for function_count, function_header in enumerate(
+            hbc_reader.function_headers
+        ):
             # pretty_print_structure(function_header)
             print(
-                "=> [Function #%d %s of %d bytes]: %d params @ offset 0x%08x"
+                '=> [Function #%d %s of %d bytes]: %d params @ offset 0x%08x'
                 % (
                     function_count,
                     hbc_reader.strings[function_header.functionName],
@@ -894,7 +951,10 @@ def main():
             )
 
             # Safety checks:
-            assert function_header.unused == 0 and function_header.paramCount < 100
+            assert (
+                function_header.unused == 0
+                and function_header.paramCount < 100
+            )
 
         # Commented, huge (and outdated)
 
@@ -918,38 +978,47 @@ def main():
         """
 
         print()
-        print("=> BigInts:")
+        print('=> BigInts:')
         for bigint in hbc_reader.bigint_values:
-            print("=> BigInt:", bigint)
+            print('=> BigInt:', bigint)
 
         print()
         for regexp_count, regexp in enumerate(hbc_reader.regexp_table):
             hbc_reader.regexp_storage.seek(regexp.offset)
             regexp_data = hbc_reader.regexp_storage.read(regexp.length)
-            print("=> Regexp #%d: %s" % (regexp_count, regexp_data.hex()))
+            print('=> Regexp #%d: %s' % (regexp_count, regexp_data.hex()))
             print(
-                "  => Decompiled: ",
+                '  => Decompiled: ',
                 decompile_regex(
-                    parse_regex(hbc_reader.header.version, BytesIO(regexp_data))
+                    parse_regex(
+                        hbc_reader.header.version, BytesIO(regexp_data)
+                    )
                 ),
             )
 
         print()
         for cjs_module_count, cjs_module in enumerate(hbc_reader.cjs_modules):
             if isinstance(cjs_module, int):
-                print("=> CommonJS module #%d: %d" % (cjs_module_count, cjs_module))
+                print(
+                    '=> CommonJS module #%d: %d'
+                    % (cjs_module_count, cjs_module)
+                )
             else:
                 print(
-                    "=> CommonJS module #%d: %s @ %08x"
-                    % (cjs_module_count, cjs_module.symbol_id, cjs_module.offset)
+                    '=> CommonJS module #%d: %s @ %08x'
+                    % (
+                        cjs_module_count,
+                        cjs_module.symbol_id,
+                        cjs_module.offset,
+                    )
                 )
 
-        if getattr(hbc_reader, "function_sources", None):
+        if getattr(hbc_reader, 'function_sources', None):
             for function_source_count, function_source in enumerate(
                 hbc_reader.function_sources
             ):
                 print(
-                    "=> Function source #%d: functionId %d = string @ %08x"
+                    '=> Function source #%d: functionId %d = string @ %08x'
                     % (
                         function_source_count,
                         function_source.function_id,
@@ -958,7 +1027,7 @@ def main():
                 )
 
         print()
-        print("=> Debug data:")
+        print('=> Debug data:')
         pretty_print_structure(hbc_reader.debug_info_header)
         for item in hbc_reader.debug_string_table:
             pretty_print_structure(item)
@@ -967,23 +1036,28 @@ def main():
             pretty_print_structure(item)
 
         hbc_reader.sources_data_storage.seek(0)
-        print_debug_info(hbc_reader.sources_data_storage, hbc_reader.header.version)
+        print_debug_info(
+            hbc_reader.sources_data_storage, hbc_reader.header.version
+        )
 
-        print("  => Sources data:", hbc_reader.sources_data_storage.getvalue().hex())
         print(
-            "  => Scope descriptor raw data:",
+            '  => Sources data:',
+            hbc_reader.sources_data_storage.getvalue().hex(),
+        )
+        print(
+            '  => Scope descriptor raw data:',
             hbc_reader.scope_desc_data_storage.getvalue().hex(),
         )
         if hbc_reader.header.version >= 91:
             print(
-                "  => Textified data:",
+                '  => Textified data:',
                 hbc_reader.textified_data_storage.getvalue().hex(),
             )
             print(
-                "  => Raw variables and callees data:",
+                '  => Raw variables and callees data:',
                 hbc_reader.string_table_storage.getvalue().hex(),
             )
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
