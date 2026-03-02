@@ -3,18 +3,17 @@
 from typing import List, Set, Dict, Tuple, Optional, Sequence, Union, Any
 from os.path import dirname, realpath
 from dataclasses import dataclass
-from sys import path
 from re import sub
 import sys
 
 SCRIPT_DIR = dirname(realpath(__file__))
-ROOT_DIR = realpath(SCRIPT_DIR + "/..")
-PARSERS_DIR = realpath(ROOT_DIR + "/parsers")
+MODULE_DIR = dirname(realpath(SCRIPT_DIR))
+SRC_DIR = dirname(realpath(MODULE_DIR))
 
-path.insert(0, PARSERS_DIR)
+sys.path.insert(0, SRC_DIR)
 
-from hbc_bytecode_parser import ParsedInstruction, get_builtin_functions
-from hbc_file_parser import HBCReader
+from hermes_dec.parsers.hbc_bytecode_parser import ParsedInstruction, get_builtin_functions
+from hermes_dec.parsers.hbc_file_parser import HBCReader
 
 
 class HermesDecompiler:

@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 # -*- encoding: Utf-8 -*-
 from typing import List, Dict, Set, Optional, Any, Sequence
 from os.path import dirname, realpath
@@ -6,13 +6,14 @@ from argparse import ArgumentParser
 from json import dumps
 import sys
 
-DISASSEMBLY_DIR = dirname(realpath(__file__))
-ROOT_DIR = realpath(DISASSEMBLY_DIR + "/..")
-PARSERS_DIR = realpath(ROOT_DIR + "/parsers")
-sys.path.insert(0, PARSERS_DIR)
+SCRIPT_DIR = dirname(realpath(__file__))
+MODULE_DIR = dirname(realpath(SCRIPT_DIR))
+SRC_DIR = dirname(realpath(MODULE_DIR))
 
-from hbc_bytecode_parser import parse_hbc_bytecode
-from hbc_file_parser import HBCReader, StringKind
+sys.path.insert(0, SRC_DIR)
+
+from hermes_dec.parsers.hbc_bytecode_parser import parse_hbc_bytecode
+from hermes_dec.parsers.hbc_file_parser import HBCReader, StringKind
 
 
 def do_disassemble(input_file: str):

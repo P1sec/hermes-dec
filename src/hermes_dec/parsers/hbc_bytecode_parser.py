@@ -1,11 +1,10 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 # -*- encoding: Utf-8 -*-
 from typing import List, Dict, Set, Sequence, Union, Optional, Iterator, Any
 from logging import warning
 from io import BytesIO
 
-# Imports relative to the current directory:
-from hbc_opcodes import (
+from hermes_dec.parsers.hbc_opcodes import (
     hbc51,
     hbc58,
     hbc59,
@@ -30,8 +29,8 @@ from hbc_opcodes import (
     hbc92,
     hbc95,
 )
-from serialized_literal_parser import unpack_slp_array, SLPArray, SLPValue, TagType
-from hbc_opcodes.def_classes import OperandMeaning, Instruction
+from hermes_dec.parsers.serialized_literal_parser import unpack_slp_array, SLPArray, SLPValue, TagType
+from hermes_dec.parsers.hbc_opcodes.def_classes import OperandMeaning, Instruction
 
 
 class ParsedInstruction:

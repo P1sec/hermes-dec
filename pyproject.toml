@@ -1,6 +1,7 @@
+
 [build-system]
-requires = ["setuptools>=69", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["uv_build>=0.10.3,<0.11.0"]
+build-backend = "uv_build"
 
 [project]
 name = "hermes-dec"
@@ -21,27 +22,29 @@ classifiers = [
     "Programming Language :: JavaScript",
     "Topic :: Software Development :: Disassemblers",
     "Topic :: Security",
-    "License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
     "Environment :: Console"
 ]
 license = "AGPL-3.0-or-later"
 license-files = ["LICENSE"]
-dependencies = []
+dependencies = [
+    "clang==12.0.1",
+]
 
 [project.urls]
-Homepage = "https://github.com/P1sec/hermes-dec"
+Homepage = "https://github.com/marin-m/hermes-dec"
+Repository = "https://github.com/marin-m/hermes-dec"
+Issues = "https://github.com/marin-m/hermes-dec/issues"
 
 [project.scripts]
 hbc-decompiler = "hermes_dec.decompilation.hbc_decompiler:main"
 hbc-disassembler = "hermes_dec.disassembly.hbc_disassembler:main"
 hbc-file-parser = "hermes_dec.parsers.hbc_file_parser:main"
+hermes-dec-regen-pydefs = "hermes_dec.utils.hermes_bytecode_structs_parser:main"
+hermes-dec-regen-pydefs-regexp = "hermes_dec.utils.regex_bytecode_structs_parser:main"
+hermes-dec-regen-html = "hermes_dec.utils.hermes_bytecode_structs_table_gen:main"
 
-[tool.setuptools]
-package-dir = { hermes_dec = "src" }
-packages = [
-    "hermes_dec",
-    "hermes_dec.parsers",
-    "hermes_dec.parsers.hbc_opcodes",
-    "hermes_dec.decompilation",
-    "hermes_dec.disassembly"
-]
+[tool.ruff]
+line-length = 79
+
+[tool.ruff.format]
+quote-style = "single"

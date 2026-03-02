@@ -1,11 +1,11 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 # -*- encoding: Utf-8 -*-
 from typing import List, Tuple, Dict, Set, Sequence, Union, Optional, Any
 from os.path import dirname, realpath
 from collections import defaultdict
 
-from defs import HermesDecompiler, BasicBlock, DecompiledFunctionBody
-from hbc_bytecode_parser import parse_hbc_bytecode
+from hermes_dec.decompilation.defs import HermesDecompiler, BasicBlock, DecompiledFunctionBody
+from hermes_dec.parsers.hbc_bytecode_parser import parse_hbc_bytecode
 
 
 def pass1_set_metadata(state: HermesDecompiler, function_body: DecompiledFunctionBody):

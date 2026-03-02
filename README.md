@@ -35,12 +35,6 @@ uv tool install hermes-dec
 pipx install hermes-dec
 ```
 
-Certain internal development utilities may however require to install `libclang` for Python:
-
-```
-sudo apt install python3-clang-12
-```
-
 ## Usage
 
 If you didn't install the tool system-wide using the command above, you can also download the source using this command and find the same utilities at the root:

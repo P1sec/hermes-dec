@@ -1,14 +1,16 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 # -*- encoding: Utf-8 -*-
 from re import search, match, findall, sub, finditer, MULTILINE, DOTALL
 from typing import List, Dict, Set, Sequence, Union, Optional, Any
-from os.path import dirname, realpath
+from os.path import dirname, realpath, join
 from dataclasses import dataclass
 from html import escape
 
 UTILS_DIR = dirname(realpath(__file__))
-ROOT_DIR = realpath(UTILS_DIR + "/..")
-DOCS_DIR = realpath(ROOT_DIR + "/docs")
+MODULE_DIR = dirname(realpath(UTILS_DIR))
+SRC_DIR = dirname(realpath(MODULE_DIR))
+ROOT_DIR = dirname(realpath(UTILS_DIR))
+DOCS_DIR = realpath(join(ROOT_DIR, "docs"))
 
 # Remove v0.8.1 since I cannot decipher what git_tags mean with bumping.
 # Also v0.8.1 (84) does not have any changes in the opcodes compared to v0.8.0.

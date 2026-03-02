@@ -1,22 +1,21 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 # -*- encoding: Utf-8 -*-
 from os.path import realpath, dirname
 from argparse import ArgumentParser
 import sys
 
 SCRIPT_DIR = dirname(realpath(__file__))
-ROOT_DIR = realpath(SCRIPT_DIR + "/..")
-PARSERS_DIR = realpath(ROOT_DIR + "/parsers")
+MODULE_DIR = dirname(realpath(SCRIPT_DIR))
+SRC_DIR = dirname(realpath(MODULE_DIR))
 
-sys.path.insert(0, SCRIPT_DIR)
-sys.path.insert(0, PARSERS_DIR)
+sys.path.insert(0, SRC_DIR)
 
-from hbc_file_parser import HBCReader
-from pass1_set_metadata import pass1_set_metadata
-from pass2_transform_code import pass2_transform_code
-from pass3_parse_forin_loops import pass3_parse_forin_loops
-from pass4_name_closure_vars import pass4_name_closure_vars
-from defs import HermesDecompiler, FunctionTableIndex, DecompiledFunctionBody
+from hermes_dec.parsers.hbc_file_parser import HBCReader
+from hermes_dec.decompilation.pass1_set_metadata import pass1_set_metadata
+from hermes_dec.decompilation.pass2_transform_code import pass2_transform_code
+from hermes_dec.decompilation.pass3_parse_forin_loops import pass3_parse_forin_loops
+from hermes_dec.decompilation.pass4_name_closure_vars import pass4_name_closure_vars
+from hermes_dec.decompilation.defs import HermesDecompiler, FunctionTableIndex, DecompiledFunctionBody
 
 """
     Entry points for the Hermes HBC Decompiler

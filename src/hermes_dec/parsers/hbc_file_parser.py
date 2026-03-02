@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 # -*- encoding: Utf-8 -*-
 from ctypes import (
     LittleEndianStructure,
@@ -19,14 +19,17 @@ from enum import IntEnum, IntFlag
 from hashlib import sha1
 import sys
 
-PARSERS_DIR = dirname(realpath(__file__))
-sys.path.insert(0, PARSERS_DIR)
+SCRIPT_DIR = dirname(realpath(__file__))
+MODULE_DIR = dirname(realpath(SCRIPT_DIR))
+SRC_DIR = dirname(realpath(MODULE_DIR))
+
+sys.path.insert(0, SRC_DIR)
 
 # The following imports are made from the current directory:
-from hbc_bytecode_parser import parse_hbc_bytecode, get_parser, ParsedInstruction
-from regexp_bytecode_parser import decompile_regex, parse_regex
-from pretty_print import pretty_print_structure
-from debug_info_parser import print_debug_info
+from hermes_dec.parsers.hbc_bytecode_parser import parse_hbc_bytecode, get_parser, ParsedInstruction
+from hermes_dec.parsers.regexp_bytecode_parser import decompile_regex, parse_regex
+from hermes_dec.parsers.pretty_print import pretty_print_structure
+from hermes_dec.parsers.debug_info_parser import print_debug_info
 
 """
 

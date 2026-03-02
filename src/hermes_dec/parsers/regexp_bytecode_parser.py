@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 # -*- encoding: Utf-8 -*-
 from ctypes import (
     LittleEndianStructure,
@@ -16,7 +16,7 @@ from enum import IntEnum, IntFlag
 from io import BytesIO
 from re import sub
 
-from pretty_print import pretty_print_structure
+from hermes_dec.parsers.pretty_print import pretty_print_structure
 
 getLogger().setLevel(DEBUG)
 

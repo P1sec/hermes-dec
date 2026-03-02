@@ -1,9 +1,9 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 # -*- encoding: Utf-8 -*-
 from typing import List, Tuple, Dict, Set, Sequence, Union, Optional, Any
 from os.path import dirname, realpath
 
-from defs import (
+from hermes_dec.decompilation.defs import (
     HermesDecompiler,
     DecompiledFunctionBody,
     TokenString,
@@ -34,8 +34,8 @@ from defs import (
     ReturnDirective,
     RawToken,
 )
-from serialized_literal_parser import unpack_slp_array, SLPArray, SLPValue, TagType
-from hbc_bytecode_parser import parse_hbc_bytecode
+from hermes_dec.parsers.serialized_literal_parser import unpack_slp_array, SLPArray, SLPValue, TagType
+from hermes_dec.parsers.hbc_bytecode_parser import parse_hbc_bytecode
 
 
 def pass2_transform_code(

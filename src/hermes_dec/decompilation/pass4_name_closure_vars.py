@@ -1,9 +1,9 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 # -*- encoding: Utf-8 -*-
 from typing import List, Tuple, Dict, Set, Sequence, Union, Optional, Any
 from sys import stderr
 
-from defs import (
+from hermes_dec.decompilation.defs import (
     HermesDecompiler,
     DecompiledFunctionBody,
     Environment,

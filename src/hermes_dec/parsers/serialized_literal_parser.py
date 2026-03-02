@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 # -*- encoding: Utf-8 -*-
 from typing import List, Union, Any, Sequence, Dict, Set, Optional
 from dataclasses import dataclass
