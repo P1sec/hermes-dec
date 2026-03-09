@@ -1,0 +1,23 @@
+version = 1
+revision = 3
+requires-python = ">=3.10"
+
+[[package]]
+name = "clang"
+version = "12.0.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/f2/15/8531492c5ea2a9f64688738693772dc07191a908bfa1fba3bc4ee6df5a54/clang-12.0.1.tar.gz", hash = "sha256:9dd177dd6ee9b77282be7ad538224716e0b692b9cc4b4670a60b3a9be06e2249", size = 31207, upload-time = "2022-02-12T18:05:10.823Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/dc/47/44d463c52d15aea3506a99ecf8b6d965b71247903106f295586dc410bb29/clang-12.0.1-py3-none-any.whl", hash = "sha256:6cd61a718da39e8c28f0805efd33cea599fe4f382c7b3d2b193dcaf996c90b17", size = 31272, upload-time = "2022-02-12T18:05:09.286Z" },
+]
+
+[[package]]
+name = "hermes-dec"
+version = "0.1.0"
+source = { editable = "." }
+dependencies = [
+    { name = "clang" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "clang", specifier = "==12.0.1" }]
