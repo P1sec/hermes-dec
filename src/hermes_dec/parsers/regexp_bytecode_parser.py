@@ -85,6 +85,7 @@ MIN_BC_VERSION = 51
 
 class RegexBytecodeHeader(LittleEndianStructure):
     _pack_ = True
+    _layout_ = 'ms'
     _fields_ = [
         ('markedCount', c_uint16),
         ('loopCount', c_uint16),
@@ -154,64 +155,78 @@ def get_opcodes_enum(bytecode_version: int):
 
 class GoalInsn(LittleEndianStructure):
     _pack_ = True
+    _layout_ = 'ms'
 
 
 class LeftAnchorInsn(LittleEndianStructure):
     _pack_ = True
+    _layout_ = 'ms'
 
 
 class RightAnchorInsn(LittleEndianStructure):
     _pack_ = True
+    _layout_ = 'ms'
 
 
 class MatchAnyInsn(LittleEndianStructure):
     _pack_ = True
+    _layout_ = 'ms'
 
 
 class U16MatchAnyInsn(LittleEndianStructure):
     _pack_ = True
+    _layout_ = 'ms'
 
 
 class MatchAnyButNewlineInsn(LittleEndianStructure):
     _pack_ = True
+    _layout_ = 'ms'
 
 
 class U16MatchAnyButNewlineInsn(LittleEndianStructure):
     _pack_ = True
+    _layout_ = 'ms'
 
 
 class MatchChar8Insn(LittleEndianStructure):
     _pack_ = True
+    _layout_ = 'ms'
     _fields_ = [('c', c_uint8)]
 
 
 class MatchChar16Insn(LittleEndianStructure):
     _pack_ = True
+    _layout_ = 'ms'
     _fields_ = [('c', c_uint16)]
 
 
 class U16MatchChar32Insn(LittleEndianStructure):
     _pack_ = True
+    _layout_ = 'ms'
     _fields_ = [('c', c_uint32)]
 
 
 class MatchCharICase8Insn(LittleEndianStructure):
     _pack_ = True
+    _layout_ = 'ms'
     _fields_ = [('c', c_uint8)]
 
 
 class MatchCharICase16Insn(LittleEndianStructure):
     _pack_ = True
+    _layout_ = 'ms'
     _fields_ = [('c', c_uint16)]
 
 
 class U16MatchCharICase32Insn(LittleEndianStructure):
     _pack_ = True
+    _layout_ = 'ms'
     _fields_ = [('c', c_uint32)]
 
 
 class AlternationInsn(LittleEndianStructure):
     _pack_ = True
+    _layout_ = 'ms'
     _fields_ = [
         ('secondaryBranch', c_uint32),  # hermes::regex::JumpTarget32
         ('primaryConstraints', c_uint8),  # hermes::regex::MatchConstraintSet
@@ -221,6 +236,7 @@ class AlternationInsn(LittleEndianStructure):
 
 class Jump32Insn(LittleEndianStructure):
     _pack_ = True
+    _layout_ = 'ms'
     _fields_ = [
         ('target', c_uint32)  # hermes::regex::JumpTarget32
     ]
@@ -228,21 +244,25 @@ class Jump32Insn(LittleEndianStructure):
 
 class BackRefInsn(LittleEndianStructure):
     _pack_ = True
+    _layout_ = 'ms'
     _fields_ = [('mexp', c_uint16)]
 
 
 class BracketRange32(LittleEndianStructure):
     _pack_ = True
+    _layout_ = 'ms'
     _fields_ = [('start', c_uint32), ('end', c_uint32)]
 
 
 class BracketRange16(LittleEndianStructure):
     _pack_ = True
+    _layout_ = 'ms'
     _fields_ = [('start', c_uint16), ('end', c_uint16)]
 
 
 class BracketInsn(LittleEndianStructure):
     _pack_ = True
+    _layout_ = 'ms'
     _fields_ = [
         ('rangeCount', c_uint32),
         ('negate', c_uint8, 1),
@@ -255,6 +275,7 @@ class BracketInsn(LittleEndianStructure):
 
 class U16BracketInsn(LittleEndianStructure):
     _pack_ = True
+    _layout_ = 'ms'
     _fields_ = [
         ('rangeCount', c_uint32),
         ('negate', c_uint8, 1),
@@ -267,6 +288,7 @@ class U16BracketInsn(LittleEndianStructure):
 
 class MatchNChar8Insn(LittleEndianStructure):
     _pack_ = True
+    _layout_ = 'ms'
     _fields_ = [('charCount', c_uint8)]
 
     chars: bytes
@@ -274,6 +296,7 @@ class MatchNChar8Insn(LittleEndianStructure):
 
 class MatchNCharICase8Insn(LittleEndianStructure):
     _pack_ = True
+    _layout_ = 'ms'
     _fields_ = [('charCount', c_uint8)]
 
     chars: bytes
@@ -281,21 +304,25 @@ class MatchNCharICase8Insn(LittleEndianStructure):
 
 class WordBoundaryInsn(LittleEndianStructure):
     _pack_ = True
+    _layout_ = 'ms'
     _fields_ = [('invert', c_bool)]
 
 
 class BeginMarkedSubexpressionInsn(LittleEndianStructure):
     _pack_ = True
+    _layout_ = 'ms'
     _fields_ = [('mexp', c_uint16)]
 
 
 class EndMarkedSubexpressionInsn(LittleEndianStructure):
     _pack_ = True
+    _layout_ = 'ms'
     _fields_ = [('mexp', c_uint16)]
 
 
 class LookaroundInsn(LittleEndianStructure):
     _pack_ = True
+    _layout_ = 'ms'
     _fields_ = [
         ('invert', c_bool),
         ('forwards', c_bool),
@@ -308,6 +335,7 @@ class LookaroundInsn(LittleEndianStructure):
 
 class LookaheadInsn(LittleEndianStructure):
     _pack_ = True
+    _layout_ = 'ms'
     _fields_ = [
         ('invert', c_bool),
         ('constraints', c_uint8),  # hermes::regex::MatchConstraintSet
@@ -319,6 +347,7 @@ class LookaheadInsn(LittleEndianStructure):
 
 class BeginLoopInsn(LittleEndianStructure):
     _pack_ = True
+    _layout_ = 'ms'
     _fields_ = [
         ('loopId', c_uint32),
         ('min', c_uint32),
@@ -333,6 +362,7 @@ class BeginLoopInsn(LittleEndianStructure):
 
 class BeginLoopPre79Insn(LittleEndianStructure):
     _pack_ = True
+    _layout_ = 'ms'
     _fields_ = [
         ('loopId', c_uint32),
         ('min', c_uint32),
@@ -347,6 +377,7 @@ class BeginLoopPre79Insn(LittleEndianStructure):
 
 class EndLoopInsn(LittleEndianStructure):
     _pack_ = True
+    _layout_ = 'ms'
     _fields_ = [
         ('target', c_uint32)  # hermes::regex::JumpTarget32
     ]
@@ -354,6 +385,7 @@ class EndLoopInsn(LittleEndianStructure):
 
 class BeginSimpleLoopInsn(LittleEndianStructure):
     _pack_ = True
+    _layout_ = 'ms'
     _fields_ = [
         ('loopeeConstraints', c_uint8),  # hermes::regex::MatchConstraintSet
         ('notTakenTarget', c_uint32),  # hermes::regex::JumpTarget32
@@ -362,6 +394,7 @@ class BeginSimpleLoopInsn(LittleEndianStructure):
 
 class EndSimpleLoopInsn(LittleEndianStructure):
     _pack_ = True
+    _layout_ = 'ms'
     _fields_ = [
         ('target', c_uint32)  # hermes::regex::JumpTarget32
     ]
@@ -369,6 +402,7 @@ class EndSimpleLoopInsn(LittleEndianStructure):
 
 class Width1LoopInsn(LittleEndianStructure):
     _pack_ = True
+    _layout_ = 'ms'
     _fields_ = [
         ('loopId', c_uint32),
         ('min', c_uint32),

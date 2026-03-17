@@ -119,6 +119,7 @@ def main():
     for opcode_name, structure in opcode_name_to_structure.items():
         print('class %s(LittleEndianStructure):' % opcode_name)
         print('    _pack_ = True')
+        print("    _layout _ = 'ms'")
         if structure.fields:
             print('    _fields_ = [')
             for field_index, field in enumerate(structure.fields):

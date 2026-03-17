@@ -138,6 +138,7 @@ class HBCReader:
 
         class CTypesReader(LittleEndianStructure):
             _pack_ = True
+            _layout_ = 'ms'
 
         fields = [
             ('magic', c_uint64),
@@ -254,6 +255,7 @@ class HBCReader:
 
         class CTypesReader(LittleEndianStructure):
             _pack_ = True
+            _layout_ = 'ms'
 
             _fields_ = [
                 # First word
@@ -283,7 +285,8 @@ class HBCReader:
     def get_large_func_header_reader(self):
 
         class CTypesReader(LittleEndianStructure):
-            _pack_ = True  # Packed?
+            _pack_ = True
+            _layout_ = 'ms'  # Packed?
 
             _fields_ = [
                 # First word
@@ -319,6 +322,7 @@ class HBCReader:
 
         class CTypesReader(LittleEndianStructure):
             _pack_ = True
+            _layout_ = 'ms'
 
         if self.header.version >= 71:
             fields = [('count', c_uint32, 31), ('kind', c_uint32, 1)]
@@ -355,6 +359,7 @@ class HBCReader:
 
         class CTypesReader(LittleEndianStructure):
             _pack_ = True
+            _layout_ = 'ms'
 
         if self.header.version >= 56:
             fields = [
@@ -385,6 +390,7 @@ class HBCReader:
 
         class CTypesReader(LittleEndianStructure):
             _pack_ = True
+            _layout_ = 'ms'
             _fields_ = [('offset', c_uint32), ('length', c_uint32)]
 
         return CTypesReader
@@ -393,6 +399,7 @@ class HBCReader:
 
         class CTypesReader(LittleEndianStructure):
             _pack_ = True
+            _layout_ = 'ms'
             _fields_ = [('symbol_id', c_uint32), ('offset', c_uint32)]
 
         return CTypesReader
@@ -401,6 +408,7 @@ class HBCReader:
 
         class CTypesReader(LittleEndianStructure):
             _pack_ = True
+            _layout_ = 'ms'
             _fields_ = [('function_id', c_uint32), ('string_id', c_uint32)]
 
         return CTypesReader
@@ -409,6 +417,7 @@ class HBCReader:
 
         class CTypesReader(LittleEndianStructure):
             _pack_ = True
+            _layout_ = 'ms'
 
         if self.header.version >= 91:
             fields = [
@@ -441,6 +450,7 @@ class HBCReader:
 
         class CTypesReader(LittleEndianStructure):
             _pack_ = True
+            _layout_ = 'ms'
             _fields_ = [
                 ('from_address', c_uint32),
                 ('filename_id', c_uint32),
@@ -453,6 +463,7 @@ class HBCReader:
 
         class CTypesReader(LittleEndianStructure):
             _pack_ = True
+            _layout_ = 'ms'
             _fields_ = [
                 ('start', c_uint32),
                 ('end', c_uint32),
@@ -465,6 +476,7 @@ class HBCReader:
 
         class CTypesReader(LittleEndianStructure):
             _pack_ = True
+            _layout_ = 'ms'
 
         if self.header.version >= 91:
             fields = [
