@@ -5,7 +5,7 @@ build-backend = "uv_build"
 
 [project]
 name = "hermes-dec"
-version = "0.1.0"
+version = "0.1.1"
 authors = [
     {name = "P1 Security - Marin Moulinier"},
 ]
@@ -26,14 +26,14 @@ classifiers = [
 ]
 license = "AGPL-3.0-or-later"
 license-files = ["LICENSE"]
-dependencies = [
-    "clang==12.0.1",
-]
+
+[project.optional-dependencies]
+codegen = ["clang==12.0.1"]
 
 [project.urls]
-Homepage = "https://github.com/marin-m/hermes-dec"
-Repository = "https://github.com/marin-m/hermes-dec"
-Issues = "https://github.com/marin-m/hermes-dec/issues"
+Homepage = "https://github.com/P1sec/hermes-dec"
+Repository = "https://github.com/P1sec/hermes-dec"
+Issues = "https://github.com/P1sec/hermes-dec/issues"
 
 [project.scripts]
 hbc-decompiler = "hermes_dec.decompilation.hbc_decompiler:main"
