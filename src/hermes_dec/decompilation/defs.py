@@ -513,9 +513,9 @@ class FunctionTableIndex(Token):
         # Is this a nested closure?
         # If yes, print its decompiled code
         if (self.is_closure or self.is_generator) and not self.is_builtin:
-            import hbc_decompiler
+            import hermes_dec.decompilation.hbc_decompiler
 
-            hbc_decompiler.decompile_function(
+            hermes_dec.decompilation.hbc_decompiler.decompile_function(
                 self.state,
                 self.function_id,
                 parent_environment=self.parent_environment,
