@@ -15,7 +15,7 @@ from typing import Sequence, Union, Dict, List, Set
 from io import BytesIO, BufferedReader
 from os.path import dirname, realpath
 from argparse import ArgumentParser
-from enum import IntEnum, IntFlag
+from enum import Enum, IntFlag
 from hashlib import sha1
 import sys
 
@@ -77,13 +77,13 @@ SHA1_NUM_BYTES = 20
 # https://github.com/facebook/hermes/blob/main/include/hermes/BCGen/HBC/BytecodeVersion.h#L23
 
 
-class ProhibitInvoke(IntEnum):
+class ProhibitInvoke(Enum):
     ProhibitCall = 0
     ProhibitConstruct = 1
     ProhibitNone = 2
 
 
-class StringKind(IntEnum):
+class StringKind(Enum):
     String = 0
     Identifier = 1
     Predefined = 2  # Unused since version 0.3.0 - merged with Identifier
