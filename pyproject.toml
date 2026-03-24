@@ -29,6 +29,8 @@ license-files = ["LICENSE"]
 
 [project.optional-dependencies]
 codegen = ["clang==12.0.1"]
+test = [ "pytest==9.0.2" ]
+
 
 [project.urls]
 Homepage = "https://github.com/P1sec/hermes-dec"
@@ -48,3 +50,5 @@ line-length = 79
 
 [tool.ruff.format]
 quote-style = "single"
+
+[tool.pytest.ini_options]

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- encoding: Utf-8 -*-
+import re
 from typing import List, Tuple, Dict, Set, Sequence, Union, Optional, Any
 from os.path import dirname, realpath
 
@@ -12,6 +13,7 @@ from hermes_dec.decompilation.defs import (
     LeftHandRegToken,
     AssignmentToken,
     DotAccessorToken,
+    IndexStringToken,
     CatchBlockStart,
     RightHandRegToken,
     GetEnvironmentToken,
@@ -43,6 +45,9 @@ from hermes_dec.parsers.serialized_literal_parser import (
 from hermes_dec.parsers.hbc_bytecode_parser import parse_hbc_bytecode
 
 
+# e.g. 3D, *, "unsigned long long"
+invalid_js_property = re.compile("^[^_a-zA-Z]")
+
 def pass2_transform_code(
     state: HermesDecompiler, function_body: DecompiledFunctionBody
 ):
@@ -60,6 +65,7 @@ def pass2_transform_code(
     AT = AssignmentToken
     RHRT = RightHandRegToken
     RT = RawToken
+    IST = IndexStringToken
 
     GET = GetEnvironmentToken
     STE = StoreToEnvironment
@@ -355,7 +361,7 @@ def pass2_transform_code(
             pattern_string = pattern_string.translate(
                 {char: repr(char) for char in range(0x20)}
             )
-            pattern_string = pattern_string.replace('/', '\\/')
+            #   pattern_string = pattern_string.replace('/', '\\/')
 
             readable_regexp = '/%s/%s' % (pattern_string, flags_string)
 
@@ -527,12 +533,21 @@ def pass2_transform_code(
         ):
             string = state.hbc_reader.strings[op4]
 
-            lines.append(
-                TS(
-                    [LHRT(op1), AT(), RHRT(op2), DAT(), RT(string)],
-                    assembly=[instruction],
+            if " " in string or invalid_js_property.match(string):
+                lines.append(
+                    TS(
+                        [LHRT(op1), AT(), RHRT(op2), IST(string)],
+                        assembly=[instruction],
+                    )
                 )
-            )
+            else:
+                lines.append(
+                    TS(
+                        [LHRT(op1), AT(), RHRT(op2), DAT(), RT(string)],
+                        assembly=[instruction],
+                    )
+                )
+
         elif instruction.inst.name == 'GetByVal':
             lines.append(
                 TS(

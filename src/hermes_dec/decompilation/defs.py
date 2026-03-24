@@ -316,7 +316,8 @@ class DecompiledFunctionBody:
                                 )
                             )
                     else:
-                        sys.stdout.write(str(op))
+                        s = str(op)
+                        sys.stdout.write(s)
                 if is_block:
                     sys.stdout.write('\n')
                 else:
@@ -409,6 +410,12 @@ class DotAccessorToken(Token):
     def __str__(self):
         return '.'
 
+@dataclass
+class IndexStringToken(Token):
+    index: str
+
+    def __str__(self):
+        return '["' + self.index + '"]'
 
 @dataclass
 class BindToken(Token):

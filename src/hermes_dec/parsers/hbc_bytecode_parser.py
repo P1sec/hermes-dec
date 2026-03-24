@@ -216,7 +216,7 @@ def get_builtin_functions(parser_module: 'module') -> List[str]:
 
 def parse_hbc_bytecode(
     function_header: object, hbc_reader: 'HBCReader'
-) -> Iterator[Instruction]:
+) -> Iterator[ParsedInstruction]:
 
     hbc_reader.file_buffer.seek(function_header.offset)
 

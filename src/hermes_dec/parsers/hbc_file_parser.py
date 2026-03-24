@@ -999,14 +999,8 @@ def main():
             hbc_reader.regexp_storage.seek(regexp.offset)
             regexp_data = hbc_reader.regexp_storage.read(regexp.length)
             print('=> Regexp #%d: %s' % (regexp_count, regexp_data.hex()))
-            print(
-                '  => Decompiled: ',
-                decompile_regex(
-                    parse_regex(
-                        hbc_reader.header.version, BytesIO(regexp_data)
-                    )
-                ),
-            )
+            decompiled = decompile_regex(parse_regex(hbc_reader.header.version, BytesIO(regexp_data)))
+            print('  => Decompiled: ', decompiled)
 
         print()
         for cjs_module_count, cjs_module in enumerate(hbc_reader.cjs_modules):
