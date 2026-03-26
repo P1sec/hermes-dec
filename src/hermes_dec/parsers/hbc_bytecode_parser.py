@@ -179,6 +179,9 @@ def get_parser(bytecode_version: int) -> 'module':
         93: hbc90,
         94: hbc92,
         95: hbc95,
+        # Bytecode version 96 has no opcode changes vs 95, only the
+        # regex engine gains an INDICES flag (already handled).
+        96: hbc95,
     }
 
     if bytecode_version < 72:

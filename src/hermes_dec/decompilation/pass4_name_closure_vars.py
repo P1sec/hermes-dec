@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- encoding: Utf-8 -*-
 from typing import List, Tuple, Dict, Set, Sequence, Union, Optional, Any
+from logging import warning
 from sys import stderr
 
 from hermes_dec.decompilation.defs import (
@@ -75,6 +76,9 @@ def pass4_name_closure_vars(
                 line.tokens = []  # Silence this instruction in the produced decompiled code
 
             elif isinstance(token, NewInnerEnvironmentToken):
+                if token.parent_register not in function_body.local_items:
+                    warning('pass4: NewInnerEnvironment references unknown register %d' % token.parent_register)
+                    continue
                 outer_environment = function_body.local_items[
                     token.parent_register
                 ]
@@ -94,11 +98,17 @@ def pass4_name_closure_vars(
 
             elif isinstance(token, FunctionTableIndex):
                 if token.environment_id is not None:
+                    if token.environment_id not in function_body.local_items:
+                        warning('pass4: FunctionTableIndex references unknown environment register %d' % token.environment_id)
+                        continue
                     token.parent_environment = function_body.local_items[
                         token.environment_id
                     ]
 
             elif isinstance(token, StoreToEnvironment):
+                if token.env_register not in function_body.local_items:
+                    warning('pass4: StoreToEnvironment references unknown register %d' % token.env_register)
+                    continue
                 varname = '_closure%d_slot%d' % (
                     function_body.local_items[
                         token.env_register
@@ -129,6 +139,9 @@ def pass4_name_closure_vars(
                     ]
 
             elif isinstance(token, LoadFromEnvironmentToken):
+                if token.register not in function_body.local_items:
+                    warning('pass4: LoadFromEnvironment references unknown register %d' % token.register)
+                    continue
                 var_name = '_closure%d_slot%d' % (
                     function_body.local_items[token.register].nesting_quantity,
                     token.slot_index,
