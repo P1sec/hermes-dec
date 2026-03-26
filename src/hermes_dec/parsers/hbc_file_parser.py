@@ -69,7 +69,7 @@ HEADER_MAGIC = int.from_bytes(
     'Ἑρμῆ'.encode('utf-16be'), 'big'
 )  # 0x1f1903c103bc1fc6
 
-LATEST_BYTECODE_VERSION = 89
+LATEST_BYTECODE_VERSION = 96
 
 SHA1_NUM_BYTES = 20
 
