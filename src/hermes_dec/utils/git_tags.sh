@@ -47,9 +47,9 @@ GIT_TAGS=(
     'v0.8.0' # Bytecode version 83 - Bumped Mar 16, 2021, stable release Apr 29, 2021
     'v0.8.1' # Bytecode version 84 - Bumped Jul 10, 2021, stable release Jul 12, 2021
     # WebAssembly instrinsincs are added in bytecode versions 85 and 86, but the
-    # bytecode version number is then unbumped as these have been disabled by default.
-    'v0.9.0' # Bytecode version 84 - Unbumped from 86 Jul 27, 2021, stable release Sep 2, 2021
-    # 'v0.10.0' # Bytecode version 84 - Unbumped from 86 Jul 27, 2021, stable release Nov 14, 2021
+    # bytecode version number is then bumped down as these have been disabled by default.
+    'v0.9.0' # Bytecode version 84 - Bumped down from 86 on Jul 27, 2021, stable release Sep 2, 2021
+    # 'v0.10.0' # Bytecode version 84 - Bumped down from 86 on Jul 27, 2021, stable release Nov 14, 2021
     'v0.11.0' # Bytecode version 85 - Bumped Mar 22, 2022, stable release Jan 27, 2022
     'b823515' # Bytecode version 86 - Jun 28, 2022
     '41752c6' # Bytecode version 87 - Jul 9, 2022
@@ -64,8 +64,8 @@ GIT_TAGS=(
     'f6b56d3' # Bytecode version 95 - Mar 29, 2023
     '2afc7b0' # Bytecode version 96 - Aug 29, 2023 - No gencode change, only the regex engine
     '16b5ada' # Bytecode version 97 - May 24, 2024 - Hermes static, based off version 90
-    'c00cc57' # Bytecode version 98 - Aug 30, 2024
-    '913d31a' # Bytecode version 99 - Feb 12, 2024
+    'hermes-v0.14.0' # Bytecode version 98 - Bumped Aug 30, 2024, stable release Nov 3, 2025
+    '913d31a' # Bytecode version 99 - Bumped Feb 12, 2026, stable release Feb 18, 2026
 )
 
 declare -A TAG_TO_VERSION=(
@@ -98,6 +98,6 @@ declare -A TAG_TO_VERSION=(
     [f6b56d3]='hbc95'
     [2afc7b0]='hbc96'
     [16b5ada]='hbc97'
-    [c00cc57]='hbc98'
+    [hermes-v0.14.0]='v0.14.0'
     [913d31a]='hbc99'
 )

@@ -87,6 +87,7 @@ C_TYPE_TO_RAW_SIZE: Dict[str, int] = {
     'double': 8,
 }
 
+
 def main():
 
     instruction_name_to_row: Dict[str, InstructionRow] = {}
@@ -176,7 +177,9 @@ def main():
 
                 # print('=>', directive, args)
 
-                def define_opcode(instruction_name: str, operand_types: List[str]):
+                def define_opcode(
+                    instruction_name: str, operand_types: List[str]
+                ):
 
                     nonlocal instruction_name_to_row
                     nonlocal opcode_count
@@ -203,7 +206,9 @@ def main():
                     for operand_readable_type in operand_types:
                         operand_info = OperandInfo()
                         operand_info.operand_meaning = None
-                        operand_info.operand_readable_type = operand_readable_type
+                        operand_info.operand_readable_type = (
+                            operand_readable_type
+                        )
                         operand_info.operand_c_type = readable_type_to_c_type[
                             operand_readable_type
                         ]
@@ -281,7 +286,6 @@ def main():
     # boolean value for the "has_changed_from_previous"
     # attribute of it
 
-
     for instruction_name, row in instruction_name_to_row.items():
         previous_column: Optional[ColumnInfo] = None
 
@@ -355,7 +359,6 @@ def main():
         ''.join('<th>%s</th>' % tag for tag in sorted(all_bytecode_versions)),
     )
 
-
     for instruction_name, row in sorted(instruction_name_to_row.items()):
         out_source += (
             """<tr>
@@ -377,7 +380,6 @@ def main():
             % column.plain_text_desc
         )
 
-
     out_source += """    </body>
     </html>
     """
@@ -389,6 +391,7 @@ def main():
     print('[+]  Wrote File => %s' % OUTPUT_FILE_NAME)
 
     print()
+
 
 if __name__ == '__main__':
     main()
