@@ -999,7 +999,9 @@ def main():
             hbc_reader.regexp_storage.seek(regexp.offset)
             regexp_data = hbc_reader.regexp_storage.read(regexp.length)
             print('=> Regexp #%d: %s' % (regexp_count, regexp_data.hex()))
-            decompiled = decompile_regex(parse_regex(hbc_reader.header.version, BytesIO(regexp_data)))
+            decompiled = decompile_regex(
+                parse_regex(hbc_reader.header.version, BytesIO(regexp_data))
+            )
             print('  => Decompiled: ', decompiled)
 
         print()

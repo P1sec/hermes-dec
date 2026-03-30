@@ -12,9 +12,11 @@ Remove-Item -Force -ErrorAction SilentlyContinue .\original_hermes_bytecode_c_sr
 # Run the source code fetching scripts
 & .\original_hermes_bytecode_c_src\get_source_codes.ps1
 & .\original_function_builtins_c_src\get_source_codes.ps1
-# & .\original_regex_bytecode_c_src\get_source_codes.ps1
 
 # Run the Python parser
-python ..\hermes_bytecode_structs_parser.py
+python .\hermes_bytecode_structs_parser.py
+
+cd ..
+ruff format
 
 Pop-Location

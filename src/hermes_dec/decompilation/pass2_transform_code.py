@@ -46,7 +46,8 @@ from hermes_dec.parsers.hbc_bytecode_parser import parse_hbc_bytecode
 
 
 # e.g. 3D, *, "unsigned long long"
-invalid_js_property = re.compile("^[^_a-zA-Z]")
+invalid_js_property = re.compile('^[^_a-zA-Z]')
+
 
 def pass2_transform_code(
     state: HermesDecompiler, function_body: DecompiledFunctionBody
@@ -533,7 +534,7 @@ def pass2_transform_code(
         ):
             string = state.hbc_reader.strings[op4]
 
-            if " " in string or invalid_js_property.match(string):
+            if ' ' in string or invalid_js_property.match(string):
                 lines.append(
                     TS(
                         [LHRT(op1), AT(), RHRT(op2), IST(string)],

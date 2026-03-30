@@ -55,8 +55,11 @@ $GIT_TAGS = @(
     # tree after three days (Feb 14-17, 2023).
     # Bytecode version 93 is similar to bytecode version 91.
     # '1c71748' # Bytecode version 94 reintroduces the change from version 92 - Mar 8, 2023
-    'f6b56d3'
-    # '2afc7b0' # Bytecode version 96 - Aug 29, 2023 - No gencode change, only the regex engine
+    'f6b56d3' # Bytecode version 95 - Mar 29, 2023
+    '2afc7b0' # Bytecode version 96 - Aug 29, 2023 - No gencode change, only the regex engine
+    '16b5ada' # Bytecode version 97 - May 24, 2024 - Hermes static, based off version 90
+    'c00cc57' # Bytecode version 98 - Aug 30, 2024
+    '913d31a' # Bytecode version 99 - Feb 12, 2024
 )
 
 # Mapping from Git tag/commit to Hermes bytecode version
@@ -88,4 +91,8 @@ $TAG_TO_VERSION = @{
     'b544ff4' = 'hbc92'
     '1c71748' = 'hbc94'
     'f6b56d3' = 'hbc95'
+    '2afc7b0' = 'hbc96'
+    '16b5ada' = 'hbc97'
+    'c00cc57' = 'hbc98'
+    '913d31a' = 'hbc99'
 }

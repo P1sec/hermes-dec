@@ -28,6 +28,9 @@ from hermes_dec.parsers.hbc_opcodes import (
     hbc90,
     hbc92,
     hbc95,
+    hbc97,
+    hbc98,
+    hbc99,
 )
 from hermes_dec.parsers.serialized_literal_parser import (
     unpack_slp_array,
@@ -182,6 +185,11 @@ def get_parser(bytecode_version: int) -> 'module':
         # Bytecode version 96 has no opcode changes vs 95, only the
         # regex engine gains an INDICES flag (already handled).
         96: hbc95,
+        # Bytecode version 97 marks the first updates in static Hermes
+        # and is based off bytecode version 90
+        97: hbc97,
+        98: hbc98,
+        99: hbc99,
     }
 
     if bytecode_version < 72:

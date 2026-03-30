@@ -16,7 +16,7 @@ DOCS_DIR = realpath(join(ROOT_DIR, 'docs'))
 # Also v0.8.1 (84) does not have any changes in the opcodes compared to v0.8.0.
 # But it clearly different from v0.8.0 (83) in published HTML.
 # GIT_TAGS = 'v0.0.1 v0.0.3 v0.1.0 v0.2.1 hbc70 hbc73 v0.7.0 v0.8.0 v0.8.1 v0.12.0'.split(' ')
-GIT_TAGS = 'v0.0.1 v0.0.3 v0.1.0 v0.2.1 hbc70 hbc73 v0.7.0 v0.8.0 v0.8.1 v0.12.0 hbc90 hbc92 hbc95'.split(
+GIT_TAGS = 'v0.0.1 v0.0.3 v0.1.0 v0.2.1 hbc70 hbc73 v0.7.0 v0.8.0 v0.8.1 v0.12.0 hbc90 hbc92 hbc95 hbc97 hbc98 hbc99'.split(
     ' '
 )
 
@@ -160,7 +160,7 @@ OPERAND_FUNCTION_ID(CreateAsyncClosureLongIndex, 3)
             accumulated_comment_was_used = False
             accumulated_comment = ''
 
-        comment_line = match('^///\s*(.+)', line)
+        comment_line = match(r'^///\s*(.+)', line)
 
         if comment_line:
             comment = comment_line.group(1)
@@ -170,7 +170,7 @@ OPERAND_FUNCTION_ID(CreateAsyncClosureLongIndex, 3)
                 accumulated_comment = ''
             accumulated_comment += comment.strip() + '\n'
 
-        line = match('^((?:DEFINE|OPERAND)[^(]+?)\((.+?)\)', line)
+        line = match(r'^((?:DEFINE|OPERAND)[^(]+?)\((.+?)\)', line)
 
         if line:
             directive, args = line.groups()

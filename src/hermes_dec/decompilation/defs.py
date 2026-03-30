@@ -343,7 +343,7 @@ class Token:
 
     # def __str__(self):
     #     return repr(self).replace(self.__class__.__name__,
-    #         sub('[^A-Z]', '', self.__class__.__name__), 1)
+    #         sub(r'[^A-Z]', '', self.__class__.__name__), 1)
 
 
 @dataclass
@@ -410,12 +410,14 @@ class DotAccessorToken(Token):
     def __str__(self):
         return '.'
 
+
 @dataclass
 class IndexStringToken(Token):
     index: str
 
     def __str__(self):
         return '["' + self.index + '"]'
+
 
 @dataclass
 class BindToken(Token):
