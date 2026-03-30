@@ -557,7 +557,10 @@ def pass2_transform_code(
                 )
             )
         elif instruction.inst.name == 'GetEnvironment':
-            lines.append(TS([GET(op1, op2)], assembly=[instruction]))
+            if state.hbc_reader.header.version < 97:
+                lines.append(TS([GET(op1, op2)], assembly=[instruction]))
+            else:
+                lines.append(TS([GET(op1, op3)], assembly=[instruction]))
         elif instruction.inst.name == 'GetGlobalObject':
             lines.append(
                 TS([LHRT(op1), AT(), RT('global')], assembly=[instruction])
@@ -1311,22 +1314,31 @@ def pass2_transform_code(
             'NewObjectWithBuffer',
             'NewObjectWithBufferLong',
         ):
-            object_text = '{%s}' % ', '.join(
-                '%s: %s' % (key, value)
-                for key, value in zip(
-                    unpack_slp_array(
-                        state.hbc_reader.object_keys[op4:], op3
-                    ).to_strings(state.hbc_reader.strings),
-                    unpack_slp_array(
-                        (
-                            state.hbc_reader.object_values
-                            if state.hbc_reader.header.version < 97
-                            else state.hbc_reader.literal_values
-                        )[op5:],
-                        op3,
-                    ).to_strings(state.hbc_reader.strings),
+            if state.hbc_reader.header.version < 97:
+                object_text = '{%s}' % ', '.join(
+                    '%s: %s' % (key, value)
+                    for key, value in zip(
+                        unpack_slp_array(
+                            state.hbc_reader.object_keys[op4:], op3
+                        ).to_strings(state.hbc_reader.strings),
+                        unpack_slp_array(
+                            (state.hbc_reader.object_values)[op5:],
+                            op3,
+                        ).to_strings(state.hbc_reader.strings),
+                    )
                 )
-            )
+            else:
+                shape_keys = state.hbc_reader.object_shape_keys[op2]
+                object_text = '{%s}' % ', '.join(
+                    '%s: %s' % (key, value)
+                    for key, value in zip(
+                        shape_keys,
+                        unpack_slp_array(
+                            (state.hbc_reader.literal_values)[op3:],
+                            len(shape_keys),
+                        ).to_strings(state.hbc_reader.strings),
+                    )
+                )
             lines.append(
                 TS([LHRT(op1), AT(), RT(object_text)], assembly=[instruction])
             )
