@@ -13,10 +13,10 @@ from ctypes import (
 )
 from hermes_dec.parsers.serialized_literal_parser import unpack_slp_array
 from typing import Sequence, Union, Dict, List, Set
+from enum import IntEnum, Enum, IntFlag
 from io import BytesIO, BufferedReader
 from os.path import dirname, realpath
 from argparse import ArgumentParser
-from enum import Enum, IntFlag
 from hashlib import sha1
 import sys
 
@@ -78,19 +78,19 @@ SHA1_NUM_BYTES = 20
 # https://github.com/facebook/hermes/blob/main/include/hermes/BCGen/HBC/BytecodeVersion.h#L23
 
 
-class ProhibitInvoke(Enum):
+class ProhibitInvoke(IntEnum):
     ProhibitCall = 0
     ProhibitConstruct = 1
     ProhibitNone = 2
 
 
-class FunctionKind(Enum):
+class FunctionKind(IntEnum):
     NormalFunction = 0
     GeneratorFunction = 1
     AsyncFunction = 2
 
 
-class StringKind(Enum):
+class StringKind(IntEnum):
     String = 0
     Identifier = 1
     Predefined = 2  # Unused since version 0.3.0 - merged with Identifier
@@ -210,6 +210,8 @@ class HBCReader:
                 ('objKeyBufferSize', c_uint32),
                 ('objShapeTableCount', c_uint32),
             ]
+            if bytecode_version >= 98:
+                fields += [('numStringSwitchImms', c_uint32)]
 
         fields += [
             (
@@ -282,11 +284,25 @@ class HBCReader:
         fields = [
             # First word
             ('offset', c_uint32, 25),
-            ('paramCount', c_uint32, 7),
-            # Second word
-            ('bytecodeSizeInBytes', c_uint32, 15),
-            ('functionName', c_uint32, 17),
         ]
+
+        if self.header.version < 98:
+            fields += [
+                ('paramCount', c_uint32, 7),
+                # Second word
+                ('bytecodeSizeInBytes', c_uint32, 15),
+                ('functionName', c_uint32, 17),
+            ]
+        else:
+            fields += [
+                ('paramCount', c_uint32, 5),
+                ('loopDepth', c_uint32, 2),
+                # Second word
+                ('bytecodeSizeInBytes', c_uint32, 14),
+                ('functionName', c_uint32, 8),
+                ('numberRegCount', c_uint32, 5),
+                ('nonPtrRegCount', c_uint32, 5),
+            ]
 
         if self.header.version < 97:
             fields += [
@@ -301,9 +317,20 @@ class HBCReader:
                 ('frameSize', c_uint8),
             ]
 
+        if self.header.version < 98:
+            fields += [
+                ('highestReadCacheIndex', c_uint8),
+                ('highestWriteCacheIndex', c_uint8),
+            ]
+        else:
+            fields += [
+                ('readCacheSize', c_uint8),
+                ('writeCacheSize', c_uint8, 6),
+                ('numCacheNewObject', c_uint8, 1),
+                ('privateNameCacheSize', c_uint8, 1),
+            ]
+
         fields += [
-            ('highestReadCacheIndex', c_uint8),
-            ('highestWriteCacheIndex', c_uint8),
             # Flags
             ('prohibitInvoke', c_uint8, 2),  # See enum: ProhibitInvoke
             ('strictMode', c_uint8, 1),
@@ -326,6 +353,12 @@ class HBCReader:
         fields = [
             ('offset', c_uint32),
             ('paramCount', c_uint32),
+        ]
+        if self.header.version >= 98:
+            fields += [
+                ('loopDepth', c_uint32),
+            ]
+        fields += [
             ('bytecodeSizeInBytes', c_uint32),
             ('functionName', c_uint32),
         ]
@@ -341,9 +374,20 @@ class HBCReader:
                 ('frameSize', c_uint32),
             ]
 
+        if self.header.version < 98:
+            fields += [
+                ('highestReadCacheIndex', c_uint8),
+                ('highestWriteCacheIndex', c_uint8),
+            ]
+        else:
+            fields += [
+                ('readCacheSize', c_uint8),
+                ('writeCacheSize', c_uint8),
+                ('numCacheNewObject', c_uint8),
+                ('privateNameCacheSize', c_uint8),
+            ]
+
         fields += [
-            ('highestReadCacheIndex', c_uint8),
-            ('highestWriteCacheIndex', c_uint8),
             ('prohibitInvoke', c_uint8, 2),  # See enum: ProhibitInvoke
             ('strictMode', c_uint8, 1),
             ('hasExceptionHandler', c_uint8, 1),
@@ -462,17 +506,20 @@ class HBCReader:
             _pack_ = True
             _layout_ = 'ms'
 
-        if self.header.version >= 91:
+        if self.header.version >= 98:
             fields = [
                 ('filename_count', c_uint32),
                 ('filename_storage_size', c_uint32),
                 ('file_region_count', c_uint32),
-                (
-                    'scope_desc_data_offset',
-                    c_uint32,
-                ),  # lexical_data_offset before up to version 91 and in version 93
-                ('textified_data_offset', c_uint32),
-                ('string_table_offset', c_uint32),
+                ('debug_data_size', c_uint32),
+            ]
+
+        elif self.header.version < 91 or self.header.version >= 97:
+            fields = [
+                ('filename_count', c_uint32),
+                ('filename_storage_size', c_uint32),
+                ('file_region_count', c_uint32),
+                ('lexical_data_offset', c_uint32),
                 ('debug_data_size', c_uint32),
             ]
 
@@ -481,7 +528,12 @@ class HBCReader:
                 ('filename_count', c_uint32),
                 ('filename_storage_size', c_uint32),
                 ('file_region_count', c_uint32),
-                ('scope_desc_data_offset', c_uint32),
+                (
+                    'scope_desc_data_offset',
+                    c_uint32,
+                ),  # lexical_data_offset up to version 92, in version 93, and in version 97
+                ('textified_data_offset', c_uint32),
+                ('string_table_offset', c_uint32),
                 ('debug_data_size', c_uint32),
             ]
 
@@ -613,8 +665,6 @@ class HBCReader:
         self.function_id_to_exc_handlers = {}
         self.function_id_to_debug_offsets = {}
 
-        self.align_over_padding()
-
         reader = self.get_small_func_header_reader()
         reader_large = self.get_large_func_header_reader()
 
@@ -630,7 +680,10 @@ class HBCReader:
                 new_offset = (
                     (function_header.infoOffset << 16)
                     if self.header.version < 97
-                    else (function_header.functionName << 16)
+                    else (
+                        function_header.functionName
+                        << (24 if self.header.version >= 98 else 16)
+                    )
                 ) | function_header.offset
                 function_header = reader_large()
 
@@ -772,6 +825,7 @@ class HBCReader:
                 self.header.objValueBufferSize
             )
         else:
+            self.align_over_padding()
             shape_table_entries = (
                 self.get_shape_table_entry_reader()
                 * self.header.objShapeTableCount
@@ -881,11 +935,15 @@ class HBCReader:
         )()
         self.file_buffer.readinto(self.debug_file_regions)
 
-        if self.header.version < 91:
-            sources_data_size = self.debug_info_header.scope_desc_data_offset
+        if self.header.version >= 98:
+            self.sources_data_storage = BytesIO(
+                self.file_buffer.read(self.debug_info_header.debug_data_size)
+            )
+        elif self.header.version < 91 or self.header.version == 97:
+            sources_data_size = self.debug_info_header.lexical_data_offset
             scope_desc_data_size = (
                 self.debug_info_header.debug_data_size
-                - self.debug_info_header.scope_desc_data_offset
+                - self.debug_info_header.lexical_data_offset
             )
 
             self.sources_data_storage = BytesIO(
@@ -996,7 +1054,7 @@ def main():
             pretty_print_structure(function_header)
             
             # Safety checks:
-            assert function_header.unused == 0 and function_header.paramCount < 100
+            assert function_header.paramCount < 100
         """
 
         """
@@ -1041,10 +1099,7 @@ def main():
             )
 
             # Safety checks:
-            assert (
-                function_header.unused == 0
-                and function_header.paramCount < 100
-            )
+            assert function_header.paramCount < 100
 
         # Commented, huge (and outdated)
 
@@ -1130,11 +1185,12 @@ def main():
             '  => Sources data:',
             hbc_reader.sources_data_storage.getvalue().hex(),
         )
-        print(
-            '  => Scope descriptor raw data:',
-            hbc_reader.scope_desc_data_storage.getvalue().hex(),
-        )
-        if hbc_reader.header.version >= 91:
+        if hbc_reader.header.version < 98:
+            print(
+                '  => Scope descriptor raw data:',
+                hbc_reader.scope_desc_data_storage.getvalue().hex(),
+            )
+        if hbc_reader.header.version >= 91 and hbc_reader.header.version < 97:
             print(
                 '  => Textified data:',
                 hbc_reader.textified_data_storage.getvalue().hex(),

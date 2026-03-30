@@ -90,7 +90,7 @@ def do_disassemble(input_file: str):
                 )
 
             print(
-                '=> [%s #%d "%s" of %d bytes]: %d params, frame size=%d, read index sz=%d, write index sz=%d, strict=%r, exc handler=%r, debug info=%r  @ offset 0x%08x%s%s'
+                '=> [%s #%d "%s" of %d bytes]: %d params, frame size=%d, strict=%r, exc handler=%r, debug info=%r  @ offset 0x%08x%s%s'
                 % (
                     {
                         FunctionKind.NormalFunction: 'Function',
@@ -102,8 +102,6 @@ def do_disassemble(input_file: str):
                     function_header.bytecodeSizeInBytes,
                     function_header.paramCount,
                     function_header.frameSize,
-                    function_header.highestReadCacheIndex,
-                    function_header.highestWriteCacheIndex,
                     function_header.strictMode,
                     function_header.hasExceptionHandler,
                     function_header.hasDebugInfo,
@@ -124,10 +122,7 @@ def do_disassemble(input_file: str):
             print()
 
             # Safety checks:
-            assert (
-                function_header.unused == 0
-                and function_header.paramCount < 100
-            )
+            assert function_header.paramCount < 100
 
 
 def main():
