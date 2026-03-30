@@ -45,7 +45,7 @@ GIT_TAGS=(
     '40aa0f7' # Bytecode version 81 - Jan 14, 2021
     '65de349' # Bytecode version 82 - Jan 26, 2021
     'v0.8.0' # Bytecode version 83 - Bumped Mar 16, 2021, stable release Apr 29, 2021
-    # 'v0.8.1' # Bytecode version 84 - Bumped Jul 10, 2021, stable release Jul 12, 2021
+    'v0.8.1' # Bytecode version 84 - Bumped Jul 10, 2021, stable release Jul 12, 2021
     # WebAssembly instrinsincs are added in bytecode versions 85 and 86, but the
     # bytecode version number is then unbumped as these have been disabled by default.
     'v0.9.0' # Bytecode version 84 - Unbumped from 86 Jul 27, 2021, stable release Sep 2, 2021

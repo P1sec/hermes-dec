@@ -39,11 +39,11 @@ $GIT_TAGS = @(
     '40aa0f7',
     '65de349',
     'v0.8.0',
-    # 'v0.8.1' # Bytecode version 84 - Bumped Jul 10, 2021, stable release Jul 12, 2021
+    'v0.8.1' # Bytecode version 84 - Bumped Jul 10, 2021, stable release Jul 12, 2021
     # WebAssembly instrinsincs are added in bytecode versions 85 and 86, but the
     # bytecode version number is then unbumped as these have been disabled by default.
     'v0.9.0',
-    # 'v0.10.0' # Bytecode version 84 - Unbumped from 86 Jul 27, 2021, stable release Nov 14, 2021
+    # 'v0.10.0' # Bytecode version 84 - Reverted from version 86 Jul 27, 2021, stable release Nov 14, 2021
     'v0.11.0',
     'b823515',
     '41752c6',

@@ -9,13 +9,9 @@ from html import escape
 UTILS_DIR = dirname(realpath(__file__))
 MODULE_DIR = dirname(realpath(UTILS_DIR))
 SRC_DIR = dirname(realpath(MODULE_DIR))
-ROOT_DIR = dirname(realpath(UTILS_DIR))
+ROOT_DIR = dirname(realpath(SRC_DIR))
 DOCS_DIR = realpath(join(ROOT_DIR, 'docs'))
 
-# Remove v0.8.1 since I cannot decipher what git_tags mean with bumping.
-# Also v0.8.1 (84) does not have any changes in the opcodes compared to v0.8.0.
-# But it clearly different from v0.8.0 (83) in published HTML.
-# GIT_TAGS = 'v0.0.1 v0.0.3 v0.1.0 v0.2.1 hbc70 hbc73 v0.7.0 v0.8.0 v0.8.1 v0.12.0'.split(' ')
 GIT_TAGS = 'v0.0.1 v0.0.3 v0.1.0 v0.2.1 hbc70 hbc73 v0.7.0 v0.8.0 v0.8.1 v0.12.0 hbc90 hbc92 hbc95 hbc97 hbc98 hbc99'.split(
     ' '
 )
@@ -91,300 +87,308 @@ C_TYPE_TO_RAW_SIZE: Dict[str, int] = {
     'double': 8,
 }
 
-instruction_name_to_row: Dict[str, InstructionRow] = {}
+def main():
 
-all_bytecode_versions: Set[int] = set()
+    instruction_name_to_row: Dict[str, InstructionRow] = {}
 
-for git_tag in GIT_TAGS:
-    INPUT_FILE_NAME = (
-        UTILS_DIR
-        + '/original_hermes_bytecode_c_src/BytecodeList-%s.def' % git_tag
-    )
+    all_bytecode_versions: Set[int] = set()
 
-    INPUT_VERSION_FILE_NAME = (
-        UTILS_DIR
-        + '/original_hermes_bytecode_c_src/BytecodeVersion-%s.h' % git_tag
-    )
-
-    with open(INPUT_VERSION_FILE_NAME) as fd:
-        version_file_contents = fd.read()
-    bytecode_version: int = int(
-        search(r'BYTECODE_VERSION = (\d+)', version_file_contents).group(1)
-    )
-
-    all_bytecode_versions.add(bytecode_version)
-
-    opcode_count = 0
-
-    accumulated_comment: str = ''
-    accumulated_comment_was_used: bool = False
-
-    readable_type_to_c_type: Dict[str, str] = {}
-
-    with open(INPUT_FILE_NAME) as fd:
-        input_source = fd.read()
-
-    # Backport OPERAND_FUNCTION_ID declarations added with
-    # version 0.12.0 (https://github.com/facebook/hermes/commit/c20d7d8)
-    # in order to improve disassembly output readability if needed.
-
-    if 'OPERAND_FUNCTION_ID(CallDirect, 3)' not in input_source:
-        input_source += """
-OPERAND_FUNCTION_ID(CallDirect, 3)
-OPERAND_FUNCTION_ID(CreateClosure, 3)
-OPERAND_FUNCTION_ID(CreateClosureLongIndex, 3)
-"""
-
-        if 'CreateGeneratorClosure' in input_source:
-            input_source += """
-OPERAND_FUNCTION_ID(CreateGeneratorClosure, 3)
-OPERAND_FUNCTION_ID(CreateGeneratorClosureLongIndex, 3)
-"""
-
-        if 'CreateGenerator' in input_source:
-            input_source += """
-OPERAND_FUNCTION_ID(CreateGenerator, 3)
-OPERAND_FUNCTION_ID(CreateGeneratorLongIndex, 3)
-"""
-
-        if 'CreateAsyncClosure' in input_source:
-            input_source += """
-OPERAND_FUNCTION_ID(CreateAsyncClosure, 3)
-OPERAND_FUNCTION_ID(CreateAsyncClosureLongIndex, 3)
-"""
-
-    lines: List[str] = input_source.splitlines()
-
-    for line in lines:
-        if not line.strip():
-            accumulated_comment_was_used = False
-            accumulated_comment = ''
-
-        comment_line = match(r'^///\s*(.+)', line)
-
-        if comment_line:
-            comment = comment_line.group(1)
-
-            if accumulated_comment_was_used:
-                accumulated_comment_was_used = False
-                accumulated_comment = ''
-            accumulated_comment += comment.strip() + '\n'
-
-        line = match(r'^((?:DEFINE|OPERAND)[^(]+?)\((.+?)\)', line)
-
-        if line:
-            directive, args = line.groups()
-            args = args.split(', ')
-
-            # print('=>', directive, args)
-
-            def define_opcode(instruction_name: str, operand_types: List[str]):
-
-                global instruction_name_to_row
-                global opcode_count
-                global accumulated_comment_was_used
-                global accumulated_comment
-
-                instruction_row = instruction_name_to_row.setdefault(
-                    instruction_name, InstructionRow()
-                )
-                instruction_row.instruction_name = instruction_name
-
-                if not getattr(
-                    instruction_row, 'bytecode_version_to_columns', None
-                ):
-                    instruction_row.bytecode_version_to_columns = {}
-
-                column_info = ColumnInfo()
-                instruction_row.bytecode_version_to_columns[
-                    bytecode_version
-                ] = column_info
-
-                instruction_operands: List[OperandInfo] = []
-
-                for operand_readable_type in operand_types:
-                    operand_info = OperandInfo()
-                    operand_info.operand_meaning = None
-                    operand_info.operand_readable_type = operand_readable_type
-                    operand_info.operand_c_type = readable_type_to_c_type[
-                        operand_readable_type
-                    ]
-                    operand_info.operand_size_bytes = C_TYPE_TO_RAW_SIZE[
-                        operand_info.operand_c_type
-                    ]
-
-                    instruction_operands.append(operand_info)
-
-                column_info.has_changed_from_previous = False
-                column_info.struct_size_bytes = sum(
-                    operand.operand_size_bytes
-                    for operand in instruction_operands
-                )
-                column_info.present = True
-                column_info.raw_opcode = opcode_count
-                column_info.operands = instruction_operands
-
-                column_info.plain_text_desc = escape(
-                    accumulated_comment.strip()
-                ).replace('\n', '<br>')
-
-                accumulated_comment_was_used = True
-
-                opcode_count += 1
-
-            if directive.startswith('DEFINE_OPERAND_TYPE'):
-                readable_type_to_c_type[args[0]] = args[1]
-
-            elif directive.startswith('DEFINE_OPCODE'):
-                define_opcode(args[0], args[1:])
-
-            elif directive.startswith('DEFINE_JUMP'):
-                args += {
-                    'DEFINE_JUMP_1': ['Addr8'],
-                    'DEFINE_JUMP_2': ['Addr8', 'Reg8'],
-                    'DEFINE_JUMP_3': ['Addr8', 'Reg8', 'Reg8'],
-                }[directive]
-
-                saved_comment = accumulated_comment
-                define_opcode(args[0], args[1:])
-
-                accumulated_comment = saved_comment
-                define_opcode(args[0] + 'Long', ['Addr32'] + args[2:])
-
-            elif directive.startswith('DEFINE_RET_TARGET'):
-                instruction_row = instruction_name_to_row[args[0]]
-
-                column_info = instruction_row.bytecode_version_to_columns[
-                    bytecode_version
-                ]
-                column_info.has_ret_target = True
-
-            elif directive.startswith('OPERAND_'):
-                operand_meaning = {
-                    'OPERAND_BIGINT_ID': 'bigint_id',
-                    'OPERAND_FUNCTION_ID': 'function_id',
-                    'OPERAND_STRING_ID': 'string_id',
-                }[directive]
-
-                instruction_row = instruction_name_to_row[args[0]]
-
-                column_info = instruction_row.bytecode_version_to_columns[
-                    bytecode_version
-                ]
-                column_info.operands[
-                    int(args[1]) - 1
-                ].operand_meaning = operand_meaning
-
-# Diff each "ColumnInfo" entry contained within an
-# "InstructionRow" object, in order to set a
-# boolean value for the "has_changed_from_previous"
-# attribute of it
-
-
-for instruction_name, row in instruction_name_to_row.items():
-    previous_column: Optional[ColumnInfo] = None
-
-    for bytecode_version, column in sorted(
-        row.bytecode_version_to_columns.items()
-    ):
-        column.plain_text_desc = '%s (total size %d)%s' % (
-            ', '.join(
-                operand.operand_readable_type
-                if not operand.operand_meaning
-                else '%s (%s)'
-                % (operand.operand_readable_type, operand.operand_meaning)
-                for operand in column.operands
-            ),
-            column.struct_size_bytes,
-            '<br><br>' + column.plain_text_desc
-            if column.plain_text_desc
-            else '',
+    for git_tag in GIT_TAGS:
+        INPUT_FILE_NAME = (
+            UTILS_DIR
+            + '/original_hermes_bytecode_c_src/BytecodeList-%s.def' % git_tag
         )
 
-        if previous_column and (
-            [operand.__dict__ for operand in previous_column.operands]
-            != [operand.__dict__ for operand in column.operands]
-            or column.plain_text_desc != previous_column.plain_text_desc
+        INPUT_VERSION_FILE_NAME = (
+            UTILS_DIR
+            + '/original_hermes_bytecode_c_src/BytecodeVersion-%s.h' % git_tag
+        )
+
+        with open(INPUT_VERSION_FILE_NAME) as fd:
+            version_file_contents = fd.read()
+        bytecode_version: int = int(
+            search(r'BYTECODE_VERSION = (\d+)', version_file_contents).group(1)
+        )
+
+        all_bytecode_versions.add(bytecode_version)
+
+        opcode_count = 0
+
+        accumulated_comment: str = ''
+        accumulated_comment_was_used: bool = False
+
+        readable_type_to_c_type: Dict[str, str] = {}
+
+        with open(INPUT_FILE_NAME) as fd:
+            input_source = fd.read()
+
+        # Backport OPERAND_FUNCTION_ID declarations added with
+        # version 0.12.0 (https://github.com/facebook/hermes/commit/c20d7d8)
+        # in order to improve disassembly output readability if needed.
+
+        if 'OPERAND_FUNCTION_ID(CreateClosure, 3)' not in input_source:
+            input_source += """
+    OPERAND_FUNCTION_ID(CallDirect, 3)
+    OPERAND_FUNCTION_ID(CreateClosure, 3)
+    OPERAND_FUNCTION_ID(CreateClosureLongIndex, 3)
+    """
+
+            if 'CreateGeneratorClosure' in input_source:
+                input_source += """
+    OPERAND_FUNCTION_ID(CreateGeneratorClosure, 3)
+    OPERAND_FUNCTION_ID(CreateGeneratorClosureLongIndex, 3)
+    """
+
+            if 'CreateGenerator' in input_source:
+                input_source += """
+    OPERAND_FUNCTION_ID(CreateGenerator, 3)
+    OPERAND_FUNCTION_ID(CreateGeneratorLongIndex, 3)
+    """
+
+            if 'CreateAsyncClosure' in input_source:
+                input_source += """
+    OPERAND_FUNCTION_ID(CreateAsyncClosure, 3)
+    OPERAND_FUNCTION_ID(CreateAsyncClosureLongIndex, 3)
+    """
+
+        lines: List[str] = input_source.splitlines()
+
+        for line in lines:
+            if not line.strip():
+                accumulated_comment_was_used = False
+                accumulated_comment = ''
+
+            comment_line = match(r'^///\s*(.+)', line)
+
+            if comment_line:
+                comment = comment_line.group(1)
+
+                if accumulated_comment_was_used:
+                    accumulated_comment_was_used = False
+                    accumulated_comment = ''
+                accumulated_comment += comment.strip() + '\n'
+
+            line = match(r'^((?:DEFINE|OPERAND)[^(]+?)\((.+?)\)', line)
+
+            if line:
+                directive, args = line.groups()
+                args = args.split(', ')
+
+                # print('=>', directive, args)
+
+                def define_opcode(instruction_name: str, operand_types: List[str]):
+
+                    nonlocal instruction_name_to_row
+                    nonlocal opcode_count
+                    nonlocal accumulated_comment_was_used
+                    nonlocal accumulated_comment
+
+                    instruction_row = instruction_name_to_row.setdefault(
+                        instruction_name, InstructionRow()
+                    )
+                    instruction_row.instruction_name = instruction_name
+
+                    if not getattr(
+                        instruction_row, 'bytecode_version_to_columns', None
+                    ):
+                        instruction_row.bytecode_version_to_columns = {}
+
+                    column_info = ColumnInfo()
+                    instruction_row.bytecode_version_to_columns[
+                        bytecode_version
+                    ] = column_info
+
+                    instruction_operands: List[OperandInfo] = []
+
+                    for operand_readable_type in operand_types:
+                        operand_info = OperandInfo()
+                        operand_info.operand_meaning = None
+                        operand_info.operand_readable_type = operand_readable_type
+                        operand_info.operand_c_type = readable_type_to_c_type[
+                            operand_readable_type
+                        ]
+                        operand_info.operand_size_bytes = C_TYPE_TO_RAW_SIZE[
+                            operand_info.operand_c_type
+                        ]
+
+                        instruction_operands.append(operand_info)
+
+                    column_info.has_changed_from_previous = False
+                    column_info.struct_size_bytes = sum(
+                        operand.operand_size_bytes
+                        for operand in instruction_operands
+                    )
+                    column_info.present = True
+                    column_info.raw_opcode = opcode_count
+                    column_info.operands = instruction_operands
+
+                    column_info.plain_text_desc = escape(
+                        accumulated_comment.strip()
+                    ).replace('\n', '<br>')
+
+                    accumulated_comment_was_used = True
+
+                    opcode_count += 1
+
+                if directive.startswith('DEFINE_OPERAND_TYPE'):
+                    readable_type_to_c_type[args[0]] = args[1]
+
+                elif directive.startswith('DEFINE_OPCODE'):
+                    define_opcode(args[0], args[1:])
+
+                elif directive == 'DEFINE_JUMP_LONG_VARIANT':
+                    pass
+
+                elif directive.startswith('DEFINE_JUMP'):
+                    args += {
+                        'DEFINE_JUMP_1': ['Addr8'],
+                        'DEFINE_JUMP_2': ['Addr8', 'Reg8'],
+                        'DEFINE_JUMP_3': ['Addr8', 'Reg8', 'Reg8'],
+                    }[directive]
+
+                    saved_comment = accumulated_comment
+                    define_opcode(args[0], args[1:])
+
+                    accumulated_comment = saved_comment
+                    define_opcode(args[0] + 'Long', ['Addr32'] + args[2:])
+
+                elif directive.startswith('DEFINE_RET_TARGET'):
+                    instruction_row = instruction_name_to_row[args[0]]
+
+                    column_info = instruction_row.bytecode_version_to_columns[
+                        bytecode_version
+                    ]
+                    column_info.has_ret_target = True
+
+                elif directive.startswith('OPERAND_'):
+                    operand_meaning = {
+                        'OPERAND_BIGINT_ID': 'bigint_id',
+                        'OPERAND_FUNCTION_ID': 'function_id',
+                        'OPERAND_STRING_ID': 'string_id',
+                    }[directive]
+
+                    instruction_row = instruction_name_to_row[args[0]]
+
+                    column_info = instruction_row.bytecode_version_to_columns[
+                        bytecode_version
+                    ]
+                    column_info.operands[
+                        int(args[1]) - 1
+                    ].operand_meaning = operand_meaning
+
+    # Diff each "ColumnInfo" entry contained within an
+    # "InstructionRow" object, in order to set a
+    # boolean value for the "has_changed_from_previous"
+    # attribute of it
+
+
+    for instruction_name, row in instruction_name_to_row.items():
+        previous_column: Optional[ColumnInfo] = None
+
+        for bytecode_version, column in sorted(
+            row.bytecode_version_to_columns.items()
         ):
-            column.has_changed_from_previous = True
+            column.plain_text_desc = '%s (total size %d)%s' % (
+                ', '.join(
+                    operand.operand_readable_type
+                    if not operand.operand_meaning
+                    else '%s (%s)'
+                    % (operand.operand_readable_type, operand.operand_meaning)
+                    for operand in column.operands
+                ),
+                column.struct_size_bytes,
+                '<br><br>' + column.plain_text_desc
+                if column.plain_text_desc
+                else '',
+            )
 
-        previous_column = column
+            if previous_column and (
+                [operand.__dict__ for operand in previous_column.operands]
+                != [operand.__dict__ for operand in column.operands]
+                or column.plain_text_desc != previous_column.plain_text_desc
+            ):
+                column.has_changed_from_previous = True
 
-out_source = """<!DOCTYPE html>
-<html>
-    <head>
-        <title>Opcodes table</title>
-        <meta charset="utf-8">
-        <style>
-            table {
-                border-collapse: collapse;
-                margin: 14px;
-            }
-            
-            th, td {
-                padding: 3px;
-                border: 1px solid #ccc;
-            }
-        
-            .changed {
-                background: #AB3535;
-            }
-        </style>
-    </head>
-    <body>
-        <h1>Opcodes of the Hermes virtual machine</h1>
-        <p>With the opcode byte value indicated respective to each stable version of the React Native Hermes VM bytecode format, as well as the auto-generated documentation from the "BytecodeList.def" file from the Hermes VM source tree.</p>
-        <p>This list of opcodes is used by the <a href="https://github.com/P1sec/hermes-dec" target="_blank">hermes-dec</a> open-source reverse engineering project.</p>
-        <table>
-            <thead>
-                <tr>
-                    <th>Instruction</th>
-                    <th colspan="%s">Bytecode version to opcode</th>
-                    <th>Documentation</th>
-                </tr>
-                <tr>
-                    <th></th>
-                    %s
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-""" % (
-    len(all_bytecode_versions),
-    ''.join('<th>%s</th>' % tag for tag in sorted(all_bytecode_versions)),
-)
+            previous_column = column
 
+    out_source = """<!DOCTYPE html>
+    <html>
+        <head>
+            <title>Opcodes table</title>
+            <meta charset="utf-8">
+            <style>
+                table {
+                    border-collapse: collapse;
+                    margin: 14px;
+                }
 
-for instruction_name, row in sorted(instruction_name_to_row.items()):
-    out_source += (
-        """<tr>
-        <td>%s</td>"""
-        % instruction_name
-    )
+                th, td {
+                    padding: 3px;
+                    border: 1px solid #ccc;
+                }
 
-    for bytecode_version in sorted(all_bytecode_versions):
-        if bytecode_version in row.bytecode_version_to_columns:
-            column = row.bytecode_version_to_columns[bytecode_version]
-            out_source += column.to_html()
-        else:
-            out_source += '<td></td>'
-
-    out_source += (
-        """
-        <td>%s</td>
-    </tr>"""
-        % column.plain_text_desc
+                .changed {
+                    background: #AB3535;
+                }
+            </style>
+        </head>
+        <body>
+            <h1>Opcodes of the Hermes virtual machine</h1>
+            <p>With the opcode byte value indicated respective to each stable version of the React Native Hermes VM bytecode format, as well as the auto-generated documentation from the "BytecodeList.def" file from the Hermes VM source tree.</p>
+            <p>This list of opcodes is used by the <a href="https://github.com/P1sec/hermes-dec" target="_blank">hermes-dec</a> open-source reverse engineering project.</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Instruction</th>
+                        <th colspan="%s">Bytecode version to opcode</th>
+                        <th>Documentation</th>
+                    </tr>
+                    <tr>
+                        <th></th>
+                        %s
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+    """ % (
+        len(all_bytecode_versions),
+        ''.join('<th>%s</th>' % tag for tag in sorted(all_bytecode_versions)),
     )
 
 
-out_source += """    </body>
-</html>
-"""
+    for instruction_name, row in sorted(instruction_name_to_row.items()):
+        out_source += (
+            """<tr>
+            <td>%s</td>"""
+            % instruction_name
+        )
 
-with open(OUTPUT_FILE_NAME, 'w', encoding='utf-8') as file_handle:
-    file_handle.write(out_source)
+        for bytecode_version in sorted(all_bytecode_versions):
+            if bytecode_version in row.bytecode_version_to_columns:
+                column = row.bytecode_version_to_columns[bytecode_version]
+                out_source += column.to_html()
+            else:
+                out_source += '<td></td>'
 
-print()
-print('[+]  Wrote File => %s' % OUTPUT_FILE_NAME)
+        out_source += (
+            """
+            <td>%s</td>
+        </tr>"""
+            % column.plain_text_desc
+        )
 
-print()
+
+    out_source += """    </body>
+    </html>
+    """
+
+    with open(OUTPUT_FILE_NAME, 'w', encoding='utf-8') as file_handle:
+        file_handle.write(out_source)
+
+    print()
+    print('[+]  Wrote File => %s' % OUTPUT_FILE_NAME)
+
+    print()
+
+if __name__ == '__main__':
+    main()
