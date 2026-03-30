@@ -208,7 +208,7 @@ def get_parser(bytecode_version: int) -> 'module':
             + 'is not supported.'
         )
 
-    elif bytecode_version > 97:
+    elif bytecode_version > 96:
         warning(
             (
                 'Bytecode version %d corresponds to a development or '
