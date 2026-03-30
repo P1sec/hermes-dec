@@ -325,8 +325,7 @@ class HBCReader:
         else:
             fields += [
                 ('readCacheSize', c_uint8),
-                ('writeCacheSize', c_uint8, 6),
-                ('numCacheNewObject', c_uint8, 1),
+                ('writeCacheSize', c_uint8, 7),
                 ('privateNameCacheSize', c_uint8, 1),
             ]
 
@@ -370,6 +369,11 @@ class HBCReader:
                 ('environmentSize', c_uint32),
             ]
         else:
+            if self.header.version >= 98:
+                fields += [
+                    ('numberRegCount', c_uint32),
+                    ('nonPtrRegCount', c_uint32),
+                ]
             fields += [
                 ('frameSize', c_uint32),
             ]
@@ -383,7 +387,6 @@ class HBCReader:
             fields += [
                 ('readCacheSize', c_uint8),
                 ('writeCacheSize', c_uint8),
-                ('numCacheNewObject', c_uint8),
                 ('privateNameCacheSize', c_uint8),
             ]
 
