@@ -10,7 +10,7 @@ SRC_DIR = dirname(realpath(MODULE_DIR))
 
 sys.path.insert(0, SRC_DIR)
 
-from hermes_dec.parsers.hbc_file_parser import HBCReader
+from hermes_dec.parsers.hbc_file_parser import HBCReader, FunctionKind
 from hermes_dec.decompilation.pass1_set_metadata import pass1_set_metadata
 from hermes_dec.decompilation.pass2_transform_code import pass2_transform_code
 from hermes_dec.decompilation.pass3_parse_forin_loops import (
@@ -47,6 +47,11 @@ def decompile_function(state: HermesDecompiler, function_id: int, **kwargs):
     # provide extra context about the current function:
     for key, value in kwargs.items():
         setattr(dehydrated, key, value)
+
+    if dehydrated.function_object.kind == FunctionKind.GeneratorFunction:
+        dehydrated.is_generator = True
+    if dehydrated.function_object.kind == FunctionKind.AsyncFunction:
+        dehydrated.is_async = True
 
     if dehydrated.function_object.hasExceptionHandler:
         dehydrated.exc_handlers = state.hbc_reader.function_id_to_exc_handlers[

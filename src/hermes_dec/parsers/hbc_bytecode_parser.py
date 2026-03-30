@@ -109,7 +109,12 @@ class ParsedInstruction:
         if self.inst.name in ('NewArrayWithBuffer', 'NewArrayWithBufferLong'):
             comment += '  # Array: [%s]' % ', '.join(
                 unpack_slp_array(
-                    self.hbc_reader.arrays[self.arg4 :], self.arg3
+                    (
+                        self.hbc_reader.arrays
+                        if self.hbc_reader.header.version < 97
+                        else self.hbc_reader.literal_values
+                    )[self.arg4 :],
+                    self.arg3,
                 ).to_strings(self.hbc_reader.strings)
             )
         elif self.inst.name in (
@@ -123,7 +128,12 @@ class ParsedInstruction:
                         self.hbc_reader.object_keys[self.arg4 :], self.arg3
                     ).to_strings(self.hbc_reader.strings),
                     unpack_slp_array(
-                        self.hbc_reader.object_values[self.arg5 :], self.arg3
+                        (
+                            self.hbc_reader.object_values
+                            if self.hbc_reader.header.version < 97
+                            else self.hbc_reader.literal_values
+                        )[self.arg5 :],
+                        self.arg3,
                     ).to_strings(self.hbc_reader.strings),
                 )
             )
@@ -198,7 +208,7 @@ def get_parser(bytecode_version: int) -> 'module':
             + 'is not supported.'
         )
 
-    elif bytecode_version > 96:
+    elif bytecode_version > 97:
         warning(
             (
                 'Bytecode version %d corresponds to a development or '

@@ -11,6 +11,7 @@ from ctypes import (
     c_int32,
     c_int64,
 )
+from hermes_dec.parsers.serialized_literal_parser import unpack_slp_array
 from typing import Sequence, Union, Dict, List, Set
 from io import BytesIO, BufferedReader
 from os.path import dirname, realpath
@@ -69,7 +70,7 @@ HEADER_MAGIC = int.from_bytes(
     'Ἑρμῆ'.encode('utf-16be'), 'big'
 )  # 0x1f1903c103bc1fc6
 
-LATEST_BYTECODE_VERSION = 96
+LATEST_BYTECODE_VERSION = 99
 
 SHA1_NUM_BYTES = 20
 
@@ -81,6 +82,12 @@ class ProhibitInvoke(Enum):
     ProhibitCall = 0
     ProhibitConstruct = 1
     ProhibitNone = 2
+
+
+class FunctionKind(Enum):
+    NormalFunction = 0
+    GeneratorFunction = 1
+    AsyncFunction = 2
 
 
 class StringKind(Enum):
@@ -111,9 +118,11 @@ class HBCReader:
     # The following bytes can be sliced and decoded to "SLPArray"
     # objects using the "unpack_slp_array" function of
     # "serialized_literal_parser.py":
+    literal_values: bytes
     arrays: bytes
     object_keys: bytes
     object_values: bytes
+    object_shape_keys: List[List[str]]
 
     bigint_values: List[int]
 
@@ -187,9 +196,22 @@ class HBCReader:
         fields += [
             ('regExpCount', c_uint32),
             ('regExpStorageSize', c_uint32),
-            ('arrayBufferSize', c_uint32),
-            ('objKeyBufferSize', c_uint32),
-            ('objValueBufferSize', c_uint32),
+        ]
+
+        if bytecode_version < 97:
+            fields += [
+                ('arrayBufferSize', c_uint32),
+                ('objKeyBufferSize', c_uint32),
+                ('objValueBufferSize', c_uint32),
+            ]
+        else:
+            fields += [
+                ('literalValueBufferSize', c_uint32),
+                ('objKeyBufferSize', c_uint32),
+                ('objShapeTableCount', c_uint32),
+            ]
+
+        fields += [
             (
                 'cjsModuleOffset' if bytecode_version < 78 else 'segmentID',
                 c_uint32,
@@ -257,28 +279,41 @@ class HBCReader:
             _pack_ = True
             _layout_ = 'ms'
 
-            _fields_ = [
-                # First word
-                ('offset', c_uint32, 25),
-                ('paramCount', c_uint32, 7),
-                # Second word
-                ('bytecodeSizeInBytes', c_uint32, 15),
-                ('functionName', c_uint32, 17),
+        fields = [
+            # First word
+            ('offset', c_uint32, 25),
+            ('paramCount', c_uint32, 7),
+            # Second word
+            ('bytecodeSizeInBytes', c_uint32, 15),
+            ('functionName', c_uint32, 17),
+        ]
+
+        if self.header.version < 97:
+            fields += [
                 # Third word
                 ('infoOffset', c_uint32, 25),
                 ('frameSize', c_uint32, 7),
                 # Fourth word, with flags below
                 ('environmentSize', c_uint8),
-                ('highestReadCacheIndex', c_uint8),
-                ('highestWriteCacheIndex', c_uint8),
-                # Flags
-                ('prohibitInvoke', c_uint8, 2),  # See enum: ProhibitInvoke
-                ('strictMode', c_uint8, 1),
-                ('hasExceptionHandler', c_uint8, 1),
-                ('hasDebugInfo', c_uint8, 1),
-                ('overflowed', c_uint8, 1),
-                ('unused', c_uint8, 2),
             ]
+        else:
+            fields += [
+                ('frameSize', c_uint8),
+            ]
+
+        fields += [
+            ('highestReadCacheIndex', c_uint8),
+            ('highestWriteCacheIndex', c_uint8),
+            # Flags
+            ('prohibitInvoke', c_uint8, 2),  # See enum: ProhibitInvoke
+            ('strictMode', c_uint8, 1),
+            ('hasExceptionHandler', c_uint8, 1),
+            ('hasDebugInfo', c_uint8, 1),
+            ('overflowed', c_uint8, 1),
+            ('kind', c_uint8, 2),  # See enum: FunctionKind
+        ]
+
+        CTypesReader._fields_ = fields
 
         return CTypesReader
 
@@ -288,28 +323,36 @@ class HBCReader:
             _pack_ = True
             _layout_ = 'ms'  # Packed?
 
-            _fields_ = [
-                # First word
-                ('offset', c_uint32),
-                ('paramCount', c_uint32),
-                # Second word
-                ('bytecodeSizeInBytes', c_uint32),
-                ('functionName', c_uint32),
-                # Third word
+        fields = [
+            ('offset', c_uint32),
+            ('paramCount', c_uint32),
+            ('bytecodeSizeInBytes', c_uint32),
+            ('functionName', c_uint32),
+        ]
+
+        if self.header.version < 97:
+            fields += [
                 ('infoOffset', c_uint32),
                 ('frameSize', c_uint32),
-                # Fourth word, with flags below
                 ('environmentSize', c_uint32),
-                ('highestReadCacheIndex', c_uint8),
-                ('highestWriteCacheIndex', c_uint8),
-                # Flags
-                ('prohibitInvoke', c_uint8, 2),  # See enum: ProhibitInvoke
-                ('strictMode', c_uint8, 1),
-                ('hasExceptionHandler', c_uint8, 1),
-                ('hasDebugInfo', c_uint8, 1),
-                ('overflowed', c_uint8, 1),
-                ('unused', c_uint8, 2),
             ]
+        else:
+            fields += [
+                ('frameSize', c_uint32),
+            ]
+
+        fields += [
+            ('highestReadCacheIndex', c_uint8),
+            ('highestWriteCacheIndex', c_uint8),
+            ('prohibitInvoke', c_uint8, 2),  # See enum: ProhibitInvoke
+            ('strictMode', c_uint8, 1),
+            ('hasExceptionHandler', c_uint8, 1),
+            ('hasDebugInfo', c_uint8, 1),
+            ('overflowed', c_uint8, 1),
+            ('kind', c_uint8, 2),  # See enum: FunctionKind
+        ]
+
+        CTypesReader._fields_ = fields
 
         return CTypesReader
 
@@ -459,6 +502,18 @@ class HBCReader:
 
         return CTypesReader
 
+    def get_shape_table_entry_reader(self) -> type:
+
+        class CTypesReader(LittleEndianStructure):
+            _pack_ = True
+            _layout_ = 'ms'
+            _fields_ = [
+                ('key_buffer_offset', c_uint32),
+                ('num_props', c_uint32),
+            ]
+
+        return CTypesReader
+
     def get_exception_handler_info_reader(self) -> type:
 
         class CTypesReader(LittleEndianStructure):
@@ -573,7 +628,9 @@ class HBCReader:
             # Read the overflowed header, if any:
             if function_header.overflowed:
                 new_offset = (
-                    function_header.infoOffset << 16
+                    (function_header.infoOffset << 16)
+                    if self.header.version < 97
+                    else (function_header.functionName << 16)
                 ) | function_header.offset
                 function_header = reader_large()
 
@@ -581,7 +638,7 @@ class HBCReader:
 
                 self.file_buffer.readinto(function_header)
 
-            else:
+            elif self.header.version < 97:
                 self.file_buffer.seek(function_header.infoOffset)
 
             self.function_headers.append(function_header)
@@ -699,15 +756,35 @@ class HBCReader:
     def read_arrays(self):
 
         self.align_over_padding()
-        self.arrays = self.file_buffer.read(self.header.arrayBufferSize)
+        if self.header.version < 97:
+            self.arrays = self.file_buffer.read(self.header.arrayBufferSize)
+        else:
+            self.literal_values = self.file_buffer.read(
+                self.header.literalValueBufferSize
+            )
 
         self.align_over_padding()
         self.object_keys = self.file_buffer.read(self.header.objKeyBufferSize)
 
-        self.align_over_padding()
-        self.object_values = self.file_buffer.read(
-            self.header.objValueBufferSize
-        )
+        if self.header.version < 97:
+            self.align_over_padding()
+            self.object_values = self.file_buffer.read(
+                self.header.objValueBufferSize
+            )
+        else:
+            shape_table_entries = (
+                self.get_shape_table_entry_reader()
+                * self.header.objShapeTableCount
+            )()
+            self.file_buffer.readinto(shape_table_entries)
+
+            self.object_shape_keys = [
+                unpack_slp_array(
+                    self.object_keys[entry.key_buffer_offset :],
+                    entry.num_props,
+                ).to_strings(self.strings)
+                for entry in shape_table_entries
+            ]
 
     def read_bigints(self):
 
@@ -880,7 +957,8 @@ class HBCReader:
 
         self.read_string_storage()  # Defines self.string_storage and self.strings
 
-        self.read_arrays()  # Defines self.arrays, self.object_keys, self.object_values
+        self.read_arrays()  # Defines self.literal_values, self.object_keys,
+        # self.object_shape_keys or self.arrays, self.object_keys, self.object_values
 
         self.bigint_values = []
         if self.header.version >= 87:

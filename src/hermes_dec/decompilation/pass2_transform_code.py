@@ -1292,7 +1292,12 @@ def pass2_transform_code(
         ):
             array_text = '[%s]' % ', '.join(
                 unpack_slp_array(
-                    state.hbc_reader.arrays[op4:], op3
+                    (
+                        state.hbc_reader.arrays
+                        if state.hbc_reader.header.version < 97
+                        else state.hbc_reader.literal_values
+                    )[op4:],
+                    op3,
                 ).to_strings(state.hbc_reader.strings)
             )
             lines.append(
@@ -1313,7 +1318,12 @@ def pass2_transform_code(
                         state.hbc_reader.object_keys[op4:], op3
                     ).to_strings(state.hbc_reader.strings),
                     unpack_slp_array(
-                        state.hbc_reader.object_values[op5:], op3
+                        (
+                            state.hbc_reader.object_values
+                            if state.hbc_reader.header.version < 97
+                            else state.hbc_reader.literal_values
+                        )[op5:],
+                        op3,
                     ).to_strings(state.hbc_reader.strings),
                 )
             )

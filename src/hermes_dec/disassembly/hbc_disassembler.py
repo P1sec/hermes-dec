@@ -12,8 +12,12 @@ SRC_DIR = dirname(realpath(MODULE_DIR))
 
 sys.path.insert(0, SRC_DIR)
 
+from hermes_dec.parsers.hbc_file_parser import (
+    HBCReader,
+    StringKind,
+    FunctionKind,
+)
 from hermes_dec.parsers.hbc_bytecode_parser import parse_hbc_bytecode
-from hermes_dec.parsers.hbc_file_parser import HBCReader, StringKind
 
 
 def do_disassemble(input_file: str):
@@ -86,14 +90,18 @@ def do_disassemble(input_file: str):
                 )
 
             print(
-                '=> [Function #%d "%s" of %d bytes]: %d params, frame size=%d, env size=%d, read index sz=%d, write index sz=%d, strict=%r, exc handler=%r, debug info=%r  @ offset 0x%08x%s%s'
+                '=> [%s #%d "%s" of %d bytes]: %d params, frame size=%d, read index sz=%d, write index sz=%d, strict=%r, exc handler=%r, debug info=%r  @ offset 0x%08x%s%s'
                 % (
+                    {
+                        FunctionKind.NormalFunction: 'Function',
+                        FunctionKind.GeneratorFunction: 'Generator function',
+                        FunctionKind.AsyncFunction: 'Async function',
+                    }[function_header.kind],
                     function_count,
                     hbc_reader.strings[function_header.functionName],
                     function_header.bytecodeSizeInBytes,
                     function_header.paramCount,
                     function_header.frameSize,
-                    function_header.environmentSize,
                     function_header.highestReadCacheIndex,
                     function_header.highestWriteCacheIndex,
                     function_header.strictMode,

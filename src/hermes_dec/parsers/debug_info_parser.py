@@ -61,9 +61,16 @@ def print_debug_info(buf: BytesIO, version: int):
                 break
             line_delta = read_varint(buf)
             column_delta = read_varint(buf)
-            if version >= 94:
+            if version >= 94 and version < 97:
                 scope_address = read_varint(buf)
                 env_register = read_varint(buf)
+            elif version >= 99:
+                env_idx = read_varint(buf)
+            # TODO: Version 99: Implement parsing envIdx and scopingInfoTable_, cf.
+            # https://github.com/facebook/hermes/commits/913d31a/include/hermes/BCGen/HBC/DebugInfo.h
+            # https://github.com/facebook/hermes/commit/bdbf40aa917924322edecff542280b638bcc0cb1
+            # https://github.com/facebook/hermes/commit/78d81f8b81d74f6f81511f591709cdf76ecd32bd
+            # https://github.com/facebook/hermes/commit/dc00631c8d5484fbd07c0e8286a798a9dfc91f0e
             statement_delta = 0
             if line_delta & 1:
                 statement_delta = read_varint(buf)
@@ -74,7 +81,7 @@ def print_debug_info(buf: BytesIO, version: int):
             current_column += column_delta
             current_statement += statement_delta
 
-            if version >= 94:
+            if version >= 94 and version < 97:
                 print(
                     '  Address %d: Line %d - Column %d - Statement %d - Scope address %d - Env register %d'
                     % (
@@ -84,6 +91,17 @@ def print_debug_info(buf: BytesIO, version: int):
                         current_statement,
                         scope_address,
                         env_register,
+                    )
+                )
+            elif version >= 99:
+                print(
+                    '  Address %d: Line %d - Column %d - Statement %d - Scope table index %d'
+                    % (
+                        current_address,
+                        current_line,
+                        current_column,
+                        current_statement,
+                        env_idx,
                     )
                 )
             else:
