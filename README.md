@@ -27,13 +27,24 @@ On non-Hermes based setups of React Native, this file usually contains minified/
 
 The application itself only relies on the Python 3.x standard library for now.
 
-You can install the tool through the following commands:
+You can install the tool through one the following commands:
 
 ```bash
+# With Snap (recommended with Ubuntu):
+sudo snap install hermes-dec
+# Note: the commands to use will then be:
+# - hermes-dec.hbc-disassembler
+# - hermes-dec.hbc-file-parser
+# - hermes-dec.hbc-decompiler
+
+# With AUR (recommended with Archlinux):
+yay -S hermes-dec
+
+# With uv (all distributions):
 sudo snap install --classic uv
 uv tool install hermes-dec
 
-# Or with pipx:
+# With pipx (all distributions):
 pipx install hermes-dec
 ```
 
