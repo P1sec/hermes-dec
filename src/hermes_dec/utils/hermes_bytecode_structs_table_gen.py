@@ -12,7 +12,7 @@ SRC_DIR = dirname(realpath(MODULE_DIR))
 ROOT_DIR = dirname(realpath(SRC_DIR))
 DOCS_DIR = realpath(join(ROOT_DIR, 'docs'))
 
-GIT_TAGS = 'v0.0.1 v0.0.3 v0.1.0 v0.2.1 hbc70 hbc73 v0.7.0 v0.8.0 v0.8.1 v0.12.0 hbc90 hbc92 hbc95 hbc97 hbc98 hbc99'.split(
+GIT_TAGS = 'v0.0.1 v0.0.3 v0.1.0 v0.2.1 hbc70 hbc73 v0.7.0 v0.8.0 v0.9.0 v0.12.0 hbc90 hbc92 hbc95 hbc97 hbc98 hbc99'.split(
     ' '
 )
 
