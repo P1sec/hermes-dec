@@ -1084,7 +1084,7 @@ def main():
         for string_kind, string in zip(
             hbc_reader.string_kinds, hbc_reader.strings
         ):
-            print('=> %s: %s ' % (string_kind, repr(string)))
+            print('=> %r: %r' % (string_kind, string))
 
         for function_count, function_header in enumerate(
             hbc_reader.function_headers
