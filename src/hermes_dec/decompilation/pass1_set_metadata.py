@@ -63,7 +63,7 @@ def pass1_set_metadata(
             for jump_target in instruction.switch_jump_table:
                 function_body.jump_targets.add(jump_target)
 
-        elif instruction.inst.name == 'Ret':
+        elif instruction.inst.name in ('Ret', 'Unreachable'):
             function_body.ret_anchors[instruction.next_pos] = instruction
 
         elif instruction.inst.name == 'Throw':

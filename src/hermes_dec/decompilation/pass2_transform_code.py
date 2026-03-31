@@ -1708,7 +1708,12 @@ def pass2_transform_code(
                 )
             )
         elif instruction.inst.name == 'Unreachable':
-            raise ValueError('Unreachable position reached: %r' % instruction)
+            lines.append(
+                TS(
+                    [RT('// Unreachable position reached: %r' % instruction)],
+                    assembly=[instruction],
+                )
+            )
 
         else:
             lines.append(
