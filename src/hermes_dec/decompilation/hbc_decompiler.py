@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 # -*- encoding: Utf-8 -*-
+from logging import getLogger, debug, DEBUG
 from os.path import realpath, dirname
 from argparse import ArgumentParser
+from datetime import datetime
+from time import time
 import sys
 
 SCRIPT_DIR = dirname(realpath(__file__))
@@ -12,6 +15,12 @@ sys.path.insert(0, SRC_DIR)
 
 from hermes_dec.parsers.hbc_file_parser import HBCReader, FunctionKind
 from hermes_dec.decompilation.pass1_set_metadata import pass1_set_metadata
+from hermes_dec.decompilation.pass1b_make_basic_blocks import (
+    pass1b_make_basic_blocks,
+)
+from hermes_dec.decompilation.pass1c_visit_code_paths import (
+    pass1c_visit_code_paths,
+)
 from hermes_dec.decompilation.pass2_transform_code import pass2_transform_code
 from hermes_dec.decompilation.pass3_parse_forin_loops import (
     pass3_parse_forin_loops,
@@ -58,13 +67,34 @@ def decompile_function(state: HermesDecompiler, function_id: int, **kwargs):
             function_id
         ]
 
-    pass1_set_metadata(state, dehydrated)
+    debug('')
+    debug(
+        '[%s] Decompiling function #%d ("%s")...'
+        % (
+            datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            function_id,
+            state.hbc_reader.strings[dehydrated.function_object.functionName],
+        )
+    )
 
-    pass2_transform_code(state, dehydrated)
-
-    pass3_parse_forin_loops(state, dehydrated)
-
-    pass4_name_closure_vars(state, dehydrated)
+    for step in [
+        pass1_set_metadata,
+        pass1b_make_basic_blocks,
+        # pass1c_visit_code_paths, # <-- Commented right now
+        pass2_transform_code,
+        pass3_parse_forin_loops,
+        pass4_name_closure_vars,
+    ]:
+        start_time = time()
+        step(state, dehydrated)
+        debug(
+            '[%s]   Ran "%s" in %0.5f seconds...'
+            % (
+                datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                step.__name__,
+                time() - start_time,
+            )
+        )
 
     dehydrated.output_code(state)
 
@@ -93,10 +123,15 @@ def main():
 
     args = ArgumentParser()
 
+    args.add_argument('-d', '--debug', action='store_true')
+
     args.add_argument('input_file')
     args.add_argument('output_file', nargs='?')
 
     args = args.parse_args()
+
+    if args.debug:
+        getLogger().setLevel(DEBUG)
 
     state = HermesDecompiler()
     state.input_file = args.input_file

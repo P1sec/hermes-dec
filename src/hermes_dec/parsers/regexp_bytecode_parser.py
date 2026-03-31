@@ -10,15 +10,12 @@ from ctypes import (
     c_uint32,
 )
 from typing import List, Set, Sequence, Tuple, Any, Union, Dict, Optional
-from logging import log, getLogger, DEBUG
 from dataclasses import dataclass
 from enum import IntEnum, IntFlag
 from io import BytesIO
 from re import sub
 
 from hermes_dec.parsers.pretty_print import pretty_print_structure
-
-getLogger().setLevel(DEBUG)
 
 
 """

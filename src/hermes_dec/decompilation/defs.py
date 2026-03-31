@@ -1,8 +1,9 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 # -*- encoding: Utf-8 -*-
 from typing import List, Set, Dict, Tuple, Optional, Sequence, Union, Any
 from os.path import dirname, realpath
 from dataclasses import dataclass
+from enum import IntEnum
 from re import sub
 import sys
 
@@ -33,20 +34,76 @@ class HermesDecompiler:
     indent_level: int = 0  # Used while producing decompilation output
 
 
+# Output to the upper-lever class (WIP)
+class DecompiledFunctionTextChunkType(IntEnum):
+    RAW_TEXT = 1
+    CLOSURE_REF = 2
+
+
+class DecompiledFunctionTextChunk:
+    function_id: int
+
+    # WIP ..
+
+
 # This should encompass the scope for a HBC assembly-level basic
 # block (retranscribed as a for(;;) switch { case X: } case in
-# the decompiled code, if not matching a particular NestingFrame
+# the decompiled code, if not matching a particular NestedFrame
 # object as defined below)
 # This will provide the ability to construct a graph of
 # the basic assembly blocks in the disassembled/decompiled
 # output
 class BasicBlock:
+    # File offsets of the basic block in the Hermes bytecode file.
     start_address: int
     end_address: int
 
+    def __repr__(self):
+        out = '['
+        out += '%08x' % self.start_address + ' -> '
+        out += '%08x' % self.end_address + ' : '
+        out += '%s' % self.insn_count + ' insns'
+        if self.max_acc_insn_weight:
+            out += ' weight ' + '%s' % self.max_acc_insn_weight
+        out += ']'
+        return out
+
+    # Individual number of instructions in the basic block
+    insn_count: int
+
+    # (pass1c algorithm:)
+
+    # Number of instructions that will be gone through
+    # when taking the longest possible code path to
+    # the present basic block without cycling.
+    #
+    # => Calculated through, for each "parent_nodes",
+    # adding up the "insn_count" of each block where
+    # "max_acc_insn_weight" is not set with the
+    # "max_acc_insn_weight" value of the first block
+    # in the ascending block graph where it is set.
+    #
+    # => For the first/root block of the code graph,
+    # this value is 0.
+    #
+    # => Used for choosing which block should be
+    # preferred to be the main branch or the conditional
+    # branch in case of if() conditions, etc. (the branch
+    # going the block with the largest "max_acc_insn_weight"
+    # should be preferred to be main, and the block with
+    # the smallest value should be preferred to be conditional)
+    #
+    # (This is temporarily deprecated, and will
+    # be reintegrated if deemed useful)
+    max_acc_insn_weight: int = 0
+
+    # State that will be used in "pre_render_graph.py":
+    rendered: bool = False
+    marked_to_render: bool = False
+
     # These flags should indicate whether we have
     # encountered cycling in
-    # "graph_traversers/step2_visite_code_paths.py"
+    # "graph_traversers/step1c_visit_code_paths.py"
     # (which indicates the presence of a loop):
     may_be_cycling_anchor: bool = False
     may_be_cycling_target: bool = False
@@ -57,8 +114,8 @@ class BasicBlock:
     is_unconditional_throw_anchor: bool = False
     is_unconditional_return_end: bool = False
 
-    # These flags delimite blocks that have the
-    # code to continue somewhere else
+    # These flags delimite blocks that have exactly
+    # one determined branching end
     is_unconditional_jump_anchor: bool = False
     is_yield_action_anchor: bool = False
 
@@ -68,6 +125,8 @@ class BasicBlock:
     is_conditional_jump_anchor: bool = False
     if_switch_action_anchor: bool = False
 
+    # When one the flags above are set, this provides
+    # insight about the instruction performing the jump
     anchor_instruction: Optional[ParsedInstruction] = None
     jump_targets_for_anchor: Optional[List[int]] = None
 
@@ -96,7 +155,7 @@ class BasicBlock:
 
     # Whether this basic block should still be visible in the
     # decompiled code (switch this attribute to False when
-    # a NestingFrame totally overlaps the concerned block)
+    # a NestedFrame totally overlaps the concerned block)
     stay_visible: bool = True
 
 
@@ -138,6 +197,10 @@ class DecompiledFunctionBody:
         int, ParsedInstruction
     ]  # Unreacheable address associated with a jump instruction
     jump_targets: Set[int]  # Jump target address
+
+    instruction_boundaries: List[
+        int
+    ]  # Offset for each instruction and end of code, the first item is zero
 
     is_closure: bool = False
     is_async: bool = False

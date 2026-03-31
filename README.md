@@ -25,7 +25,9 @@ On non-Hermes based setups of React Native, this file usually contains minified/
 
 ## Installation
 
-The application itself only relies on the Python 3.x standard library for now.
+The command-line application itself only relies on the Python 3.x standard library for now.
+
+The experimental GUI also relies on the a few external modules (listed in the `pyproject.toml` file below) to work.
 
 You can install the tool through one the following commands:
 

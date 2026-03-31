@@ -1,0 +1,23 @@
+/**
+ * Home view styling
+ */
+
+ #open_button_container {
+    font-size: 28px;
+}
+
+#open_button_container input {
+    font-size: 28px;
+    cursor: pointer;
+    margin-left: 8px;
+}
+
+#home_view {
+    padding: 46px 38px;
+}
+
+#recent_files_table tbody tr:hover {
+    background: #eee;
+    cursor: pointer;
+}
+

@@ -26,11 +26,16 @@ classifiers = [
 ]
 license = "AGPL-3.0-or-later"
 license-files = ["LICENSE"]
+dependencies = [
+    "appdirs>=1.4.4",
+    "sqlalchemy>=2.0.48",
+    "unidecode>=1.4.0",
+    "websockets>=16.0",
+]
 
 [project.optional-dependencies]
 codegen = ["clang==12.0.1"]
 test = [ "pytest==9.0.2" ]
-
 
 [project.urls]
 Homepage = "https://github.com/P1sec/hermes-dec"
@@ -41,6 +46,7 @@ Issues = "https://github.com/P1sec/hermes-dec/issues"
 hbc-decompiler = "hermes_dec.decompilation.hbc_decompiler:main"
 hbc-disassembler = "hermes_dec.disassembly.hbc_disassembler:main"
 hbc-file-parser = "hermes_dec.parsers.hbc_file_parser:main"
+hermes-dec-gui = "hermes_dec.gui.web_launcher:main"
 hermes-dec-regen-pydefs = "hermes_dec.utils.regen_hbc_opcodes:main"
 hermes-dec-regen-pydefs-regexp = "hermes_dec.utils.regen_hbc_regex_parser:main"
 hermes-dec-regen-html = "hermes_dec.utils.hermes_bytecode_structs_table_gen:main"
