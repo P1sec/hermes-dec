@@ -12,4 +12,7 @@ tests/assets/*di*
 *.glade#
 *~
 *.swp
+uv.lock
+*.snap
+.python-version
 .vscode

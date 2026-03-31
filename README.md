@@ -1,6 +1,6 @@
 `hermes-dec` is a reverse-engineering tool which can be used for disassembling and decompiling React Native files compiled into the Hermes VM bytecode (HBC) format.
 
-For a wider presentation of its purpose, please see our [presentation blog post](https://labs.p1sec.com/?p=2070).
+For a wider presentation of its purpose, please see our [presentation blog post](https://www.p1sec.com/blog/releasing-hermes-dec-an-open-source-disassembler-and-decompiler-for-the-react-native-hermes-bytecode).
 
 ## Background
 
@@ -16,7 +16,7 @@ A variety of technical documentation regarding the Hermes VM, which is published
 
 In Android applications released under the .APK format, the Hermes bytecode (HBC) file is usually located at:
 
-```
+```console
 $ file assets/index.android.bundle
 assets/index.android.bundle: Hermes JavaScript bytecode, version 84
 ```
@@ -27,59 +27,67 @@ On non-Hermes based setups of React Native, this file usually contains minified/
 
 The command-line application itself only relies on the Python 3.x standard library for now.
 
-The GUI also relies on the a few external modules (listed in the `pip3` command below) to work.
+The experimental GUI also relies on the a few external modules (listed in the `pyproject.toml` file below) to work.
 
-You can install the tool through the following commands on Ubuntu 22.04:
+You can install the tool through one the following commands:
 
-```
-sudo apt install -y python3-pip
-sudo pip3 install --upgrade websockets sqlalchemy unidecode appdirs git+https://github.com/P1sec/hermes-dec
-```
+```bash
+# With Snap (recommended with Ubuntu):
+sudo snap install hermes-dec
+# Note: the commands to use will then be:
+# - hermes-dec.hbc-disassembler
+# - hermes-dec.hbc-file-parser
+# - hermes-dec.hbc-decompiler
 
-Certain internal development utilities may however require to install `libclang` for Python:
+# With AUR (recommended with Archlinux):
+yay -S hermes-dec
 
-```
-sudo apt install python3-clang-12
+# With uv (all distributions):
+sudo snap install --classic astral-uv
+uv tool install hermes-dec
+
+# With pipx (all distributions):
+pipx install hermes-dec
 ```
 
 ## Usage
 
 If you didn't install the tool system-wide using the command above, you can also download the source using this command and find the same utilities at the root:
 
-```
+```console
 $ git clone git@github.com:P1sec/hermes-dec.git
 $ cd hermes-dec/
 ```
 
 For an Android application, you should extract the Hermes bundle file from the .APK file through using your favorite unzipping tool (an .APK file is a renamed .ZIP archive):
 
-```
+```console
 $ 7z x my_application.apk
 $ cd my_application
 ```
 
 And check the type of the `assets/index.android.bundle` React Native bundle file which, in the case of a React Native-based application, should be either a plain-text minified JavaScript bundle file or an Hermes bytecode file:
 
-```
+```console
 $ file assets/index.android.bundle
 assets/index.android.bundle: Hermes JavaScript bytecode, version 84
 ```
 
 If the concerned file is indeed an Hermes JavaScript bytecode file, you may then decode most of its file headers using the following utility (which output may not be stable over time):
 
-```
+```bash
 hbc-file-parser assets/index.android.bundle
 ```
 
 You may then disassemble the contents of the React Native bytecode file to the `/tmp/my_output_file.hasm` output file using the following command (leave out the second parameter in order to send the disassembled content to the standard output):
 
-```
+```bash
 hbc-disassembler assets/index.android.bundle /tmp/my_output_file.hasm
 ```
 
 And perform the decompilation to pseudo-code (which is not valid JavaScript yet as it does not retranscribe loop/conditional structures) using the following command:
 
-```
+```bash
 hbc-decompiler assets/index.android.bundle /tmp/my_output_file.js
 ```
 

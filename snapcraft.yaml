@@ -1,0 +1,54 @@
+name: hermes-dec # you probably want to 'snapcraft register <name>'
+title: hermes-dec
+contact: https://matrix.to/#/#hermes-dec:matrix.org
+license: GPL-3.0+
+issues: https://github.com/P1sec/hermes-dec/issues
+source-code: https://github.com/P1sec/hermes-dec
+website: https://www.p1sec.com/blog/releasing-hermes-dec-an-open-source-disassembler-and-decompiler-for-the-react-native-hermes-bytecode
+base: core24 # the base snap is the execution environment for this snap
+version: '0.1.3' # just for humans, typically '1.2+git' or '1.3.2'
+summary: A reverse engineering tool for the React Native Hermes bytecode
+description: |
+  hermes-dec is a reverse-engineering tool which can be used for
+  disassembling and decompiling React Native files compiled into
+  the Hermes VM bytecode (HBC) format.
+
+grade: stable
+confinement: strict
+
+apps:
+  hbc-decompiler:
+    command-chain: [bin/python3.12]
+    command: bin/hbc-decompiler
+    plugs:
+      - home
+  hbc-disassembler:
+    command-chain: [bin/python3.12]
+    command: bin/hbc-disassembler
+    plugs:
+      - home
+  hbc-file-parser:
+    command-chain: [bin/python3.12]
+    command: bin/hbc-file-parser
+    plugs:
+      - home
+
+parts:
+  qcsuper:
+    plugin: python
+    build-packages:
+      - build-essential
+      - python3-dev
+      - python3-pip
+    stage-packages:
+      - libpython3-stdlib
+      - libpython3.12-minimal
+      - libpython3.12-stdlib
+      - python3-venv
+      - python3-minimal
+      - python3-wheel
+      - python3-setuptools
+      - python3.12-minimal
+    source: .
+    build-attributes:
+     - enable-patchelf

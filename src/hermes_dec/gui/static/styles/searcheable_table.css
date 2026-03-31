@@ -1,0 +1,47 @@
+
+
+/*
+ * Search bar styling
+ */
+
+.search_bar {
+    padding: 9px;
+    padding-top: 4px;
+}
+
+ /**
+ * Table layouts
+ */
+
+ .searcheable_table_layout {
+    display: flex;
+    overflow: hidden;
+    flex-direction: column;
+ }
+
+ .search_bar {
+    flex-grow: 0;
+ }
+
+ .searcheable_table_layout .scrollable_area {
+    flex-grow: 1;
+ }
+
+.searchable_table {
+    table-layout: fixed;
+    word-break: break-all;
+}
+
+.unselectable_table {
+    cursor: default;
+}
+.selectable_table tr.unselected_row:hover {
+    background: #eee;
+    cursor: pointer;
+}
+.selectable_table tr.selected_row {
+    background: #f1f1f1;
+    cursor: default;
+}
+
+/* Todo... */

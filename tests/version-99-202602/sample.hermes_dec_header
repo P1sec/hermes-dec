@@ -1,0 +1,212 @@
+
++-------------------------------------------------------------------------+
+| Magic                        | 0x1f1903c103bc1fc6                       |
++-------------------------------------------------------------------------+
+| Version                      | 99                                       |
++-------------------------------------------------------------------------+
+| SourceHash                   | a692192bdc8ee6f7b2b9918faf18a64db39587c8 |
++-------------------------------------------------------------------------+
+| FileLength                   | 2999                                     |
++-------------------------------------------------------------------------+
+| GlobalCodeIndex              | 0                                        |
++-------------------------------------------------------------------------+
+| FunctionCount                | 8                                        |
++-------------------------------------------------------------------------+
+| StringKindCount              | 2                                        |
++-------------------------------------------------------------------------+
+| IdentifierCount              | 19                                       |
++-------------------------------------------------------------------------+
+| StringCount                  | 35                                       |
++-------------------------------------------------------------------------+
+| OverflowStringCount          | 0                                        |
++-------------------------------------------------------------------------+
+| StringStorageSize            | 286                                      |
++-------------------------------------------------------------------------+
+| BigIntCount                  | 0                                        |
++-------------------------------------------------------------------------+
+| BigIntStorageSize            | 0                                        |
++-------------------------------------------------------------------------+
+| RegExpCount                  | 1                                        |
++-------------------------------------------------------------------------+
+| RegExpStorageSize            | 66                                       |
++-------------------------------------------------------------------------+
+| LiteralValueBufferSize       | 12                                       |
++-------------------------------------------------------------------------+
+| ObjKeyBufferSize             | 5                                        |
++-------------------------------------------------------------------------+
+| ObjShapeTableCount           | 1                                        |
++-------------------------------------------------------------------------+
+| NumStringSwitchImms          | 0                                        |
++-------------------------------------------------------------------------+
+| SegmentID                    | 0                                        |
++-------------------------------------------------------------------------+
+| CjsModuleCount               | 0                                        |
++-------------------------------------------------------------------------+
+| FunctionSourceCount          | 2                                        |
++-------------------------------------------------------------------------+
+| DebugInfoOffset              | 2596                                     |
++-------------------------------------------------------------------------+
+| StaticBuiltins               | 0                                        |
++-------------------------------------------------------------------------+
+| CjsModulesStaticallyResolved | 0                                        |
++-------------------------------------------------------------------------+
+| HasAsync                     | 0                                        |
++-------------------------------------------------------------------------+
+
+=> <StringKind.String: 0>: ''
+=> <StringKind.String: 0>: '?anon_0_testx'
+=> <StringKind.String: 0>: 'AAAAAAAA'
+=> <StringKind.String: 0>: 'Bon-jour : '
+=> <StringKind.String: 0>: 'Generator functions may not be called on executing generators'
+=> <StringKind.String: 0>: 'Hello! Exception handling'
+=> <StringKind.String: 0>: 'global'
+=> <StringKind.String: 0>: 'a'
+=> <StringKind.String: 0>: 'zb'
+=> <StringKind.String: 0>: 'b'
+=> <StringKind.String: 0>: 'bonjour'
+=> <StringKind.String: 0>: 'dkooDD JPOD D09D\\n\\\\  @ .\\r\\n\\t@ \\x00 D+D  '
+=> <StringKind.String: 0>: 'gmi'
+=> <StringKind.String: 0>: 'le'
+=> <StringKind.String: 0>: 'dçdàçD°D+D'
+=> <StringKind.String: 0>: 'D+D +D\u202f+D +\nD+ÉD '
+=> <StringKind.Identifier: 1>: 'testx'
+=> <StringKind.Identifier: 1>: 'xy'
+=> <StringKind.Identifier: 1>: 'exec'
+=> <StringKind.Identifier: 1>: 'gen'
+=> <StringKind.Identifier: 1>: 'alert'
+=> <StringKind.Identifier: 1>: 'random'
+=> <StringKind.Identifier: 1>: 'onload'
+=> <StringKind.Identifier: 1>: 'log'
+=> <StringKind.Identifier: 1>: 'console'
+=> <StringKind.Identifier: 1>: 'Date'
+=> <StringKind.Identifier: 1>: 'test2'
+=> <StringKind.Identifier: 1>: 'Math'
+=> <StringKind.Identifier: 1>: 'done'
+=> <StringKind.Identifier: 1>: 'next'
+=> <StringKind.Identifier: 1>: 'now'
+=> <StringKind.Identifier: 1>: 'window'
+=> <StringKind.Identifier: 1>: 'print'
+=> <StringKind.Identifier: 1>: 'value'
+=> <StringKind.Identifier: 1>: 'ze'
+=> [Function #0 global of 236 bytes]: 1 params @ offset 0x00000358
+=> [Function #1 testx of 31 bytes]: 2 params @ offset 0x00000444
+=> [Function #2 gen of 24 bytes]: 1 params @ offset 0x00000463
+=> [Function #3 ze of 89 bytes]: 1 params @ offset 0x0000047b
+=> [Function #4 ?anon_0_testx of 27 bytes]: 2 params @ offset 0x000004d4
+=> [Function #5 gen of 489 bytes]: 1 params @ offset 0x000004ef
+=> [Function #6 zb of 37 bytes]: 1 params @ offset 0x000006d8
+=> [Function #7 ?anon_0_testx of 415 bytes]: 2 params @ offset 0x000006fd
+
+=> BigInts:
+
+=> Regexp #0: 0000010007040b16444b4f4f4444204a504f4420443039440a5c20204020050b070d0a09402000201c0000000001000000ffffffff01360000000c440b0344202000
+  => Decompiled:  /DKOODD JPOD D09D\n\\  @ .\r\n\t@ \x00 D+D  /igm
+
+=> Function source #0: functionId 5 = string @ 00000000
+=> Function source #1: functionId 7 = string @ 00000000
+
+=> Debug data:
+
++-----------------------------+
+| Filename count        | 1   |
++-----------------------------+
+| Filename storage size | 27  |
++-----------------------------+
+| File region count     | 1   |
++-----------------------------+
+| Debug data size       | 320 |
++-----------------------------+
+
++-------------+
+| Offset | 0  |
++-------------+
+| Length | 27 |
++-------------+
+b'version-99-202602/sample.js'
+
++-----------------------+
+| From address      | 0 |
++-----------------------+
+| Filename id       | 0 |
++-----------------------+
+| Source mapping id | 0 |
++-----------------------+
+
+Function index: 0
+Start line: 7
+Start column: 1
+  Address 0: Line 8 - Column 2 - Statement 5 - Scope table index 0
+  Address 1: Line 8 - Column 7 - Statement 5 - Scope table index 1
+  Address 1: Line 14 - Column 8 - Statement 5 - Scope table index 0
+  Address 12: Line 14 - Column 8 - Statement 6 - Scope table index 13
+  Address 12: Line 17 - Column 369 - Statement 6 - Scope table index 0
+  Address 18: Line 17 - Column 385 - Statement 7 - Scope table index 5
+  Address 16: Line 20 - Column 394 - Statement 7 - Scope table index -14
+  Address 21: Line 20 - Column 396 - Statement 24 - Scope table index 18
+  Address 25: Line 23 - Column 405 - Statement 24 - Scope table index -6
+  Address 31: Line 23 - Column 416 - Statement 25 - Scope table index 5
+  Address 32: Line 26 - Column 417 - Statement 25 - Scope table index 10
+  Address 41: Line 26 - Column 417 - Statement 26 - Scope table index 5
+  Address 30: Line 28 - Column 434 - Statement 32 - Scope table index -11
+  Address 31: Line 33 - Column 439 - Statement 38 - Scope table index 1
+  Address 36: Line 33 - Column 442 - Statement 39 - Scope table index 4
+  Address 43: Line 35 - Column 443 - Statement 47 - Scope table index 0
+  Address 44: Line 27 - Column 449 - Statement 47 - Scope table index 9
+  Address 33: Line 30 - Column 450 - Statement 47 - Scope table index 11
+  Address 38: Line 30 - Column 456 - Statement 48 - Scope table index 23
+  Address 43: Line 32 - Column 457 - Statement 53 - Scope table index 17
+  Address 44: Line 32 - Column 465 - Statement 53 - Scope table index 1
+  Address 16: Line 31 - Column 466 - Statement 54 - Scope table index 7
+  Address 16: Line 42 - Column 467 - Statement 54 - Scope table index 0
+
+Function index: 3
+Start line: 39
+Start column: 1
+  Address 0: Line 40 - Column 18 - Statement 0 - Scope table index 7
+  Address 6: Line 40 - Column 29 - Statement 1 - Scope table index 5
+  Address 6: Line 49 - Column 46 - Statement 7 - Scope table index -3
+  Address 7: Line 53 - Column 51 - Statement 7 - Scope table index 1
+  Address 7: Line 56 - Column 52 - Statement 13 - Scope table index -8
+  Address 8: Line 60 - Column 57 - Statement 13 - Scope table index 1
+  Address 8: Line 64 - Column 66 - Statement 17 - Scope table index -5
+  Address 41: Line 63 - Column 73 - Statement 17 - Scope table index 1
+  Address 43: Line 62 - Column 78 - Statement 18 - Scope table index 16
+  Address 43: Line 110 - Column 87 - Statement 18 - Scope table index 4
+  Address 81: Line 134 - Column 95 - Statement 19 - Scope table index 6
+  Address 86: Line 141 - Column 176 - Statement 25 - Scope table index -5
+  Address 87: Line 143 - Column 205 - Statement 24 - Scope table index -31
+  Address 93: Line 143 - Column 216 - Statement 25 - Scope table index 9
+  Address 94: Line 147 - Column 217 - Statement 25 - Scope table index 19
+  Address 102: Line 147 - Column 197 - Statement -46 - Scope table index 24
+  Address 87: Line 149 - Column 198 - Statement -42 - Scope table index 3
+  Address 88: Line 152 - Column 203 - Statement -42 - Scope table index 1
+  Address 107: Line 216 - Column 181 - Statement -193 - Scope table index 15
+  Address 111: Line 225 - Column 182 - Statement -162 - Scope table index 0
+  Address 112: Line 225 - Column 218 - Statement -162 - Scope table index 113
+  Address 116: Line 254 - Column 107 - Statement -132 - Scope table index -4
+  Address 117: Line 254 - Column 106 - Statement -132 - Scope table index 6
+  Address 159: Line 263 - Column 106 - Statement -132 - Scope table index 2
+  Address 168: Line 262 - Column 112 - Statement -132 - Scope table index 1
+  Address 176: Line 264 - Column 113 - Statement -116 - Scope table index 0
+  Address 185: Line 261 - Column 112 - Statement -109 - Scope table index 7
+  Address 186: Line 261 - Column 151 - Statement -109 - Scope table index 25
+  Address 190: Line 281 - Column 168 - Statement -103 - Scope table index 0
+  Address 191: Line 286 - Column 177 - Statement -103 - Scope table index 1
+  Address 196: Line 290 - Column 166 - Statement -102 - Scope table index 6
+  Address 207: Line 292 - Column 167 - Statement -96 - Scope table index 1
+  Address 208: Line 291 - Column 179 - Statement -111 - Scope table index 9
+  Address 223: Line 275 - Column 183 - Statement -110 - Scope table index 19
+  Address 223: Line 281 - Column 184 - Statement -110 - Scope table index 6
+  Address 230: Line 281 - Column 187 - Statement -109 - Scope table index 15
+  Address 221: Line 290 - Column 172 - Statement -90 - Scope table index 0
+  Address 222: Line 290 - Column 205 - Statement -90 - Scope table index 1
+  Address 228: Line 292 - Column 206 - Statement -73 - Scope table index 40
+  Address 229: Line 275 - Column 212 - Statement -73 - Scope table index 1
+
+Function index: 16
+Start line: 1
+Start column: -11
+  Address 40: Line 9 - Column -11 - Statement 1 - Scope table index 9
+  Address 40: Line 25 - Column -10 - Statement 0 - Scope table index 0
+
+  => Sources data: 000701000301000501000501000c01000b01000d010006e9020006011005017e06097205010212110406097a06010b05010106010a09010005017505117506010b05010605010304010705010008017006097506010b0501061701050501110501000801647f010701001601007f0327010002110706010b05010013117d06010805010007017806010805010009097b04217e0701027f05100100e00009042631080601050fd1007b0601051d617f06010b09010108011308016c18b97f710501030401070501001381016a0fe97e041301001f010024f100043b917f7c1e01007f062a120002097e06010805010010097b7f0707010027190429110006010b09010005097506010b05010106017f0c09710f61041301000c01060701030f017713710013010021010605012811015e06017f1001752811000901002101007f

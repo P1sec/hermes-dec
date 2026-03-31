@@ -1,0 +1,215 @@
+testx = undefined;
+gen = undefined;
+ze = undefined;
+r2 = async function(a0) { // Original name: testx, environment: r1
+    r4 = undefined;
+    r0 = undefined;
+    r0 = arguments;
+    r3 = r0;
+    r2 = spawnAsync;
+    r1 = function* (a0) { // Original name: ?anon_0_testx, environment: r0
+        r0 = function* (a0) { // Original name: ?anon_0_?anon_0_testx, environment: r0
+            _fun3: for(var _fun3_ip = 0; ; ) switch(_fun3_ip) {
+case 0:
+                StartGenerator();
+                ResumeGenerator(result_out_reg=0, return_bool_out_reg=1);
+                if(r1) { _fun3_ip = 121; continue _fun3 }
+case 7:
+                r4 = global;
+                r2 = r4.testx;
+                r3 = r4.test2;
+                r5 = 42;
+                r1 = 'D+D +D\u202f+D +\nD+ÉD ';
+                r1 = r5 + r1;
+                r1 = r1 + r3;
+                r3 = undefined;
+                r1 = r2.bind(r3)(r1);
+                SaveGenerator(address=46);
+case 44:
+                return r1;
+case 46:
+                ResumeGenerator(result_out_reg=1, return_bool_out_reg=2);
+                if(r2) { _fun3_ip = 118; continue _fun3 }
+case 52:
+                r2 = r4.gen;
+                r2 = r2.bind(r3)();
+                SaveGenerator(address=65);
+case 63:
+                return r2;
+case 65:
+                ResumeGenerator(result_out_reg=2, return_bool_out_reg=5);
+                if(r5) { _fun3_ip = 115; continue _fun3 }
+case 71:
+                r7 = r4.console;
+                r6 = r7.log;
+                r5 = a0;
+                r5 = r6.bind(r7)(r5);
+                r6 = r4.console;
+                r5 = r6.log;
+                r4 = r4.xy;
+                r4 = r5.bind(r6)(r4);
+                return r3;
+case 115:
+                return r2;
+case 118:
+                return r1;
+case 121:
+                return r0;
+            }
+        };
+        return r0;
+    };
+    r0 = this;
+    r0 = r2.bind(r4)(r1, r0, r3);
+    return r0;
+};
+r0 = global;
+r0['testx'] = r2;
+r2 = function* () { // Original name: gen, environment: r1
+    r0 = function* () { // Original name: ?anon_0_gen, environment: r0
+        _fun5: for(var _fun5_ip = 0; ; ) switch(_fun5_ip) {
+case 0:
+            StartGenerator();
+            r2 = undefined;
+            r3 = undefined;
+            ResumeGenerator(result_out_reg=0, return_bool_out_reg=1);
+            if(r1) { _fun5_ip = 176; continue _fun5 }
+case 14:
+            r1 = 42;
+            SaveGenerator(address=21);
+case 19:
+            return r1;
+case 21:
+            ResumeGenerator(result_out_reg=1, return_bool_out_reg=4);
+            if(r4) { _fun5_ip = 173; continue _fun5 }
+case 30: // try_start_0 // try_start_1
+            r4 = global;
+            r4 = r4.gen;
+            r5 = r4.bind(r2)();
+            r4 = r5.next;
+            r4 = r4.bind(r5)();
+case 50: // try_end0
+            _fun5_ip = 71; continue _fun5;
+case 52: // catch_target0
+            CatchBlockStart(arg_register=4);
+            r4 = global;
+            r5 = r4.print;
+            r4 = 'Hello! Exception handling';
+            r4 = r5.bind(r2)(r4);
+case 71: // try_end1
+            _fun5_ip = 170; continue _fun5;
+case 73: // catch_target1
+            CatchBlockStart(arg_register=3);
+case 75: // try_start_2
+            r5 = 432;
+            r4 = 'dçdàçD°D+D';
+            r5 = r5 * r4;
+            r4 = 478;
+            r4 = r5 + r4;
+            if(!r4) { _fun5_ip = 149; continue _fun5 }
+case 102:
+            r4 = global;
+            r6 = r4.console;
+            r5 = r6.log;
+            r7 = r3;
+            r3 = 'Bon-jour : ';
+            r4 = r3 + r7;
+            r3 = 340000;
+            r7 = r7 * r3;
+            r3 = 6;
+            r3 = r7 + r3;
+            r3 = r5.bind(r6)(r4, r3);
+case 149: // try_end2
+            _fun5_ip = 170; continue _fun5;
+case 151: // catch_target2
+            CatchBlockStart(arg_register=3);
+            r3 = global;
+            r4 = r3.alert;
+            r3 = 'AAAAAAAA';
+            r3 = r4.bind(r2)(r3);
+case 170:
+            return r2;
+case 173:
+            return r1;
+case 176:
+            return r0;
+        }
+    };
+    return r0;
+};
+r0['gen'] = r2;
+r1 = function() { // Original name: ze, environment: r1
+    _fun6: for(var _fun6_ip = 0; ; ) switch(_fun6_ip) {
+case 0:
+        r0 = undefined;
+        r1 = global;
+        r4 = r1.Math;
+        r2 = r4.random;
+        r2 = r2.bind(r4)();
+        if(r2) { _fun6_ip = 30; continue _fun6 }
+case 24:
+        var _closure1_slot0 = r0;
+        _fun6_ip = 52; continue _fun6;
+case 30:
+        r2 = function() { // Original name: zb, environment: r3
+            _fun7: for(var _fun7_ip = 0; ; ) switch(_fun7_ip) {
+case 0:
+                r0 = global;
+                r1 = r0.Date;
+                r0 = r1.now;
+                r0 = r0.bind(r1)();
+                if(!r0) { _fun7_ip = 33; continue _fun7 }
+case 20:
+                r1 = _closure1_slot0;
+                r0 = undefined;
+                r0 = r1.bind(r0)();
+case 33:
+                r0 = undefined;
+                return r0;
+            }
+        };
+        _closure1_slot0 = r2;
+        r2 = r2.bind(r0)();
+        r1 = r1.ze;
+        r1 = r1.bind(r0)();
+case 52:
+        return r0;
+    }
+};
+r0['ze'] = r1;
+r2 = r0.window;
+r1 = r0.ze;
+r2['onload'] = r1;
+r1 = r0.ze;
+r4 = undefined;
+r1 = r1.bind(r4)();
+r1 = /dkooDD JPOD D09D\n\\  @ .\r\n\t@ \x00 D+D  /gmi;
+r0['test2'] = r1;
+r3 = r0.console;
+r2 = r3.log;
+r6 = r0.test2;
+r5 = r6.exec;
+r1 = 'bonjour';
+r1 = r5.bind(r6)(r1);
+r1 = r2.bind(r3)(r1);
+r5 = r0.console;
+r3 = r5.log;
+r1 = r0.gen;
+r2 = r1.bind(r4)();
+r1 = r2.next;
+r2 = r1.bind(r2)();
+r1 = 'a';
+r1 = r3.bind(r5)(r1, r2);
+r3 = r0.console;
+r2 = r3.log;
+r1 = r0.testx;
+r5 = 7.3;
+r0 = 'le';
+r0 = r5 + r0;
+r1 = r1.bind(r4)(r0);
+r0 = r1.next;
+r1 = r0.bind(r1)();
+r0 = 'b';
+r0 = r2.bind(r3)(r0, r1);
+return r0;
+

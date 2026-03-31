@@ -1,0 +1,579 @@
+hbcdump> Bytecode File Information:
+  Bytecode version number: 99
+  Source hash: a692192bdc8ee6f7b2b9918faf18a64db39587c8
+  Function count: 8
+  String count: 35
+  BigInt count: 0
+  String Kind Entry count: 2
+  RegExp count: 1
+  StringSwitchImm count: 0
+  Key buffer size (bytes): 5
+  Value buffer size (bytes): 12
+  Shape table count: 1
+  Segment ID: 0
+  CommonJS module count: 0
+  CommonJS module count (static): 0
+  Function source count: 2
+  Bytecode options:
+    staticBuiltins: 0
+    cjsModulesStaticallyResolved: 0
+
+Global String Table:
+s0[ASCII, 0..-1]: 
+s1[ASCII, 0..12]: ?anon_0_testx
+s2[ASCII, 14..21]: AAAAAAAA
+s3[ASCII, 22..32]: Bon-jour : 
+s4[ASCII, 33..93]: Generator functions may not be called on executing generators
+s5[ASCII, 94..118]: Hello! Exception handling
+s6[ASCII, 118..123]: global
+s7[ASCII, 122..122]: a
+s8[ASCII, 127..128]: zb
+s9[ASCII, 128..128]: b
+s10[ASCII, 128..134]: bonjour
+s11[ASCII, 145..187]: dkooDD JPOD D09D\n\\  @ .\r\n\t@ \x00 D+D  
+s12[ASCII, 190..192]: gmi
+s13[ASCII, 198..199]: le
+s14[UTF-16, 238..257]: \x64\x00\xE7\x00\x64\x00\xE0\x00\xE7\x00\x44\x00\xB0\x00\x44\x00\x2B\x00\x44\x00
+s15[UTF-16, 252..285]: \x44\x00\x2B\x00\x44\x00\x20\x00\x2B\x00\x44\x00\x2F\x20\x2B\x00\x44\x00\x20\x00\x2B\x00\x0A\x00\x44\x00\x2B\x00\xC9\x00\x44\x00\x20\x00
+i16[ASCII, 8..12] #13923238: testx
+i17[ASCII, 12..13] #07BD3EB3: xy
+i18[ASCII, 74..77] #B0F82D55: exec
+i19[ASCII, 84..86] #CC293D73: gen
+i20[ASCII, 122..126] #D037DAB6: alert
+i21[ASCII, 134..139] #50223B1A: random
+i22[ASCII, 140..145] #663E95F4: onload
+i23[ASCII, 188..190] #1C35E808: log
+i24[ASCII, 193..199] #629A2BFD: console
+i25[ASCII, 200..203] #CD347266: Date
+i26[ASCII, 202..206] #13935E65: test2
+i27[ASCII, 207..210] #1C182460: Math
+i28[ASCII, 211..214] #B553E7BD: done
+i29[ASCII, 213..216] #C62208C8: next
+i30[ASCII, 217..219] #9D97125E: now
+i31[ASCII, 219..224] #4F138803: window
+i32[ASCII, 225..229] #A689F65B: print
+i33[ASCII, 230..234] #DF50693D: value
+i34[ASCII, 235..236] #07DDFB81: ze
+
+Literal Value Buffer:
+null
+true
+undefined
+true
+[int 42]
+false
+null
+false
+
+Object Key Buffer:
+[String 33]
+[String 28]
+
+Object Shape Table:
+0[0, 2]
+
+Function Source Table:
+  Function ID 5 -> s0
+  Function ID 7 -> s0
+
+Function<global>0(1 params, 18 registers, 1 numbers, 1 non-pointers):
+Offset in debug table: source 0x0000
+[@ 0] CreateFunctionEnvironment 3<Reg8>, 0<UInt8>
+[@ 3] DeclareGlobalVar 16<UInt32>
+[@ 8] DeclareGlobalVar 19<UInt32>
+[@ 13] DeclareGlobalVar 34<UInt32>
+[@ 18] GetGlobalObject 2<Reg8>
+[@ 20] CreateClosure 4<Reg8>, 3<Reg8>, 1<UInt16>
+[@ 25] PutByIdLoose 2<Reg8>, 4<Reg8>, 0<UInt8>, 16<UInt16>
+[@ 31] CreateClosure 3<Reg8>, 3<Reg8>, 2<UInt16>
+[@ 36] PutByIdLoose 2<Reg8>, 3<Reg8>, 1<UInt8>, 19<UInt16>
+[@ 42] LoadConstUndefined 1<Reg8>
+[@ 44] CreateClosure 3<Reg8>, 1<Reg8>, 3<UInt16>
+[@ 49] PutByIdLoose 2<Reg8>, 3<Reg8>, 2<UInt8>, 34<UInt16>
+[@ 55] TryGetById 4<Reg8>, 2<Reg8>, 0<UInt8>, 31<UInt16>
+[@ 61] GetByIdShort 3<Reg8>, 2<Reg8>, 1<UInt8>, 34<UInt8>
+[@ 66] PutByIdLoose 4<Reg8>, 3<Reg8>, 3<UInt8>, 22<UInt16>
+[@ 72] GetByIdShort 3<Reg8>, 2<Reg8>, 1<UInt8>, 34<UInt8>
+[@ 77] Call1 3<Reg8>, 3<Reg8>, 1<Reg8>
+[@ 81] CreateRegExp 3<Reg8>, 11<UInt32>, 12<UInt32>, 0<UInt32>
+[@ 95] PutByIdLoose 2<Reg8>, 3<Reg8>, 4<UInt8>, 26<UInt16>
+[@ 101] TryGetById 5<Reg8>, 2<Reg8>, 2<UInt8>, 24<UInt16>
+[@ 107] GetByIdShort 4<Reg8>, 5<Reg8>, 3<UInt8>, 23<UInt8>
+[@ 112] TryGetById 7<Reg8>, 2<Reg8>, 4<UInt8>, 26<UInt16>
+[@ 118] GetByIdShort 6<Reg8>, 7<Reg8>, 5<UInt8>, 18<UInt8>
+[@ 123] LoadConstString 3<Reg8>, 10<UInt16>
+[@ 127] Call2 3<Reg8>, 6<Reg8>, 7<Reg8>, 3<Reg8>
+[@ 132] Call2 3<Reg8>, 4<Reg8>, 5<Reg8>, 3<Reg8>
+[@ 137] TryGetById 6<Reg8>, 2<Reg8>, 2<UInt8>, 24<UInt16>
+[@ 143] GetByIdShort 5<Reg8>, 6<Reg8>, 3<UInt8>, 23<UInt8>
+[@ 148] GetByIdShort 3<Reg8>, 2<Reg8>, 6<UInt8>, 19<UInt8>
+[@ 153] Call1 4<Reg8>, 3<Reg8>, 1<Reg8>
+[@ 157] GetByIdShort 3<Reg8>, 4<Reg8>, 7<UInt8>, 29<UInt8>
+[@ 162] Call1 4<Reg8>, 3<Reg8>, 4<Reg8>
+[@ 166] LoadConstString 3<Reg8>, 7<UInt16>
+[@ 170] Call3 3<Reg8>, 5<Reg8>, 6<Reg8>, 3<Reg8>, 4<Reg8>
+[@ 176] TryGetById 5<Reg8>, 2<Reg8>, 2<UInt8>, 24<UInt16>
+[@ 182] GetByIdShort 4<Reg8>, 5<Reg8>, 3<UInt8>, 23<UInt8>
+[@ 187] GetByIdShort 3<Reg8>, 2<Reg8>, 8<UInt8>, 16<UInt8>
+[@ 192] LoadConstString 2<Reg8>, 13<UInt16>
+[@ 196] LoadConstDouble 0<Reg8>, 7.300000e+00<Double>
+[@ 206] Add 2<Reg8>, 0<Reg8>, 2<Reg8>
+[@ 210] Call2 3<Reg8>, 3<Reg8>, 1<Reg8>, 2<Reg8>
+[@ 215] GetByIdShort 2<Reg8>, 3<Reg8>, 7<UInt8>, 29<UInt8>
+[@ 220] Call1 3<Reg8>, 2<Reg8>, 3<Reg8>
+[@ 224] LoadConstString 2<Reg8>, 9<UInt16>
+[@ 228] Call3 2<Reg8>, 4<Reg8>, 5<Reg8>, 2<Reg8>, 3<Reg8>
+[@ 234] Ret 2<Reg8>
+
+NCFunction<testx>1(2 params, 16 registers, 0 numbers, 1 non-pointers):
+Offset in debug table: source 0x0066
+[@ 0] LoadConstUndefined 0<Reg8>
+[@ 2] LoadConstUndefined 1<Reg8>
+[@ 4] ReifyArgumentsLoose 1<Reg8>
+[@ 6] Mov 4<Reg8>, 1<Reg8>
+[@ 9] GetBuiltinClosure 3<Reg8>, 57<UInt8>
+[@ 12] GetParentEnvironment 1<Reg8>, 0<UInt8>
+[@ 15] CreateClosure 2<Reg8>, 1<Reg8>, 4<UInt16>
+[@ 20] LoadThisNS 1<Reg8>
+[@ 22] Call4 1<Reg8>, 3<Reg8>, 0<Reg8>, 2<Reg8>, 1<Reg8>, 4<Reg8>
+[@ 29] Ret 1<Reg8>
+
+NCFunction<gen>2(1 params, 2 registers, 1 numbers, 0 non-pointers):
+[@ 0] CreateFunctionEnvironment 1<Reg8>, 5<UInt8>
+[@ 3] LoadConstZero 0<Reg8>
+[@ 5] StoreNPToEnvironment 1<Reg8>, 1<UInt8>, 0<Reg8>
+[@ 9] StoreNPToEnvironment 1<Reg8>, 4<UInt8>, 0<Reg8>
+[@ 13] StoreNPToEnvironment 1<Reg8>, 3<UInt8>, 0<Reg8>
+[@ 17] CreateGenerator 1<Reg8>, 1<Reg8>, 5<UInt16>
+[@ 22] Ret 1<Reg8>
+
+Function<ze>3(1 params, 13 registers, 0 numbers, 1 non-pointers):
+Offset in debug table: source 0x006e
+[@ 0] GetGlobalObject 1<Reg8>
+[@ 2] TryGetById 3<Reg8>, 1<Reg8>, 0<UInt8>, 27<UInt16>
+[@ 8] GetByIdShort 2<Reg8>, 3<Reg8>, 1<UInt8>, 21<UInt8>
+[@ 13] Call1 2<Reg8>, 2<Reg8>, 3<Reg8>
+[@ 17] JmpFalse 68<Addr8>, 2<Reg8>
+[@ 20] CreateFunctionEnvironment 3<Reg8>, 1<UInt8>
+[@ 23] CreateClosure 2<Reg8>, 3<Reg8>, 6<UInt16>
+[@ 28] StoreToEnvironment 3<Reg8>, 0<UInt8>, 2<Reg8>
+[@ 32] TryGetById 4<Reg8>, 1<Reg8>, 2<UInt8>, 25<UInt16>
+[@ 38] GetByIdShort 3<Reg8>, 4<Reg8>, 3<UInt8>, 30<UInt8>
+[@ 43] Call1 3<Reg8>, 3<Reg8>, 4<Reg8>
+[@ 47] JmpFalse 27<Addr8>, 3<Reg8>
+[@ 50] TryGetById 4<Reg8>, 1<Reg8>, 2<UInt8>, 25<UInt16>
+[@ 56] GetByIdShort 3<Reg8>, 4<Reg8>, 3<UInt8>, 30<UInt8>
+[@ 61] Call1 3<Reg8>, 3<Reg8>, 4<Reg8>
+[@ 65] JmpFalse 9<Addr8>, 3<Reg8>
+[@ 68] LoadConstUndefined 0<Reg8>
+[@ 70] Call1 0<Reg8>, 2<Reg8>, 0<Reg8>
+[@ 74] GetByIdShort 1<Reg8>, 1<Reg8>, 4<UInt8>, 34<UInt8>
+[@ 79] LoadConstUndefined 0<Reg8>
+[@ 81] Call1 1<Reg8>, 1<Reg8>, 0<Reg8>
+[@ 85] LoadConstUndefined 0<Reg8>
+[@ 87] Ret 0<Reg8>
+
+NCFunction<?anon_0_testx>4(2 params, 3 registers, 1 numbers, 0 non-pointers):
+[@ 0] CreateFunctionEnvironment 1<Reg8>, 4<UInt8>
+[@ 3] LoadParam 2<Reg8>, 1<UInt8>
+[@ 6] StoreToEnvironment 1<Reg8>, 0<UInt8>, 2<Reg8>
+[@ 10] LoadConstZero 0<Reg8>
+[@ 12] StoreNPToEnvironment 1<Reg8>, 2<UInt8>, 0<Reg8>
+[@ 16] StoreNPToEnvironment 1<Reg8>, 3<UInt8>, 0<Reg8>
+[@ 20] CreateGenerator 1<Reg8>, 1<Reg8>, 7<UInt16>
+[@ 25] Ret 1<Reg8>
+
+Function<gen>5(1 params, 32 registers, 0 numbers, 0 non-pointers):
+Offset in debug table: source 0x0097
+[@ 0] GetParentEnvironment 1<Reg8>, 0<UInt8>
+[@ 3] LoadFromEnvironment 0<Reg8>, 1<Reg8>, 4<UInt8>
+[@ 7] Mov 2<Reg8>, 0<Reg8>
+[@ 10] LoadConstUInt8 4<Reg8>, 2<UInt8>
+[@ 13] JStrictEqualLong 457<Addr32>, 0<Reg8>, 4<Reg8>
+[@ 20] LoadParam 0<Reg8>, 2<UInt8>
+[@ 23] LoadParam 3<Reg8>, 1<UInt8>
+[@ 26] Mov 18<Reg8>, 2<Reg8>
+[@ 29] LoadConstUInt8 7<Reg8>, 3<UInt8>
+[@ 32] LoadConstUInt8 17<Reg8>, 4<UInt8>
+[@ 35] LoadConstUInt8 5<Reg8>, 1<UInt8>
+[@ 38] LoadConstZero 16<Reg8>
+[@ 40] GetGlobalObject 15<Reg8>
+[@ 42] LoadConstUndefined 14<Reg8>
+[@ 44] LoadConstString 13<Reg8>, 3<UInt16>
+[@ 48] LoadConstInt 12<Reg8>, 340000<Imm32>
+[@ 54] LoadConstUInt8 11<Reg8>, 6<UInt8>
+[@ 57] LoadConstInt 9<Reg8>, 478<Imm32>
+[@ 63] LoadConstString 10<Reg8>, 14<UInt16>
+[@ 67] LoadConstInt 8<Reg8>, 432<Imm32>
+[@ 73] Mul 8<Reg8>, 8<Reg8>, 10<Reg8>
+[@ 77] AddN 10<Reg8>, 8<Reg8>, 9<Reg8>
+[@ 81] LoadConstString 9<Reg8>, 2<UInt16>
+[@ 85] LoadConstString 8<Reg8>, 5<UInt16>
+[@ 89] JStrictEqualLong 351<Addr32>, 18<Reg8>, 7<Reg8>
+[@ 96] Mov 2<Reg8>, 4<Reg8>
+[@ 99] StoreNPToEnvironment 1<Reg8>, 4<UInt8>, 4<Reg8>
+[@ 103] LoadFromEnvironment 18<Reg8>, 1<Reg8>, 1<UInt8>
+[@ 107] JStrictEqualLong 207<Addr32>, 16<Reg8>, 18<Reg8>
+[@ 114] JStrictEqual 119<Addr8>, 5<Reg8>, 18<Reg8>
+[@ 118] JStrictEqual 50<Addr8>, 4<Reg8>, 18<Reg8>
+[@ 122] JStrictEqual 25<Addr8>, 7<Reg8>, 18<Reg8>
+[@ 126] LoadFromEnvironment 6<Reg8>, 1<Reg8>, 2<UInt8>
+[@ 130] StoreNPToEnvironment 1<Reg8>, 3<UInt8>, 5<Reg8>
+[@ 134] TryGetById 18<Reg8>, 15<Reg8>, 0<UInt8>, 32<UInt16>
+[@ 140] Call2 18<Reg8>, 18<Reg8>, 14<Reg8>, 8<Reg8>
+[@ 145] Jmp 122<Addr8>
+[@ 147] LoadFromEnvironment 6<Reg8>, 1<Reg8>, 2<UInt8>
+[@ 151] StoreNPToEnvironment 1<Reg8>, 3<UInt8>, 16<Reg8>
+[@ 155] TryGetById 18<Reg8>, 15<Reg8>, 1<UInt8>, 20<UInt16>
+[@ 161] Call2 18<Reg8>, 18<Reg8>, 14<Reg8>, 9<Reg8>
+[@ 166] Jmp 105<Addr8>
+[@ 168] LoadFromEnvironment 18<Reg8>, 1<Reg8>, 0<UInt8>
+[@ 172] LoadFromEnvironment 19<Reg8>, 1<Reg8>, 2<UInt8>
+[@ 176] Mov 6<Reg8>, 19<Reg8>
+[@ 179] StoreToEnvironment 18<Reg8>, 0<UInt8>, 19<Reg8>
+[@ 183] StoreNPToEnvironment 1<Reg8>, 3<UInt8>, 4<Reg8>
+[@ 187] JmpFalse 40<Addr8>, 10<Reg8>
+[@ 190] TryGetById 21<Reg8>, 15<Reg8>, 2<UInt8>, 24<UInt16>
+[@ 196] GetByIdShort 20<Reg8>, 21<Reg8>, 3<UInt8>, 23<UInt8>
+[@ 201] LoadFromEnvironment 19<Reg8>, 18<Reg8>, 0<UInt8>
+[@ 205] Add 19<Reg8>, 13<Reg8>, 19<Reg8>
+[@ 209] LoadFromEnvironment 18<Reg8>, 18<Reg8>, 0<UInt8>
+[@ 213] Mul 18<Reg8>, 18<Reg8>, 12<Reg8>
+[@ 217] AddN 18<Reg8>, 18<Reg8>, 11<Reg8>
+[@ 221] Call3 18<Reg8>, 20<Reg8>, 21<Reg8>, 19<Reg8>, 18<Reg8>
+[@ 227] StoreNPToEnvironment 1<Reg8>, 3<UInt8>, 16<Reg8>
+[@ 231] Jmp 40<Addr8>
+[@ 233] JStrictEqual 72<Addr8>, 3<Reg8>, 5<Reg8>
+[@ 237] JStrictEqual 49<Addr8>, 3<Reg8>, 4<Reg8>
+[@ 241] StoreNPToEnvironment 1<Reg8>, 3<UInt8>, 7<Reg8>
+[@ 245] GetByIdShort 18<Reg8>, 15<Reg8>, 4<UInt8>, 19<UInt8>
+[@ 250] Call1 19<Reg8>, 18<Reg8>, 14<Reg8>
+[@ 254] GetByIdShort 18<Reg8>, 19<Reg8>, 5<UInt8>, 29<UInt8>
+[@ 259] Call1 18<Reg8>, 18<Reg8>, 19<Reg8>
+[@ 263] StoreNPToEnvironment 1<Reg8>, 3<UInt8>, 5<Reg8>
+[@ 267] StoreNPToEnvironment 1<Reg8>, 3<UInt8>, 16<Reg8>
+[@ 271] Mov 2<Reg8>, 7<Reg8>
+[@ 274] StoreNPToEnvironment 1<Reg8>, 4<UInt8>, 7<Reg8>
+[@ 278] NewObjectWithBuffer 18<Reg8>, 0<UInt16>, 2<UInt16>
+[@ 284] Ret 18<Reg8>
+[@ 286] Mov 2<Reg8>, 7<Reg8>
+[@ 289] StoreNPToEnvironment 1<Reg8>, 4<UInt8>, 7<Reg8>
+[@ 293] NewObjectWithBuffer 18<Reg8>, 0<UInt16>, 0<UInt16>
+[@ 299] PutOwnBySlotIdx 18<Reg8>, 0<Reg8>, 0<UInt8>
+[@ 303] Ret 18<Reg8>
+[@ 305] Mov 2<Reg8>, 7<Reg8>
+[@ 308] StoreNPToEnvironment 1<Reg8>, 4<UInt8>, 7<Reg8>
+[@ 312] Throw 0<Reg8>
+[@ 314] JStrictEqual 56<Addr8>, 3<Reg8>, 5<Reg8>
+[@ 318] JStrictEqual 33<Addr8>, 3<Reg8>, 4<Reg8>
+[@ 322] CreateTopLevelEnvironment 18<Reg8>, 1<UInt32>
+[@ 328] StoreToEnvironment 1<Reg8>, 0<UInt8>, 18<Reg8>
+[@ 332] StoreNPToEnvironment 1<Reg8>, 1<UInt8>, 5<Reg8>
+[@ 336] Mov 2<Reg8>, 5<Reg8>
+[@ 339] StoreNPToEnvironment 1<Reg8>, 4<UInt8>, 5<Reg8>
+[@ 343] NewObjectWithBuffer 18<Reg8>, 0<UInt16>, 4<UInt16>
+[@ 349] Ret 18<Reg8>
+[@ 351] Mov 2<Reg8>, 7<Reg8>
+[@ 354] StoreNPToEnvironment 1<Reg8>, 4<UInt8>, 7<Reg8>
+[@ 358] NewObjectWithBuffer 18<Reg8>, 0<UInt16>, 0<UInt16>
+[@ 364] PutOwnBySlotIdx 18<Reg8>, 0<Reg8>, 0<UInt8>
+[@ 368] Ret 18<Reg8>
+[@ 370] Mov 2<Reg8>, 7<Reg8>
+[@ 373] StoreNPToEnvironment 1<Reg8>, 4<UInt8>, 7<Reg8>
+[@ 377] Throw 0<Reg8>
+[@ 379] Catch 18<Reg8>
+[@ 381] Mov 6<Reg8>, 18<Reg8>
+[@ 384] StoreToEnvironment 1<Reg8>, 2<UInt8>, 18<Reg8>
+[@ 388] LoadFromEnvironment 18<Reg8>, 1<Reg8>, 3<UInt8>
+[@ 392] JStrictEqual 39<Addr8>, 16<Reg8>, 18<Reg8>
+[@ 396] JStrictEqual 26<Addr8>, 5<Reg8>, 18<Reg8>
+[@ 400] JStrictEqual 13<Addr8>, 4<Reg8>, 18<Reg8>
+[@ 404] StoreNPToEnvironment 1<Reg8>, 1<UInt8>, 17<Reg8>
+[@ 408] JmpLong -312<Addr32>
+[@ 413] StoreNPToEnvironment 1<Reg8>, 1<UInt8>, 7<Reg8>
+[@ 417] JmpLong -321<Addr32>
+[@ 422] StoreNPToEnvironment 1<Reg8>, 1<UInt8>, 4<Reg8>
+[@ 426] JmpLong -330<Addr32>
+[@ 431] Mov 2<Reg8>, 7<Reg8>
+[@ 434] StoreNPToEnvironment 1<Reg8>, 4<UInt8>, 7<Reg8>
+[@ 438] Throw 6<Reg8>
+[@ 440] JStrictEqual 28<Addr8>, 3<Reg8>, 5<Reg8>
+[@ 444] JStrictEqual 12<Addr8>, 3<Reg8>, 4<Reg8>
+[@ 448] NewObjectWithBuffer 3<Reg8>, 0<UInt16>, 2<UInt16>
+[@ 454] Ret 3<Reg8>
+[@ 456] NewObjectWithBuffer 3<Reg8>, 0<UInt16>, 0<UInt16>
+[@ 462] PutOwnBySlotIdx 3<Reg8>, 0<Reg8>, 0<UInt8>
+[@ 466] Ret 3<Reg8>
+[@ 468] Throw 0<Reg8>
+[@ 470] LoadConstUInt8 0<Reg8>, 3<UInt8>
+[@ 473] Mov 2<Reg8>, 0<Reg8>
+[@ 476] StoreNPToEnvironment 1<Reg8>, 4<UInt8>, 0<Reg8>
+[@ 480] LoadConstString 23<Reg8>, 4<UInt16>
+[@ 484] CallBuiltin 0<Reg8>, 44<UInt8>, 2<UInt8>
+[@ 488] Unreachable
+
+Exception Handlers:
+0: start = 96, end = 278, target = 379
+1: start = 286, end = 293, target = 379
+2: start = 305, end = 343, target = 379
+3: start = 351, end = 358, target = 379
+4: start = 370, end = 379, target = 379
+
+Function<zb>6(1 params, 11 registers, 0 numbers, 1 non-pointers):
+Offset in debug table: source 0x00e2
+[@ 0] GetGlobalObject 1<Reg8>
+[@ 2] TryGetById 2<Reg8>, 1<Reg8>, 0<UInt8>, 25<UInt16>
+[@ 8] GetByIdShort 1<Reg8>, 2<Reg8>, 1<UInt8>, 30<UInt8>
+[@ 13] Call1 1<Reg8>, 1<Reg8>, 2<Reg8>
+[@ 17] JmpFalse 16<Addr8>, 1<Reg8>
+[@ 20] GetParentEnvironment 1<Reg8>, 0<UInt8>
+[@ 23] LoadFromEnvironment 1<Reg8>, 1<Reg8>, 0<UInt8>
+[@ 27] LoadConstUndefined 0<Reg8>
+[@ 29] Call1 0<Reg8>, 1<Reg8>, 0<Reg8>
+[@ 33] LoadConstUndefined 0<Reg8>
+[@ 35] Ret 0<Reg8>
+
+Function<?anon_0_testx>7(2 params, 20 registers, 0 numbers, 0 non-pointers):
+Offset in debug table: source 0x00f3
+[@ 0] GetParentEnvironment 1<Reg8>, 0<UInt8>
+[@ 3] LoadFromEnvironment 0<Reg8>, 1<Reg8>, 3<UInt8>
+[@ 7] Mov 2<Reg8>, 0<Reg8>
+[@ 10] LoadConstUInt8 4<Reg8>, 2<UInt8>
+[@ 13] JStrictEqualLong 383<Addr32>, 0<Reg8>, 4<Reg8>
+[@ 20] LoadParam 0<Reg8>, 2<UInt8>
+[@ 23] LoadParam 3<Reg8>, 1<UInt8>
+[@ 26] Mov 5<Reg8>, 2<Reg8>
+[@ 29] LoadConstUInt8 6<Reg8>, 3<UInt8>
+[@ 32] JStrictEqualLong 331<Addr32>, 5<Reg8>, 6<Reg8>
+[@ 39] Mov 2<Reg8>, 4<Reg8>
+[@ 42] StoreNPToEnvironment 1<Reg8>, 3<UInt8>, 4<Reg8>
+[@ 46] LoadFromEnvironment 7<Reg8>, 1<Reg8>, 2<UInt8>
+[@ 50] LoadConstZero 5<Reg8>
+[@ 52] JStrictEqualLong 185<Addr32>, 5<Reg8>, 7<Reg8>
+[@ 59] LoadConstUInt8 5<Reg8>, 1<UInt8>
+[@ 62] JStrictEqual 103<Addr8>, 5<Reg8>, 7<Reg8>
+[@ 66] JStrictEqual 90<Addr8>, 3<Reg8>, 5<Reg8>
+[@ 70] JStrictEqual 67<Addr8>, 3<Reg8>, 4<Reg8>
+[@ 74] LoadFromEnvironment 8<Reg8>, 1<Reg8>, 1<UInt8>
+[@ 78] GetGlobalObject 7<Reg8>
+[@ 80] TryGetById 10<Reg8>, 7<Reg8>, 0<UInt8>, 24<UInt16>
+[@ 86] GetByIdShort 9<Reg8>, 10<Reg8>, 1<UInt8>, 23<UInt8>
+[@ 91] LoadFromEnvironment 8<Reg8>, 8<Reg8>, 0<UInt8>
+[@ 95] Call2 8<Reg8>, 9<Reg8>, 10<Reg8>, 8<Reg8>
+[@ 100] TryGetById 9<Reg8>, 7<Reg8>, 0<UInt8>, 24<UInt16>
+[@ 106] GetByIdShort 8<Reg8>, 9<Reg8>, 1<UInt8>, 23<UInt8>
+[@ 111] TryGetById 7<Reg8>, 7<Reg8>, 2<UInt8>, 17<UInt16>
+[@ 117] Call2 7<Reg8>, 8<Reg8>, 9<Reg8>, 7<Reg8>
+[@ 122] Mov 2<Reg8>, 6<Reg8>
+[@ 125] StoreNPToEnvironment 1<Reg8>, 3<UInt8>, 6<Reg8>
+[@ 129] NewObjectWithBuffer 7<Reg8>, 0<UInt16>, 2<UInt16>
+[@ 135] Ret 7<Reg8>
+[@ 137] Mov 2<Reg8>, 6<Reg8>
+[@ 140] StoreNPToEnvironment 1<Reg8>, 3<UInt8>, 6<Reg8>
+[@ 144] NewObjectWithBuffer 7<Reg8>, 0<UInt16>, 0<UInt16>
+[@ 150] PutOwnBySlotIdx 7<Reg8>, 0<Reg8>, 0<UInt8>
+[@ 154] Ret 7<Reg8>
+[@ 156] Mov 2<Reg8>, 6<Reg8>
+[@ 159] StoreNPToEnvironment 1<Reg8>, 3<UInt8>, 6<Reg8>
+[@ 163] Throw 0<Reg8>
+[@ 165] JStrictEqual 63<Addr8>, 3<Reg8>, 5<Reg8>
+[@ 169] JStrictEqual 40<Addr8>, 3<Reg8>, 4<Reg8>
+[@ 173] GetGlobalObject 7<Reg8>
+[@ 175] GetByIdShort 8<Reg8>, 7<Reg8>, 3<UInt8>, 19<UInt8>
+[@ 180] LoadConstUndefined 7<Reg8>
+[@ 182] Call1 7<Reg8>, 8<Reg8>, 7<Reg8>
+[@ 186] StoreNPToEnvironment 1<Reg8>, 2<UInt8>, 4<Reg8>
+[@ 190] Mov 2<Reg8>, 5<Reg8>
+[@ 193] StoreNPToEnvironment 1<Reg8>, 3<UInt8>, 5<Reg8>
+[@ 197] NewObjectWithBuffer 5<Reg8>, 0<UInt16>, 10<UInt16>
+[@ 203] PutOwnBySlotIdx 5<Reg8>, 7<Reg8>, 0<UInt8>
+[@ 207] Ret 5<Reg8>
+[@ 209] Mov 2<Reg8>, 6<Reg8>
+[@ 212] StoreNPToEnvironment 1<Reg8>, 3<UInt8>, 6<Reg8>
+[@ 216] NewObjectWithBuffer 5<Reg8>, 0<UInt16>, 0<UInt16>
+[@ 222] PutOwnBySlotIdx 5<Reg8>, 0<Reg8>, 0<UInt8>
+[@ 226] Ret 5<Reg8>
+[@ 228] Mov 2<Reg8>, 6<Reg8>
+[@ 231] StoreNPToEnvironment 1<Reg8>, 3<UInt8>, 6<Reg8>
+[@ 235] Throw 0<Reg8>
+[@ 237] LoadConstUInt8 5<Reg8>, 1<UInt8>
+[@ 240] JStrictEqual 103<Addr8>, 3<Reg8>, 5<Reg8>
+[@ 244] JStrictEqual 80<Addr8>, 3<Reg8>, 4<Reg8>
+[@ 248] CreateTopLevelEnvironment 8<Reg8>, 1<UInt32>
+[@ 254] StoreToEnvironment 1<Reg8>, 1<UInt8>, 8<Reg8>
+[@ 258] LoadFromEnvironment 7<Reg8>, 1<Reg8>, 0<UInt8>
+[@ 262] StoreToEnvironment 8<Reg8>, 0<UInt8>, 7<Reg8>
+[@ 266] GetGlobalObject 7<Reg8>
+[@ 268] GetByIdShort 9<Reg8>, 7<Reg8>, 4<UInt8>, 16<UInt8>
+[@ 273] TryGetById 8<Reg8>, 7<Reg8>, 5<UInt8>, 26<UInt16>
+[@ 279] LoadConstString 10<Reg8>, 15<UInt16>
+[@ 283] LoadConstUInt8 7<Reg8>, 42<UInt8>
+[@ 286] Add 7<Reg8>, 7<Reg8>, 10<Reg8>
+[@ 290] Add 8<Reg8>, 7<Reg8>, 8<Reg8>
+[@ 294] LoadConstUndefined 7<Reg8>
+[@ 296] Call2 7<Reg8>, 9<Reg8>, 7<Reg8>, 8<Reg8>
+[@ 301] StoreNPToEnvironment 1<Reg8>, 2<UInt8>, 5<Reg8>
+[@ 305] Mov 2<Reg8>, 5<Reg8>
+[@ 308] StoreNPToEnvironment 1<Reg8>, 3<UInt8>, 5<Reg8>
+[@ 312] NewObjectWithBuffer 5<Reg8>, 0<UInt16>, 10<UInt16>
+[@ 318] PutOwnBySlotIdx 5<Reg8>, 7<Reg8>, 0<UInt8>
+[@ 322] Ret 5<Reg8>
+[@ 324] Mov 2<Reg8>, 6<Reg8>
+[@ 327] StoreNPToEnvironment 1<Reg8>, 3<UInt8>, 6<Reg8>
+[@ 331] NewObjectWithBuffer 5<Reg8>, 0<UInt16>, 0<UInt16>
+[@ 337] PutOwnBySlotIdx 5<Reg8>, 0<Reg8>, 0<UInt8>
+[@ 341] Ret 5<Reg8>
+[@ 343] Mov 2<Reg8>, 6<Reg8>
+[@ 346] StoreNPToEnvironment 1<Reg8>, 3<UInt8>, 6<Reg8>
+[@ 350] Throw 0<Reg8>
+[@ 352] Catch 5<Reg8>
+[@ 354] Mov 2<Reg8>, 6<Reg8>
+[@ 357] StoreNPToEnvironment 1<Reg8>, 3<UInt8>, 6<Reg8>
+[@ 361] Throw 5<Reg8>
+[@ 363] LoadConstUInt8 5<Reg8>, 1<UInt8>
+[@ 366] JStrictEqual 28<Addr8>, 3<Reg8>, 5<Reg8>
+[@ 370] JStrictEqual 12<Addr8>, 3<Reg8>, 4<Reg8>
+[@ 374] NewObjectWithBuffer 3<Reg8>, 0<UInt16>, 2<UInt16>
+[@ 380] Ret 3<Reg8>
+[@ 382] NewObjectWithBuffer 3<Reg8>, 0<UInt16>, 0<UInt16>
+[@ 388] PutOwnBySlotIdx 3<Reg8>, 0<Reg8>, 0<UInt8>
+[@ 392] Ret 3<Reg8>
+[@ 394] Throw 0<Reg8>
+[@ 396] LoadConstUInt8 0<Reg8>, 3<UInt8>
+[@ 399] Mov 2<Reg8>, 0<Reg8>
+[@ 402] StoreNPToEnvironment 1<Reg8>, 3<UInt8>, 0<Reg8>
+[@ 406] LoadConstString 11<Reg8>, 4<UInt16>
+[@ 410] CallBuiltin 0<Reg8>, 44<UInt8>, 2<UInt8>
+[@ 414] Unreachable
+
+Exception Handlers:
+0: start = 39, end = 129, target = 352
+1: start = 137, end = 144, target = 352
+2: start = 156, end = 197, target = 352
+3: start = 209, end = 216, target = 352
+4: start = 228, end = 312, target = 352
+5: start = 324, end = 331, target = 352
+6: start = 343, end = 352, target = 352
+
+RegExp Bytecodes:
+0: /dkooDD JPOD D09D\n\\  @ .\r\n\t@ \x00 D+D  /gmi
+  Header: marked: 0 loops: 1 flags: 7 constraints: 4
+  0000  MatchNCharICase8: 'DKOODD JPOD D09D0x0a\  @ '
+  0018  MatchAnyButNewline
+  0019  MatchNCharICase8: '0x0d0x0a0x09@ 0x00 '
+  0022  Width1Loop: 0 greedy {1, 4294967295}
+  0034  MatchCharICase8: 'D'
+  0036  MatchNCharICase8: 'D  '
+  003b  Goal
+
+Debug filename table:
+  0: version-99-202602/sample.js
+
+Debug file table:
+  source table offset 0x0000: filename id 0
+
+Debug source table:
+  0x0000  function idx 0, starts at line 7 col 1
+    bc 3: line 7 col 1
+    bc 8: line 7 col 1
+    bc 13: line 7 col 1
+    bc 25: line 7 col 1
+    bc 36: line 7 col 1
+    bc 49: line 7 col 1
+    bc 55: line 52 col 1
+    bc 61: line 52 col 17
+    bc 66: line 52 col 15
+    bc 72: line 53 col 1
+    bc 77: line 53 col 3
+    bc 95: line 55 col 7
+    bc 101: line 56 col 1
+    bc 107: line 56 col 12
+    bc 112: line 56 col 13
+    bc 118: line 56 col 23
+    bc 127: line 56 col 23
+    bc 132: line 56 col 12
+    bc 137: line 58 col 1
+    bc 143: line 58 col 12
+    bc 148: line 58 col 18
+    bc 153: line 58 col 21
+    bc 157: line 58 col 28
+    bc 162: line 58 col 28
+    bc 170: line 58 col 12
+    bc 176: line 59 col 1
+    bc 182: line 59 col 12
+    bc 187: line 59 col 18
+    bc 210: line 59 col 23
+    bc 215: line 59 col 40
+    bc 220: line 59 col 40
+    bc 228: line 59 col 12
+  0x0066  function idx 1, starts at line 7 col 1
+    bc 22: line 7 col 1
+  0x006e  function idx 3, starts at line 39 col 1
+    bc 2: line 41 col 8
+    bc 8: line 41 col 19
+    bc 13: line 41 col 19
+    bc 32: line 43 col 16
+    bc 38: line 43 col 24
+    bc 43: line 43 col 24
+    bc 50: line 43 col 16
+    bc 56: line 43 col 24
+    bc 61: line 43 col 24
+    bc 70: line 44 col 19
+    bc 74: line 48 col 17
+    bc 81: line 48 col 19
+  0x0097  function idx 5, starts at line 16 col 1
+    bc 96: line 17 col 5
+    bc 134: line 23 col 13
+    bc 140: line 23 col 18
+    bc 155: line 33 col 13
+    bc 161: line 33 col 18
+    bc 190: line 29 col 17
+    bc 196: line 29 col 28
+    bc 205: line 29 col 29
+    bc 213: line 29 col 48
+    bc 221: line 29 col 28
+    bc 245: line 20 col 13
+    bc 250: line 20 col 16
+    bc 254: line 20 col 23
+    bc 259: line 20 col 23
+    bc 278: line 36 col 1
+    bc 293: line 17 col 5
+    bc 312: line 17 col 5
+    bc 343: line 17 col 5
+    bc 379: line 31 col 9
+    bc 438: line 17 col 5
+    bc 468: line 17 col 5
+  0x00e2  function idx 6, starts at line 42 col 18
+    bc 2: line 43 col 16
+    bc 8: line 43 col 24
+    bc 13: line 43 col 24
+    bc 29: line 44 col 19
+  0x00f3  function idx 7, starts at line 7 col 1
+    bc 39: line 10 col 5
+    bc 80: line 12 col 5
+    bc 86: line 12 col 16
+    bc 95: line 12 col 16
+    bc 100: line 13 col 5
+    bc 106: line 13 col 16
+    bc 111: line 13 col 17
+    bc 117: line 13 col 16
+    bc 129: line 14 col 1
+    bc 144: line 10 col 5
+    bc 163: line 10 col 5
+    bc 175: line 10 col 11
+    bc 182: line 10 col 14
+    bc 197: line 10 col 5
+    bc 216: line 8 col 5
+    bc 235: line 8 col 5
+    bc 268: line 8 col 11
+    bc 273: line 8 col 51
+    bc 290: line 8 col 17
+    bc 296: line 8 col 16
+    bc 312: line 8 col 5
+    bc 352: line 10 col 5
+    bc 361: line 10 col 5
+    bc 394: line 10 col 5
+  0x0140  end of debug source table
+
+
+hbcdump> 
