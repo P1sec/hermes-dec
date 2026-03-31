@@ -20,6 +20,66 @@ from hermes_dec.parsers.hbc_file_parser import (
 from hermes_dec.parsers.hbc_bytecode_parser import parse_hbc_bytecode
 
 
+def disassemble_function(
+    hbc_reader: HBCReader, function_count: int, function_header: object
+):
+
+    # pretty_print_structure(function_header)
+    exception_info = ''
+    if function_header.hasExceptionHandler:
+        exception_data = hbc_reader.function_id_to_exc_handlers[function_count]
+        exception_info = '\n  [Exception handlers:'
+        for exception_item in exception_data:
+            exception_info += ' [start=' + hex(exception_item.start) + ', '
+            exception_info += 'end=' + hex(exception_item.end) + ', '
+            exception_info += 'target=' + hex(exception_item.target) + ']'
+        exception_info += ' ]'
+
+    debug_info = ''
+    if function_header.hasDebugInfo:
+        debug_data = hbc_reader.function_id_to_debug_offsets[function_count]
+        debug_info = '\n  [Debug offsets: '
+        debug_info += 'source_locs=' + hex(debug_data.source_locations) + ', '
+        debug_info += (
+            'scope_desc_data=' + hex(debug_data.scope_desc_data) + ']'
+        )
+
+    print(
+        '=> [%s #%d "%s" of %d bytes]: %d params, frame size=%d, strict=%r, exc handler=%r, debug info=%r  @ offset 0x%08x%s%s'
+        % (
+            {
+                FunctionKind.NormalFunction: 'Function',
+                FunctionKind.GeneratorFunction: 'Generator function',
+                FunctionKind.AsyncFunction: 'Async function',
+            }[function_header.kind],
+            function_count,
+            hbc_reader.strings[function_header.functionName],
+            function_header.bytecodeSizeInBytes,
+            function_header.paramCount,
+            function_header.frameSize,
+            function_header.strictMode,
+            function_header.hasExceptionHandler,
+            function_header.hasDebugInfo,
+            function_header.offset,
+            exception_info,
+            debug_info,
+        )
+    )
+
+    print()
+    print('Bytecode listing:')
+    print()
+    for instruction in parse_hbc_bytecode(function_header, hbc_reader):
+        print('==>', repr(instruction))
+    print()
+    print()
+    print('=' * 15)
+    print()
+
+    # Safety checks:
+    assert function_header.paramCount < 100
+
+
 def do_disassemble(input_file: str):
 
     with open(input_file, 'rb') as file_descriptor:
@@ -59,70 +119,7 @@ def do_disassemble(input_file: str):
         for function_count, function_header in enumerate(
             hbc_reader.function_headers
         ):
-            # pretty_print_structure(function_header)
-            exception_info = ''
-            if function_header.hasExceptionHandler:
-                exception_data = hbc_reader.function_id_to_exc_handlers[
-                    function_count
-                ]
-                exception_info = '\n  [Exception handlers:'
-                for exception_item in exception_data:
-                    exception_info += (
-                        ' [start=' + hex(exception_item.start) + ', '
-                    )
-                    exception_info += 'end=' + hex(exception_item.end) + ', '
-                    exception_info += (
-                        'target=' + hex(exception_item.target) + ']'
-                    )
-                exception_info += ' ]'
-
-            debug_info = ''
-            if function_header.hasDebugInfo:
-                debug_data = hbc_reader.function_id_to_debug_offsets[
-                    function_count
-                ]
-                debug_info = '\n  [Debug offsets: '
-                debug_info += (
-                    'source_locs=' + hex(debug_data.source_locations) + ', '
-                )
-                debug_info += (
-                    'scope_desc_data=' + hex(debug_data.scope_desc_data) + ']'
-                )
-
-            print(
-                '=> [%s #%d "%s" of %d bytes]: %d params, frame size=%d, strict=%r, exc handler=%r, debug info=%r  @ offset 0x%08x%s%s'
-                % (
-                    {
-                        FunctionKind.NormalFunction: 'Function',
-                        FunctionKind.GeneratorFunction: 'Generator function',
-                        FunctionKind.AsyncFunction: 'Async function',
-                    }[function_header.kind],
-                    function_count,
-                    hbc_reader.strings[function_header.functionName],
-                    function_header.bytecodeSizeInBytes,
-                    function_header.paramCount,
-                    function_header.frameSize,
-                    function_header.strictMode,
-                    function_header.hasExceptionHandler,
-                    function_header.hasDebugInfo,
-                    function_header.offset,
-                    exception_info,
-                    debug_info,
-                )
-            )
-
-            print()
-            print('Bytecode listing:')
-            print()
-            for instruction in parse_hbc_bytecode(function_header, hbc_reader):
-                print('==>', repr(instruction))
-            print()
-            print()
-            print('=' * 15)
-            print()
-
-            # Safety checks:
-            assert function_header.paramCount < 100
+            disassemble_function(hbc_reader, function_count, function_header)
 
 
 def main():

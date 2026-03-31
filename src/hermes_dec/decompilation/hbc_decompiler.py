@@ -2,6 +2,8 @@
 # -*- encoding: Utf-8 -*-
 from os.path import realpath, dirname
 from argparse import ArgumentParser
+from traceback import format_exc
+from logging import error
 import sys
 
 SCRIPT_DIR = dirname(realpath(__file__))
@@ -24,6 +26,7 @@ from hermes_dec.decompilation.defs import (
     FunctionTableIndex,
     DecompiledFunctionBody,
 )
+from hermes_dec.disassembly.hbc_disassembler import disassemble_function
 
 """
     Entry points for the Hermes HBC Decompiler
@@ -58,15 +61,37 @@ def decompile_function(state: HermesDecompiler, function_id: int, **kwargs):
             function_id
         ]
 
-    pass1_set_metadata(state, dehydrated)
+    try:
+        pass_no = 1
+        pass1_set_metadata(state, dehydrated)
 
-    pass2_transform_code(state, dehydrated)
+        pass_no = 2
+        pass2_transform_code(state, dehydrated)
 
-    pass3_parse_forin_loops(state, dehydrated)
+        pass_no = 3
+        pass3_parse_forin_loops(state, dehydrated)
 
-    pass4_name_closure_vars(state, dehydrated)
+        pass_no = 4
+        pass4_name_closure_vars(state, dehydrated)
 
-    dehydrated.output_code(state)
+        pass_no = 'output'
+        dehydrated.output_code(state)
+    except Exception:
+        sys.stdout.flush()
+        error(
+            'Error while decompiling function "%s" (pass %s): %s'
+            % (
+                state.hbc_reader.strings[
+                    dehydrated.function_object.functionName
+                ],
+                pass_no,
+                format_exc(),
+            )
+        )
+        print('==== Falling back to Disassembly ====')
+        disassemble_function(
+            state.hbc_reader, function_id, dehydrated.function_object
+        )
 
 
 def do_decompilation(state: HermesDecompiler, file_handle):
