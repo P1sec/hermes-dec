@@ -11,7 +11,6 @@ from ctypes import (
     c_int32,
     c_int64,
 )
-from hermes_dec.parsers.serialized_literal_parser import unpack_slp_array
 from typing import Sequence, Union, Dict, List, Set
 from enum import IntEnum, Enum, IntFlag
 from io import BytesIO, BufferedReader
@@ -27,6 +26,7 @@ SRC_DIR = dirname(realpath(MODULE_DIR))
 sys.path.insert(0, SRC_DIR)
 
 # The following imports are made from the current directory:
+from hermes_dec.parsers.serialized_literal_parser import unpack_slp_array
 from hermes_dec.parsers.hbc_bytecode_parser import (
     parse_hbc_bytecode,
     get_parser,

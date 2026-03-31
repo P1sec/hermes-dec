@@ -1,0 +1,20 @@
+// Unsupported instruction: 00000000: <CreateFunctionEnvironment>: <Reg8: 3, UInt8: 0>;
+testx = undefined;
+gen = undefined;
+ze = undefined;
+r2 = global;
+r4 = async function(a0) { // Original name: testx, environment: r3
+    r0 = undefined;
+    r1 = undefined;
+    // Unsupported instruction: 00000004: <ReifyArgumentsLoose>: <Reg8: 1>;
+    r4 = r1;
+    r3 = awaitAsyncGenerator;
+    // Unsupported instruction: 0000000c: <GetParentEnvironment>: <Reg8: 1, UInt8: 0>;
+    r2 = function* (a0) { // Original name: ?anon_0_testx, environment: r1
+        // Unsupported instruction: 00000000: <CreateFunctionEnvironment>: <Reg8: 1, UInt8: 4>;
+        r2 = a0;
+        StoreToEnvironment(env_register=1, slot_index=0, value_register=2);
+        r0 = 0;
+        StoreToEnvironment(env_register=1, slot_index=2, value_register=0);
+        StoreToEnvironment(env_register=1, slot_index=3, value_register=0);
+        r1 = 
