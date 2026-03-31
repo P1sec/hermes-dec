@@ -41,7 +41,7 @@ sudo snap install hermes-dec
 yay -S hermes-dec
 
 # With uv (all distributions):
-sudo snap install --classic uv
+sudo snap install --classic astral-uv
 uv tool install hermes-dec
 
 # With pipx (all distributions):
