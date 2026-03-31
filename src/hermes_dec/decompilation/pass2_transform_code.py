@@ -325,7 +325,7 @@ def pass2_transform_code(
                     assembly=[instruction],
                 )
             )
-        elif instruction.inst.name == 'CreateEnvironment':
+        elif instruction.inst.name in ('CreateEnvironment', 'CreateTopLevelEnvironment'):
             lines.append(TS([NET(op1)], assembly=[instruction]))
         elif instruction.inst.name == 'CreateInnerEnvironment':
             lines.append(TS([NIET(op1, op2, op3)], assembly=[instruction]))
