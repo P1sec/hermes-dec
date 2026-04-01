@@ -11,7 +11,7 @@ echo disassemble | ~/hermes/build/bin/hbcdump  -raw-disassemble ${DIR}/sample.hb
 echo disassemble | ~/hermes/build/bin/hbcdump  -pretty-disassemble ${DIR}/sample.hbc > ${DIR}/sample.hermes_pretty_hasm
 echo disassemble | ~/hermes/build/bin/hbcdump  -objdump-disassemble ${DIR}/sample.hbc > ${DIR}/sample.hermes_objdump_hasm
 
-for DIR in version-84 version-94 ~/hermes-dec-samples/version-98-issue19 version-99-202602; do
+for DIR in version-84 version-94 version-99-202602; do # ~/hermes-dec-samples/version-98-issue19
     ../hbc-file-parser ${DIR}/sample.hbc > ${DIR}/sample.hermes_dec_header
     ../hbc-disassembler ${DIR}/sample.hbc ${DIR}/sample.hermes_dec_hasm
     ../hbc-decompiler ${DIR}/sample.hbc ${DIR}/sample.hermes_dec_hdec

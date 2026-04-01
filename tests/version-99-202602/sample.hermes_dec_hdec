@@ -6,7 +6,7 @@ r2 = global;
 r4 = async function(a0) { // Original name: testx, environment: r3
     r0 = undefined;
     r1 = undefined;
-    // Unsupported instruction: 00000004: <ReifyArgumentsLoose>: <Reg8: 1>;
+    r1 = arguments;
     r4 = r1;
     r3 = awaitAsyncGenerator;
     // Unsupported instruction: 0000000c: <GetParentEnvironment>: <Reg8: 1, UInt8: 0>;
@@ -17,4 +17,420 @@ r4 = async function(a0) { // Original name: testx, environment: r3
         r0 = 0;
         StoreToEnvironment(env_register=1, slot_index=2, value_register=0);
         StoreToEnvironment(env_register=1, slot_index=3, value_register=0);
-        r1 = 
+        r1 = function* (a0) { // Original name: ?anon_0_testx, environment: r1
+            _fun7: for(var _fun7_ip = 0; ; ) switch(_fun7_ip) {
+case 0:
+                // Unsupported instruction: 00000000: <GetParentEnvironment>: <Reg8: 1, UInt8: 0>;
+                r0 = LoadFromEnvironmentToken(register=1, slot_index=3);
+                r2 = r0;
+                r4 = 2;
+                if(!(r0 !== r4)) { _fun7_ip = 396; continue _fun7 }
+case 20:
+                r0 = arguments[1];
+                r3 = a0;
+                r5 = r2;
+                r6 = 3;
+                if(!(r5 !== r6)) { _fun7_ip = 363; continue _fun7 }
+case 39: // try_start_0
+                r2 = r4;
+                StoreToEnvironment(env_register=1, slot_index=3, value_register=4);
+                r7 = LoadFromEnvironmentToken(register=1, slot_index=2);
+                r5 = 0;
+                if(!(r5 !== r7)) { _fun7_ip = 237; continue _fun7 }
+case 59:
+                r5 = 1;
+                if(!(r5 !== r7)) { _fun7_ip = 165; continue _fun7 }
+case 66:
+                if(!(r3 !== r5)) { _fun7_ip = 156; continue _fun7 }
+case 70:
+                if(!(r3 !== r4)) { _fun7_ip = 137; continue _fun7 }
+case 74:
+                r8 = LoadFromEnvironmentToken(register=1, slot_index=1);
+                r7 = global;
+                r10 = r7.console;
+                r9 = r10.log;
+                r8 = LoadFromEnvironmentToken(register=8, slot_index=0);
+                r8 = r9.bind(r10)(r8);
+                r9 = r7.console;
+                r8 = r9.log;
+                r7 = r7.xy;
+                r7 = r8.bind(r9)(r7);
+                r2 = r6;
+                StoreToEnvironment(env_register=1, slot_index=3, value_register=6);
+case 129: // try_end0
+                r7 = {'value': 'xy', 'done': 42};
+                return r7;
+case 137: // try_start_1
+                r2 = r6;
+                StoreToEnvironment(env_register=1, slot_index=3, value_register=6);
+case 144: // try_end1
+                r7 = {'value': null, 'done': true};
+                r7[0] = r0;
+                return r7;
+case 156: // try_start_2
+                r2 = r6;
+                StoreToEnvironment(env_register=1, slot_index=3, value_register=6);
+                throw r0;
+case 165:
+                if(!(r3 !== r5)) { _fun7_ip = 228; continue _fun7 }
+case 169:
+                if(!(r3 !== r4)) { _fun7_ip = 209; continue _fun7 }
+case 173:
+                r7 = global;
+                r8 = r7.gen;
+                r7 = undefined;
+                r7 = r8.bind(r7)();
+                StoreToEnvironment(env_register=1, slot_index=2, value_register=4);
+                r2 = r5;
+                StoreToEnvironment(env_register=1, slot_index=3, value_register=5);
+case 197: // try_end2
+                r5 = {'value': null, 'done': false};
+                r5[0] = r7;
+                return r5;
+case 209: // try_start_3
+                r2 = r6;
+                StoreToEnvironment(env_register=1, slot_index=3, value_register=6);
+case 216: // try_end3
+                r5 = {'value': null, 'done': true};
+                r5[0] = r0;
+                return r5;
+case 228: // try_start_4
+                r2 = r6;
+                StoreToEnvironment(env_register=1, slot_index=3, value_register=6);
+                throw r0;
+case 237:
+                r5 = 1;
+                if(!(r3 !== r5)) { _fun7_ip = 343; continue _fun7 }
+case 244:
+                if(!(r3 !== r4)) { _fun7_ip = 324; continue _fun7 }
+case 248:
+                StoreToEnvironment(env_register=1, slot_index=1, value_register=8);
+                r7 = LoadFromEnvironmentToken(register=1, slot_index=0);
+                var _closure0_slot0 = r7;
+                r7 = global;
+                r9 = r7.testx;
+                r8 = r7.test2;
+                r10 = 'D+D +D\u202f+D +\nD+ÉD ';
+                r7 = 42;
+                r7 = r7 + r10;
+                r8 = r7 + r8;
+                r7 = undefined;
+                r7 = r9.bind(r7)(r8);
+                StoreToEnvironment(env_register=1, slot_index=2, value_register=5);
+                r2 = r5;
+                StoreToEnvironment(env_register=1, slot_index=3, value_register=5);
+case 312: // try_end4
+                r5 = {'value': null, 'done': false};
+                r5[0] = r7;
+                return r5;
+case 324: // try_start_5
+                r2 = r6;
+                StoreToEnvironment(env_register=1, slot_index=3, value_register=6);
+case 331: // try_end5
+                r5 = {'value': null, 'done': true};
+                r5[0] = r0;
+                return r5;
+case 343: // try_start_6
+                r2 = r6;
+                StoreToEnvironment(env_register=1, slot_index=3, value_register=6);
+                throw r0;
+case 352: // try_end6 // catch_target0 // catch_target1 // catch_target2 // catch_target3 // catch_target4 // catch_target5 // catch_target6
+                CatchBlockStart(arg_register=5);
+                r2 = r6;
+                StoreToEnvironment(env_register=1, slot_index=3, value_register=6);
+                throw r5;
+case 363:
+                r5 = 1;
+                if(!(r3 !== r5)) { _fun7_ip = 394; continue _fun7 }
+case 370:
+                if(!(r3 !== r4)) { _fun7_ip = 382; continue _fun7 }
+case 374:
+                r3 = {'value': 'xy', 'done': 42};
+                return r3;
+case 382:
+                r3 = {'value': null, 'done': true};
+                r3[0] = r0;
+                return r3;
+case 394:
+                throw r0;
+case 396:
+                r0 = 3;
+                r2 = r0;
+                StoreToEnvironment(env_register=1, slot_index=3, value_register=0);
+                r11 = 'Generator functions may not be called on executing generators';
+                r0 = copyDataProperties(r12);
+                // Unreachable position reached: 0000019e: <Unreachable>: <>;
+            }
+        };
+        return r1;
+    };
+    r1 = this;
+    r1 = r3.bind(r0)(r2, r1, r4);
+    return r1;
+};
+r2['testx'] = r4;
+r3 = function* () { // Original name: gen, environment: r3
+    // Unsupported instruction: 00000000: <CreateFunctionEnvironment>: <Reg8: 1, UInt8: 5>;
+    r0 = 0;
+    StoreToEnvironment(env_register=1, slot_index=1, value_register=0);
+    StoreToEnvironment(env_register=1, slot_index=4, value_register=0);
+    StoreToEnvironment(env_register=1, slot_index=3, value_register=0);
+    r1 = function* () { // Original name: gen, environment: r1
+        _fun5: for(var _fun5_ip = 0; ; ) switch(_fun5_ip) {
+case 0:
+            // Unsupported instruction: 00000000: <GetParentEnvironment>: <Reg8: 1, UInt8: 0>;
+            r0 = LoadFromEnvironmentToken(register=1, slot_index=4);
+            r2 = r0;
+            r4 = 2;
+            if(!(r0 !== r4)) { _fun5_ip = 470; continue _fun5 }
+case 20:
+            r0 = arguments[1];
+            r3 = arguments[0];
+            r18 = r2;
+            r7 = 3;
+            r17 = 4;
+            r5 = 1;
+            r16 = 0;
+            r15 = global;
+            r14 = undefined;
+            r13 = 'Bon-jour : ';
+            r12 = 340000;
+            r11 = 6;
+            r9 = 478;
+            r10 = 'dçdàçD°D+D';
+            r8 = 432;
+            r8 = r8 * r10;
+            r10 = r8 + r9;
+            r9 = 'AAAAAAAA';
+            r8 = 'Hello! Exception handling';
+            if(!(r18 !== r7)) { _fun5_ip = 440; continue _fun5 }
+case 96: // try_start_0
+            r2 = r4;
+            StoreToEnvironment(env_register=1, slot_index=4, value_register=4);
+            r18 = LoadFromEnvironmentToken(register=1, slot_index=1);
+            if(!(r16 !== r18)) { _fun5_ip = 314; continue _fun5 }
+case 114:
+            if(!(r5 !== r18)) { _fun5_ip = 233; continue _fun5 }
+case 118:
+            if(!(r4 !== r18)) { _fun5_ip = 168; continue _fun5 }
+case 122:
+            if(!(r7 !== r18)) { _fun5_ip = 147; continue _fun5 }
+case 126:
+            r6 = LoadFromEnvironmentToken(register=1, slot_index=2);
+            StoreToEnvironment(env_register=1, slot_index=3, value_register=5);
+            r18 = r15.print;
+            r18 = r18.bind(r14)(r8);
+            _fun5_ip = 267; continue _fun5;
+case 147:
+            r6 = LoadFromEnvironmentToken(register=1, slot_index=2);
+            StoreToEnvironment(env_register=1, slot_index=3, value_register=16);
+            r18 = r15.alert;
+            r18 = r18.bind(r14)(r9);
+            _fun5_ip = 271; continue _fun5;
+case 168:
+            r18 = LoadFromEnvironmentToken(register=1, slot_index=0);
+            r19 = LoadFromEnvironmentToken(register=1, slot_index=2);
+            r6 = r19;
+            StoreToEnvironment(env_register=18, slot_index=0, value_register=19);
+            StoreToEnvironment(env_register=1, slot_index=3, value_register=4);
+            if(!r10) { _fun5_ip = 227; continue _fun5 }
+case 190:
+            r21 = r15.console;
+            r20 = r21.log;
+            r19 = LoadFromEnvironmentToken(register=18, slot_index=0);
+            r19 = r13 + r19;
+            r18 = LoadFromEnvironmentToken(register=18, slot_index=0);
+            r18 = r18 * r12;
+            r18 = r18 + r11;
+            r18 = r20.bind(r21)(r19, r18);
+case 227:
+            StoreToEnvironment(env_register=1, slot_index=3, value_register=16);
+            _fun5_ip = 271; continue _fun5;
+case 233:
+            if(!(r3 !== r5)) { _fun5_ip = 305; continue _fun5 }
+case 237:
+            if(!(r3 !== r4)) { _fun5_ip = 286; continue _fun5 }
+case 241:
+            StoreToEnvironment(env_register=1, slot_index=3, value_register=7);
+            r18 = r15.gen;
+            r19 = r18.bind(r14)();
+            r18 = r19.next;
+            r18 = r18.bind(r19)();
+            StoreToEnvironment(env_register=1, slot_index=3, value_register=5);
+case 267:
+            StoreToEnvironment(env_register=1, slot_index=3, value_register=16);
+case 271:
+            r2 = r7;
+            StoreToEnvironment(env_register=1, slot_index=4, value_register=7);
+case 278: // try_end0
+            r18 = {'value': 'xy', 'done': 42};
+            return r18;
+case 286: // try_start_1
+            r2 = r7;
+            StoreToEnvironment(env_register=1, slot_index=4, value_register=7);
+case 293: // try_end1
+            r18 = {'value': null, 'done': true};
+            r18[0] = r0;
+            return r18;
+case 305: // try_start_2
+            r2 = r7;
+            StoreToEnvironment(env_register=1, slot_index=4, value_register=7);
+            throw r0;
+case 314:
+            if(!(r3 !== r5)) { _fun5_ip = 370; continue _fun5 }
+case 318:
+            if(!(r3 !== r4)) { _fun5_ip = 351; continue _fun5 }
+case 322:
+            StoreToEnvironment(env_register=1, slot_index=0, value_register=18);
+            StoreToEnvironment(env_register=1, slot_index=1, value_register=5);
+            r2 = r5;
+            StoreToEnvironment(env_register=1, slot_index=4, value_register=5);
+case 343: // try_end2
+            r18 = {'value': 42, 'done': false};
+            return r18;
+case 351: // try_start_3
+            r2 = r7;
+            StoreToEnvironment(env_register=1, slot_index=4, value_register=7);
+case 358: // try_end3
+            r18 = {'value': null, 'done': true};
+            r18[0] = r0;
+            return r18;
+case 370: // try_start_4
+            r2 = r7;
+            StoreToEnvironment(env_register=1, slot_index=4, value_register=7);
+            throw r0;
+case 379: // try_end4 // catch_target0 // catch_target1 // catch_target2 // catch_target3 // catch_target4
+            CatchBlockStart(arg_register=18);
+            r6 = r18;
+            StoreToEnvironment(env_register=1, slot_index=2, value_register=18);
+            r18 = LoadFromEnvironmentToken(register=1, slot_index=3);
+            if(!(r16 !== r18)) { _fun5_ip = 431; continue _fun5 }
+case 396:
+            if(!(r5 !== r18)) { _fun5_ip = 422; continue _fun5 }
+case 400:
+            if(!(r4 !== r18)) { _fun5_ip = 413; continue _fun5 }
+case 404:
+            StoreToEnvironment(env_register=1, slot_index=1, value_register=17);
+            _fun5_ip = 96; continue _fun5;
+case 413:
+            StoreToEnvironment(env_register=1, slot_index=1, value_register=7);
+            _fun5_ip = 96; continue _fun5;
+case 422:
+            StoreToEnvironment(env_register=1, slot_index=1, value_register=4);
+            _fun5_ip = 96; continue _fun5;
+case 431:
+            r2 = r7;
+            StoreToEnvironment(env_register=1, slot_index=4, value_register=7);
+            throw r6;
+case 440:
+            if(!(r3 !== r5)) { _fun5_ip = 468; continue _fun5 }
+case 444:
+            if(!(r3 !== r4)) { _fun5_ip = 456; continue _fun5 }
+case 448:
+            r3 = {'value': 'xy', 'done': 42};
+            return r3;
+case 456:
+            r3 = {'value': null, 'done': true};
+            r3[0] = r0;
+            return r3;
+case 468:
+            throw r0;
+case 470:
+            r0 = 3;
+            r2 = r0;
+            StoreToEnvironment(env_register=1, slot_index=4, value_register=0);
+            r23 = 'Generator functions may not be called on executing generators';
+            r0 = copyDataProperties(r24);
+            // Unreachable position reached: 000001e8: <Unreachable>: <>;
+        }
+    };
+    return r1;
+};
+r2['gen'] = r3;
+r1 = undefined;
+r3 = function() { // Original name: ze, environment: r1
+    _fun3: for(var _fun3_ip = 0; ; ) switch(_fun3_ip) {
+case 0:
+        r1 = global;
+        r3 = r1.Math;
+        r2 = r3.random;
+        r2 = r2.bind(r3)();
+        if(!r2) { _fun3_ip = 85; continue _fun3 }
+case 20:
+        // Unsupported instruction: 00000014: <CreateFunctionEnvironment>: <Reg8: 3, UInt8: 1>;
+        r2 = function() { // Original name: zb, environment: r3
+            _fun6: for(var _fun6_ip = 0; ; ) switch(_fun6_ip) {
+case 0:
+                r1 = global;
+                r2 = r1.Date;
+                r1 = r2.now;
+                r1 = r1.bind(r2)();
+                if(!r1) { _fun6_ip = 33; continue _fun6 }
+case 20:
+                // Unsupported instruction: 00000014: <GetParentEnvironment>: <Reg8: 1, UInt8: 0>;
+                r1 = LoadFromEnvironmentToken(register=1, slot_index=0);
+                r0 = undefined;
+                r0 = r1.bind(r0)();
+case 33:
+                r0 = undefined;
+                return r0;
+            }
+        };
+        StoreToEnvironment(env_register=3, slot_index=0, value_register=2);
+        r4 = r1.Date;
+        r3 = r4.now;
+        r3 = r3.bind(r4)();
+        if(!r3) { _fun3_ip = 74; continue _fun3 }
+case 50:
+        r4 = r1.Date;
+        r3 = r4.now;
+        r3 = r3.bind(r4)();
+        if(!r3) { _fun3_ip = 74; continue _fun3 }
+case 68:
+        r0 = undefined;
+        r0 = r2.bind(r0)();
+case 74:
+        r1 = r1.ze;
+        r0 = undefined;
+        r1 = r1.bind(r0)();
+case 85:
+        r0 = undefined;
+        return r0;
+    }
+};
+r2['ze'] = r3;
+r4 = r2.window;
+r3 = r2.ze;
+r4['onload'] = r3;
+r3 = r2.ze;
+r3 = r3.bind(r1)();
+r3 = /dkooDD JPOD D09D\n\\  @ .\r\n\t@ \x00 D+D  /gmi;
+r2['test2'] = r3;
+r5 = r2.console;
+r4 = r5.log;
+r7 = r2.test2;
+r6 = r7.exec;
+r3 = 'bonjour';
+r3 = r6.bind(r7)(r3);
+r3 = r4.bind(r5)(r3);
+r6 = r2.console;
+r5 = r6.log;
+r3 = r2.gen;
+r4 = r3.bind(r1)();
+r3 = r4.next;
+r4 = r3.bind(r4)();
+r3 = 'a';
+r3 = r5.bind(r6)(r3, r4);
+r5 = r2.console;
+r4 = r5.log;
+r3 = r2.testx;
+r2 = 'le';
+r0 = 7.3;
+r2 = r0 + r2;
+r3 = r3.bind(r1)(r2);
+r2 = r3.next;
+r3 = r2.bind(r3)();
+r2 = 'b';
+r2 = r4.bind(r5)(r2, r3);
+return r2;
+

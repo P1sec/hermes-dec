@@ -325,7 +325,10 @@ def pass2_transform_code(
                     assembly=[instruction],
                 )
             )
-        elif instruction.inst.name in ('CreateEnvironment', 'CreateTopLevelEnvironment'):
+        elif instruction.inst.name in (
+            'CreateEnvironment',
+            'CreateTopLevelEnvironment',
+        ):
             lines.append(TS([NET(op1)], assembly=[instruction]))
         elif instruction.inst.name == 'CreateInnerEnvironment':
             lines.append(TS([NIET(op1, op2, op3)], assembly=[instruction]))
@@ -409,7 +412,14 @@ def pass2_transform_code(
                     assembly=[instruction],
                 )
             )
-        elif instruction.inst.name in ('DelById', 'DelByIdLong'):
+        elif instruction.inst.name in (
+            'DelById',
+            'DelByIdLong',
+            'DelByIdLoose',
+            'DelByIdLooseLong',
+            'DelByIdStrict',
+            'DelByIdStrictLong',
+        ):
             prop_string = state.hbc_reader.strings[op3]
 
             lines.append(
@@ -425,7 +435,11 @@ def pass2_transform_code(
                     assembly=[instruction],
                 )
             )
-        elif instruction.inst.name == 'DelByVal':
+        elif instruction.inst.name in (
+            'DelByVal',
+            'DelByValLoose',
+            'DelByValStrict',
+        ):
             lines.append(
                 TS(
                     [
@@ -500,7 +514,11 @@ def pass2_transform_code(
                     assembly=[instruction],
                 )
             )
-        elif instruction.inst.name == 'GetArgumentsPropByVal':
+        elif instruction.inst.name in (
+            'GetArgumentsPropByVal',
+            'GetArgumentsPropByValLoose',
+            'GetArgumentsPropByValStrict',
+        ):
             lines.append(
                 TS(
                     [
@@ -548,11 +566,42 @@ def pass2_transform_code(
                         assembly=[instruction],
                     )
                 )
+        elif instruction.inst.name in ('GetByIdWithReceiverLong',):
+            string = state.hbc_reader.strings[op5]
 
-        elif instruction.inst.name == 'GetByVal':
+            if ' ' in string or invalid_js_property.match(string):
+                lines.append(
+                    TS(
+                        [LHRT(op1), AT(), RHRT(op2), IST(string)],
+                        assembly=[instruction],
+                    )
+                )
+            else:
+                lines.append(
+                    TS(
+                        [LHRT(op1), AT(), RHRT(op2), DAT(), RT(string)],
+                        assembly=[instruction],
+                    )
+                )
+
+        elif instruction.inst.name in (
+            'GetByVal',
+            'GetByValWithReceiver',
+            'FastArrayLoad',
+            'GetByIndex',
+            'GetOwnBySlotIdx',
+            'GetOwnBySlotIdxLong',
+        ):
             lines.append(
                 TS(
                     [LHRT(op1), AT(), RHRT(op2), RT('['), RHRT(op3), RT(']')],
+                    assembly=[instruction],
+                )
+            )
+        elif instruction.inst.name == 'GetOwnPrivateBySym':
+            lines.append(
+                TS(
+                    [LHRT(op1), AT(), RHRT(op2), RT('['), RHRT(op4), RT(']')],
                     assembly=[instruction],
                 )
             )
@@ -611,7 +660,7 @@ def pass2_transform_code(
                     assembly=[instruction],
                 )
             )
-        elif instruction.inst.name == 'IsIn':
+        elif instruction.inst.name in ('IsIn', 'PrivateIsIn'):
             lines.append(
                 TS(
                     [LHRT(op1), AT(), RHRT(op2), RT(' in '), RHRT(op3)],
@@ -1368,8 +1417,18 @@ def pass2_transform_code(
         elif instruction.inst.name in (
             'PutById',
             'PutByIdLong',
+            'PutByIdLoose',
+            'PutByIdLooseLong',
+            'PutByIdStrict',
+            'PutByIdStrictLong',
+            'DefineOwnById',
+            'DefineOwnByIdLong',
             'TryPutById',
             'TryPutByIdLong',
+            'TryPutByIdLoose',
+            'TryPutByIdLooseLong',
+            'TryPutByIdStrict',
+            'TryPutByIdStrictLong',
         ):
             index = repr(state.hbc_reader.strings[op4])
             lines.append(
@@ -1413,53 +1472,49 @@ def pass2_transform_code(
             )
             # TODO: Are non-enumerable values set correctly?
             # When are these used if they are used?
-        elif instruction.inst.name == 'PutByVal':
+        elif instruction.inst.name in (
+            'PutByVal',
+            'PutByValLoose',
+            'PutByValStrict',
+            'PutByValWithReceiver',
+            'AddOwnPrivateBySym',
+            'FastArrayStore',
+        ):
             lines.append(
                 TS(
                     [LHRT(op1), RT('['), RHRT(op2), RT(']'), AT(), RHRT(op3)],
                     assembly=[instruction],
                 )
             )
-        elif instruction.inst.name == 'PutOwnByVal':
-            if op4:  # Is the property enumerable?
-                lines.append(
-                    TS(
-                        [
-                            LHRT(op1),
-                            RT('['),
-                            RHRT(op3),
-                            RT(']'),
-                            AT(),
-                            RHRT(op2),
-                        ],
-                        assembly=[instruction],
-                    )
+        elif instruction.inst.name == 'PutOwnPrivateBySym':
+            lines.append(
+                TS(
+                    [LHRT(op1), RT('['), RHRT(op4), RT(']'), AT(), RHRT(op2)],
+                    assembly=[instruction],
                 )
-            else:
-                lines.append(
-                    TS(
-                        [
-                            RT('Object.defineProperty'),
-                            LPT(),
-                            LHRT(op1),
-                            RT(', '),
-                            RHRT(op3),
-                            RT(', {value: '),
-                            RHRT(op2),
-                            RT('}'),
-                            RPT(),
-                        ],
-                        assembly=[instruction],
-                    )
-                )
-        elif instruction.inst.name in ('PutOwnByIndex', 'PutOwnByIndexL'):
+            )
+        elif instruction.inst.name in (
+            'PutOwnByIndex',
+            'PutOwnByIndexL',
+            'PutOwnBySlotIdx',
+            'PutOwnBySlotIdxLong',
+            'PutOwnByVal',
+            'DefineOwnByIndex',
+            'DefineOwnByIndexL',
+            'DefineOwnByVal',
+            'DefineOwnInDenseArray',
+            'DefineOwnInDenseArrayL',
+        ):
             lines.append(
                 TS(
                     [LHRT(op1), RT('[%d]' % op3), AT(), RHRT(op2)],
                     assembly=[instruction],
                 )
             )
-        elif instruction.inst.name in ('PutOwnGetterSetterByVal'):
+        elif instruction.inst.name in (
+            'PutOwnGetterSetterByVal',
+            'DefineOwnGetterSetterByVal',
+        ):
             index = repr(state.hbc_reader.strings[op3])
             lines.append(
                 TS(
@@ -1490,7 +1545,11 @@ def pass2_transform_code(
                     assembly=[instruction],
                 )
             )
-        elif instruction.inst.name == 'ReifyArguments':
+        elif instruction.inst.name in (
+            'ReifyArguments',
+            'ReifyArgumentsLoose',
+            'ReifyArgumentsStrict',
+        ):
             lines.append(
                 TS([LHRT(op1), AT(), RT('arguments')], assembly=[instruction])
             )
