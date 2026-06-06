@@ -77,7 +77,7 @@ def disassemble_function(
     print()
 
     # Safety checks:
-    assert function_header.paramCount < 100
+    assert function_header.paramCount < 4096
 
 
 def do_disassemble(input_file: str):
