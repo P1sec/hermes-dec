@@ -1057,7 +1057,7 @@ def main():
             pretty_print_structure(function_header)
             
             # Safety checks:
-            assert function_header.paramCount < 100
+            assert function_header.paramCount < 4096
         """
 
         """
@@ -1102,7 +1102,7 @@ def main():
             )
 
             # Safety checks:
-            assert function_header.paramCount < 120
+            assert function_header.paramCount < 4096
 
         # Commented, huge (and outdated)
 
