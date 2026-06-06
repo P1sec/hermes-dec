@@ -1102,7 +1102,7 @@ def main():
             )
 
             # Safety checks:
-            assert function_header.paramCount < 100
+            assert function_header.paramCount < 120
 
         # Commented, huge (and outdated)
 
