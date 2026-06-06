@@ -29,7 +29,7 @@ license-files = ["LICENSE"]
 
 [project.optional-dependencies]
 codegen = ["clang==12.0.1"]
-test = [ "pytest==9.0.2" ]
+test = [ "pytest==9.0.3" ]
 
 
 [project.urls]
