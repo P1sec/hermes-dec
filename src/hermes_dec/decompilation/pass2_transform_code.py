@@ -48,6 +48,70 @@ from hermes_dec.parsers.hbc_bytecode_parser import parse_hbc_bytecode
 # e.g. 3D, *, "unsigned long long"
 invalid_js_property = re.compile('^[^_a-zA-Z]')
 
+# Hermes internal TypeOfResult bitmask (JmpTypeOfIs / TypeOfIs operand)
+_HERMES_TYPEOF_BITS = [
+    (1,   'undefined'),
+    (2,   'null'),
+    (4,   'boolean'),
+    (8,   'number'),
+    (16,  'string'),
+    (32,  'bigint'),
+    (64,  'symbol'),
+    (128, 'object'),
+    (256, 'function'),
+]
+
+
+def _typeof_bitmask_info(bitmask):
+    """Return (op, typename) for the positive-match comparison implied by bitmask.
+
+    Returns ('===', name) for single-type masks, ('!==', excluded) for
+    all-except-one masks, or None for complex multi-type masks.
+    """
+    matched = [(bit, name) for bit, name in _HERMES_TYPEOF_BITS if bitmask & bit]
+    unmatched = [(bit, name) for bit, name in _HERMES_TYPEOF_BITS if not (bitmask & bit)]
+    if len(matched) == 1:
+        return ('===', matched[0][1])
+    if len(unmatched) == 1:
+        return ('!==', unmatched[0][1])
+    return None
+
+
+def _typeof_cond_tokens(bitmask, reg_op):
+    """Return a token list expressing 'typeof reg matches bitmask' (positive sense).
+
+    Used by JmpTypeOfIs and TypeOfIs handlers.  Caller must pass the complement
+    bitmask when building the JNC (forward-jump) condition.
+    Uses full token class names since this is module-level (aliases are local to pass2).
+    """
+    info = _typeof_bitmask_info(bitmask)
+    if info:
+        return [RawToken('typeof '), RightHandRegToken(reg_op), RawToken(" %s '%s'" % info)]
+
+    # null (bit 1) is special in Hermes: internally distinct from non-null objects,
+    # but typeof null === 'object' in JS so we express it as === null.
+    matched_names = [n for bit, n in _HERMES_TYPEOF_BITS if bitmask & bit]
+    has_null = 'null' in matched_names
+    non_null = [n for n in matched_names if n != 'null']
+    if len(non_null) == 1 and has_null:
+        # e.g. 258 (null|function) → (typeof r === 'function' || r === null)
+        return [LeftParenthesisToken(), RawToken('typeof '), RightHandRegToken(reg_op),
+                RawToken(" === '%s' || " % non_null[0]),
+                RightHandRegToken(reg_op), RawToken(' === null'), RightParenthesisToken()]
+
+    # Check if the complement reduces to a null|single case (De Morgan)
+    complement = 511 ^ bitmask
+    comp_matched = [n for bit, n in _HERMES_TYPEOF_BITS if complement & bit]
+    comp_has_null = 'null' in comp_matched
+    comp_non_null = [n for n in comp_matched if n != 'null']
+    if len(comp_non_null) == 1 and comp_has_null:
+        # e.g. 253 = NOT(null|function) → (typeof r !== 'function' && r !== null)
+        return [LeftParenthesisToken(), RawToken('typeof '), RightHandRegToken(reg_op),
+                RawToken(" !== '%s' && " % comp_non_null[0]),
+                RightHandRegToken(reg_op), RawToken(' !== null'), RightParenthesisToken()]
+
+    return [RawToken("/* typeof mask=0x%x */ true" % bitmask)]
+
 
 def pass2_transform_code(
     state: HermesDecompiler, function_body: DecompiledFunctionBody
@@ -102,6 +166,20 @@ def pass2_transform_code(
 
     function_header = function_body.function_object
 
+    # Pre-scan: find registers that hold actual environment objects.
+    # CreateClosure/CreateGenerator sometimes receive an `undefined` register
+    # (no captured env) rather than a real env register.  We must only link
+    # FunctionTableIndex to an environment_id when the register was genuinely
+    # populated by an env-creating instruction.
+    _ENV_CREATORS = frozenset((
+        'CreateEnvironment', 'CreateFunctionEnvironment', 'CreateTopLevelEnvironment',
+        'CreateInnerEnvironment', 'GetClosureEnvironment', 'GetEnvironment', 'GetParentEnvironment',
+    ))
+    _env_registers: set = set()
+    for _pre in parse_hbc_bytecode(function_header, state.hbc_reader):
+        if _pre.inst.name in _ENV_CREATORS:
+            _env_registers.add(_pre.arg1)
+
     for instruction in parse_hbc_bytecode(function_header, state.hbc_reader):
         op1 = getattr(instruction, 'arg1', None)
         op2 = getattr(instruction, 'arg2', None)
@@ -110,7 +188,7 @@ def pass2_transform_code(
         op5 = getattr(instruction, 'arg5', None)
         op6 = getattr(instruction, 'arg6', None)
 
-        if instruction.inst.name in ('Add', 'AddN'):
+        if instruction.inst.name in ('Add', 'AddN', 'AddS'):
             lines.append(
                 TS(
                     [LHRT(op1), AT(), RHRT(op2), RT(' + '), RHRT(op3)],
@@ -267,6 +345,18 @@ def pass2_transform_code(
                     assembly=[instruction],
                 )
             )
+        elif instruction.inst.name == 'CallRequire':
+            # CallRequire dest, env, module_id — cached require() call
+            lines.append(
+                TS(
+                    [LHRT(op1), AT(), RT('require'), LPT(), RT(str(op3)), RPT()],
+                    assembly=[instruction],
+                )
+            )
+        elif instruction.inst.name == 'CacheNewObject':
+            lines.append(
+                TS([LHRT(op1), AT(), RT('{}')], assembly=[instruction])
+            )
         elif instruction.inst.name == 'Catch':
             lines.append(TS([CBS(op1)], assembly=[instruction]))
         elif instruction.inst.name == 'CoerceThisNS':
@@ -310,7 +400,7 @@ def pass2_transform_code(
                     [
                         LHRT(op1),
                         AT(),
-                        FTI(op3, state, op2, is_async=True, is_closure=True),
+                        FTI(op3, state, op2 if op2 in _env_registers else None, is_async=True, is_closure=True),
                     ],
                     assembly=[instruction],
                 )
@@ -321,12 +411,19 @@ def pass2_transform_code(
         ):
             lines.append(
                 TS(
-                    [LHRT(op1), AT(), FTI(op3, state, op2, is_closure=True)],
+                    [LHRT(op1), AT(), FTI(op3, state, op2 if op2 in _env_registers else None, is_closure=True)],
                     assembly=[instruction],
                 )
             )
+        elif instruction.inst.name == 'CreateEnvironment':
+            # v97+: [Reg8(dest), Reg8(parent_env), UInt32(size)] — behaves like
+            # pre-v97 CreateInnerEnvironment; pre-v97: [Reg8(dest)] only.
+            if state.hbc_reader.header.version >= 97:
+                lines.append(TS([NIET(op1, op2, op3)], assembly=[instruction]))
+            else:
+                lines.append(TS([NET(op1)], assembly=[instruction]))
         elif instruction.inst.name in (
-            'CreateEnvironment',
+            'CreateFunctionEnvironment',
             'CreateTopLevelEnvironment',
         ):
             lines.append(TS([NET(op1)], assembly=[instruction]))
@@ -338,7 +435,7 @@ def pass2_transform_code(
         ):
             lines.append(
                 TS(
-                    [LHRT(op1), AT(), FTI(op3, state, op2, is_generator=True)],
+                    [LHRT(op1), AT(), FTI(op3, state, op2 if op2 in _env_registers else None, is_generator=True)],
                     assembly=[instruction],
                 )
             )
@@ -355,6 +452,14 @@ def pass2_transform_code(
                             op3, state, op2, is_closure=True, is_generator=True
                         ),
                     ],
+                    assembly=[instruction],
+                )
+            )
+        elif instruction.inst.name == 'CreatePrivateName':
+            private_name = state.hbc_reader.strings[op2]
+            lines.append(
+                TS(
+                    [LHRT(op1), AT(), RT('Symbol'), LPT(), RT(repr(private_name)), RPT()],
                     assembly=[instruction],
                 )
             )
@@ -387,6 +492,22 @@ def pass2_transform_code(
                         RT(', {constructor: {value: '),
                         RHRT(op3),
                         RT('}}'),
+                        RPT(),
+                    ],
+                    assembly=[instruction],
+                )
+            )
+        elif instruction.inst.name in ('CreateThisForNew', 'CreateThisForSuper'):
+            lines.append(
+                TS(
+                    [
+                        LHRT(op1),
+                        AT(),
+                        RT('Object.create'),
+                        LPT(),
+                        RHRT(op2),
+                        DAT(),
+                        RT('prototype'),
                         RPT(),
                     ],
                     assembly=[instruction],
@@ -584,6 +705,41 @@ def pass2_transform_code(
                     )
                 )
 
+        elif instruction.inst.name == 'FastArrayLength':
+            lines.append(
+                TS(
+                    [LHRT(op1), AT(), RHRT(op2), DAT(), RT('length')],
+                    assembly=[instruction],
+                )
+            )
+        elif instruction.inst.name == 'FastArrayPush':
+            lines.append(
+                TS(
+                    [
+                        RHRT(op1),
+                        DAT(),
+                        RT('push'),
+                        LPT(),
+                        RHRT(op2),
+                        RPT(),
+                    ],
+                    assembly=[instruction],
+                )
+            )
+        elif instruction.inst.name == 'FastArrayAppend':
+            lines.append(
+                TS(
+                    [
+                        RT('Array.prototype.push.apply'),
+                        LPT(),
+                        RHRT(op1),
+                        RT(', '),
+                        RHRT(op2),
+                        RPT(),
+                    ],
+                    assembly=[instruction],
+                )
+            )
         elif instruction.inst.name in (
             'GetByVal',
             'GetByValWithReceiver',
@@ -605,11 +761,15 @@ def pass2_transform_code(
                     assembly=[instruction],
                 )
             )
+        elif instruction.inst.name == 'GetClosureEnvironment':
+            lines.append(TS([GET(op1, 0)], assembly=[instruction]))
         elif instruction.inst.name == 'GetEnvironment':
             if state.hbc_reader.header.version < 97:
                 lines.append(TS([GET(op1, op2)], assembly=[instruction]))
             else:
                 lines.append(TS([GET(op1, op3)], assembly=[instruction]))
+        elif instruction.inst.name == 'GetParentEnvironment':
+            lines.append(TS([GET(op1, op2)], assembly=[instruction]))
         elif instruction.inst.name == 'GetGlobalObject':
             lines.append(
                 TS([LHRT(op1), AT(), RT('global')], assembly=[instruction])
@@ -738,6 +898,54 @@ def pass2_transform_code(
                             RT(' == '),
                             RHRT(op3),
                         ],
+                        assembly=[instruction],
+                    )
+                )
+        elif instruction.inst.name in ('JmpBuiltinIs', 'JmpBuiltinIsLong'):
+            if op1 > 0:
+                lines.append(
+                    TS(
+                        [JNC(instruction.original_pos + op1), RT('!'), RHRT(op3)],
+                        assembly=[instruction],
+                    )
+                )
+            else:
+                lines.append(
+                    TS(
+                        [JC(instruction.original_pos + op1), RHRT(op3)],
+                        assembly=[instruction],
+                    )
+                )
+        elif instruction.inst.name in ('JmpBuiltinIsNot', 'JmpBuiltinIsNotLong'):
+            if op1 > 0:
+                lines.append(
+                    TS(
+                        [JNC(instruction.original_pos + op1), RHRT(op3)],
+                        assembly=[instruction],
+                    )
+                )
+            else:
+                lines.append(
+                    TS(
+                        [JC(instruction.original_pos + op1), RT('!'), RHRT(op3)],
+                        assembly=[instruction],
+                    )
+                )
+        elif instruction.inst.name == 'JmpTypeOfIs':
+            target = instruction.original_pos + op1
+            if op1 > 0:
+                # JNC renders if(!C) jump; use complement bitmask so that
+                # if(!C) = if(original match) when the tokens are negated
+                lines.append(
+                    TS(
+                        [JNC(target)] + _typeof_cond_tokens(511 ^ op3, op2),
+                        assembly=[instruction],
+                    )
+                )
+            else:
+                lines.append(
+                    TS(
+                        [JC(target)] + _typeof_cond_tokens(op3, op2),
                         assembly=[instruction],
                     )
                 )
@@ -1253,6 +1461,13 @@ def pass2_transform_code(
             lines.append(
                 TS([LHRT(op1), AT(), RT('this')], assembly=[instruction])
             )
+        elif instruction.inst.name in ('LoadParentNoTraps', 'TypedLoadParent'):
+            lines.append(
+                TS(
+                    [LHRT(op1), AT(), RHRT(op2), DAT(), RT('__proto__')],
+                    assembly=[instruction],
+                )
+            )
         elif instruction.inst.name in (
             'Loadi16',
             'Loadi32',
@@ -1390,6 +1605,67 @@ def pass2_transform_code(
                 )
             lines.append(
                 TS([LHRT(op1), AT(), RT(object_text)], assembly=[instruction])
+            )
+        elif instruction.inst.name == 'NewObjectWithBufferAndParent':
+            shape_keys = state.hbc_reader.object_shape_keys[op3]
+            object_text = '{%s}' % ', '.join(
+                '%s: %s' % (key, value)
+                for key, value in zip(
+                    shape_keys,
+                    unpack_slp_array(
+                        state.hbc_reader.literal_values[op4:],
+                        len(shape_keys),
+                    ).to_strings(state.hbc_reader.strings),
+                )
+            )
+            lines.append(
+                TS(
+                    [
+                        LHRT(op1),
+                        AT(),
+                        RT('Object.assign'),
+                        LPT(),
+                        RT('Object.create'),
+                        LPT(),
+                        RHRT(op2),
+                        RPT(),
+                        RT(', '),
+                        RT(object_text),
+                        RPT(),
+                    ],
+                    assembly=[instruction],
+                )
+            )
+        elif instruction.inst.name == 'NewTypedObjectWithBuffer':
+            # Same layout as NewObjectWithBufferAndParent + a UInt8 type-id (op5)
+            shape_keys = state.hbc_reader.object_shape_keys[op3]
+            object_text = '{%s}' % ', '.join(
+                '%s: %s' % (key, value)
+                for key, value in zip(
+                    shape_keys,
+                    unpack_slp_array(
+                        state.hbc_reader.literal_values[op4:],
+                        len(shape_keys),
+                    ).to_strings(state.hbc_reader.strings),
+                )
+            )
+            lines.append(
+                TS(
+                    [
+                        LHRT(op1),
+                        AT(),
+                        RT('Object.assign'),
+                        LPT(),
+                        RT('Object.create'),
+                        LPT(),
+                        RHRT(op2),
+                        RPT(),
+                        RT(', '),
+                        RT(object_text),
+                        RPT(),
+                    ],
+                    assembly=[instruction],
+                )
             )
         elif instruction.inst.name == 'NewObjectWithParent':
             lines.append(
@@ -1641,7 +1917,7 @@ def pass2_transform_code(
                     assembly=[instruction],
                 )
             )
-        elif instruction.inst.name == 'SwitchImm':
+        elif instruction.inst.name in ('SwitchImm', 'UIntSwitchImm'):
             lines.append(
                 TS(
                     [
@@ -1656,6 +1932,21 @@ def pass2_transform_code(
                             ' // Switch table: %s'
                             % instruction.switch_jump_table
                         ),
+                    ],
+                    assembly=[instruction],
+                )
+            )
+        elif instruction.inst.name == 'StringSwitchImm':
+            lines.append(
+                TS(
+                    [
+                        RT(
+                            '// StringSwitchImm: switch(%s) { default: goto %d }'
+                            % (
+                                'r%d' % op1,
+                                instruction.original_pos + op4,
+                            )
+                        )
                     ],
                     assembly=[instruction],
                 )
@@ -1682,6 +1973,42 @@ def pass2_transform_code(
             )
             lines.append(
                 TS([RT('else '), LHRT(op1), AT(), RHRT(op2)], assembly=[])
+            )
+        elif instruction.inst.name == 'ThrowIfThisInitialized':
+            lines.append(
+                TS(
+                    [
+                        RT('if'),
+                        LPT(),
+                        RHRT(op1),
+                        RPT(),
+                        RT(' '),
+                        TD(),
+                        RT('ReferenceError("\'super()\' already called")'),
+                    ],
+                    assembly=[instruction],
+                )
+            )
+        elif instruction.inst.name == 'ThrowIfUndefined':
+            lines.append(
+                TS(
+                    [
+                        RT('if'),
+                        LPT(),
+                        RHRT(op2),
+                        RT(' === undefined'),
+                        RPT(),
+                        RT(' '),
+                        TD(),
+                        RT(
+                            'ReferenceError("accessing an uninitialized variable")'
+                        ),
+                    ],
+                    assembly=[instruction],
+                )
+            )
+            lines.append(
+                TS([LHRT(op1), AT(), RHRT(op2)], assembly=[])
             )
         elif instruction.inst.name == 'ThrowIfHasRestrictedGlobalProperty':
             global_var = state.hbc_reader.strings[op1]
@@ -1731,6 +2058,17 @@ def pass2_transform_code(
                     assembly=[instruction],
                 )
             )
+        elif instruction.inst.name == 'ToPropertyKey':
+            lines.append(
+                TS([LHRT(op1), AT(), RHRT(op2)], assembly=[instruction])
+            )
+        elif instruction.inst.name == 'ToUint32':
+            lines.append(
+                TS(
+                    [LHRT(op1), AT(), RHRT(op2), RT(' >>> 0')],
+                    assembly=[instruction],
+                )
+            )
         elif instruction.inst.name == 'ToNumber':
             lines.append(
                 TS(
@@ -1756,6 +2094,13 @@ def pass2_transform_code(
             lines.append(
                 TS(
                     [LHRT(op1), AT(), RT('typeof '), RHRT(op2)],
+                    assembly=[instruction],
+                )
+            )
+        elif instruction.inst.name == 'TypeOfIs':
+            lines.append(
+                TS(
+                    [LHRT(op1), AT()] + _typeof_cond_tokens(op3, op2),
                     assembly=[instruction],
                 )
             )

@@ -524,15 +524,30 @@ class FunctionTableIndex(Token):
         if (self.is_closure or self.is_generator) and not self.is_builtin:
             import hermes_dec.decompilation.hbc_decompiler
 
-            hermes_dec.decompilation.hbc_decompiler.decompile_function(
-                self.state,
-                self.function_id,
-                parent_environment=self.parent_environment,
-                environment_id=self.environment_id,
-                is_closure=self.is_closure,
-                is_generator=self.is_generator,
-                is_async=self.is_async,
-            )
+            # Cycle detection: if this function ID is already being decompiled
+            # somewhere up the current call stack, output a placeholder instead
+            # of recursing infinitely (handles self-referential and mutually
+            # recursive closures like fn128907 → fn128907).
+            if not hasattr(self.state, '_active_decompilations'):
+                self.state._active_decompilations = set()
+
+            if self.function_id in self.state._active_decompilations:
+                sys.stdout.write('/* fn#%d recursive */' % self.function_id)
+                return
+
+            self.state._active_decompilations.add(self.function_id)
+            try:
+                hermes_dec.decompilation.hbc_decompiler.decompile_function(
+                    self.state,
+                    self.function_id,
+                    parent_environment=self.parent_environment,
+                    environment_id=self.environment_id,
+                    is_closure=self.is_closure,
+                    is_generator=self.is_generator,
+                    is_async=self.is_async,
+                )
+            finally:
+                self.state._active_decompilations.discard(self.function_id)
             return
 
         # Is this a know builtin or named function?

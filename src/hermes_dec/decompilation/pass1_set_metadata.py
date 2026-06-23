@@ -44,9 +44,11 @@ def pass1_set_metadata(
 
     # As well as Jump, Switch, Yield
 
+    _last_next_pos = 0
     for instruction in parse_hbc_bytecode(
         function_body.function_object, state.hbc_reader
     ):
+        _last_next_pos = instruction.next_pos
         if instruction.inst.name[0] == 'J' or instruction.inst.name.startswith(
             'SaveGenerator'
         ):
@@ -55,13 +57,19 @@ def pass1_set_metadata(
                 instruction.original_pos + instruction.arg1
             )
 
-        elif instruction.inst.name == 'SwitchImm':
+        elif instruction.inst.name in ('SwitchImm', 'UIntSwitchImm'):
             function_body.jump_anchors[instruction.next_pos] = instruction
             function_body.jump_targets.add(
                 instruction.original_pos + instruction.arg3
             )
             for jump_target in instruction.switch_jump_table:
                 function_body.jump_targets.add(jump_target)
+
+        elif instruction.inst.name == 'StringSwitchImm':
+            function_body.jump_anchors[instruction.next_pos] = instruction
+            function_body.jump_targets.add(
+                instruction.original_pos + instruction.arg4
+            )
 
         elif instruction.inst.name in ('Ret', 'Unreachable'):
             function_body.ret_anchors[instruction.next_pos] = instruction
@@ -80,7 +88,7 @@ def pass1_set_metadata(
     )
 
     basic_block_boundaries = (
-        {0}
+        {0, _last_next_pos}  # _last_next_pos ensures the final block after last jump target is created
         | function_body.try_starts.keys()
         | function_body.try_ends.keys()
         | function_body.catch_targets.keys()
@@ -140,11 +148,17 @@ def pass1_set_metadata(
                     op.original_pos + op.arg1
                 ]
                 basic_block.is_unconditional_jump_anchor = True
-            elif op_name == 'SwitchImm':
+            elif op_name in ('SwitchImm', 'UIntSwitchImm'):
                 may_have_fallen_through = False
                 basic_block.jump_targets_for_anchor = sorted(
                     {op.original_pos + op.arg3, *op.switch_jump_table}
                 )
+                basic_block.if_switch_action_anchor = True
+            elif op_name == 'StringSwitchImm':
+                may_have_fallen_through = False
+                basic_block.jump_targets_for_anchor = [
+                    op.original_pos + op.arg4
+                ]
                 basic_block.if_switch_action_anchor = True
             elif op_name in ('SaveGenerator', 'SaveGeneratorLong'):
                 may_have_fallen_through = True

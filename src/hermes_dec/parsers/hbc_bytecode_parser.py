@@ -282,7 +282,7 @@ def parse_hbc_bytecode(
             if hasattr(structure, operand):
                 setattr(result, operand, getattr(structure, operand))
 
-        if inst.name == 'SwitchImm':
+        if inst.name in ('SwitchImm', 'UIntSwitchImm'):
             result.switch_jump_table = []
             hbc_reader.file_buffer.seek(
                 function_header.offset + original_pos + structure.arg2
@@ -294,5 +294,8 @@ def parse_hbc_bytecode(
                     int.from_bytes(hbc_reader.file_buffer.read(4), 'little')
                     + original_pos
                 )
+
+        elif inst.name == 'StringSwitchImm':
+            result.switch_jump_table = []
 
         yield result
