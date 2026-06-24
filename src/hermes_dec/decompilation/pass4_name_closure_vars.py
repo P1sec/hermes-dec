@@ -90,13 +90,17 @@ def pass4_name_closure_vars(
                     (outer_environment.nesting_quantity + 1),
                     {},
                 )
+                line.tokens = []  # Silence env-creation bookkeeping instructions
 
             elif isinstance(token, GetEnvironmentToken):
                 environment = parent_environment
                 for nesting in range(token.nesting_level):
+                    if environment is None:
+                        break
                     environment = environment.parent_environment
 
-                function_body.local_items[token.register] = environment
+                if environment is not None:
+                    function_body.local_items[token.register] = environment
                 line.tokens = []  # Silence this instruction in the produced decompiled code
 
             elif isinstance(token, FunctionTableIndex):
@@ -117,6 +121,15 @@ def pass4_name_closure_vars(
                         'pass4: StoreToEnvironment references unknown register %d'
                         % token.env_register
                     )
+                    varname = '_env_r%d_slot%d' % (
+                        token.env_register,
+                        token.slot_index,
+                    )
+                    line.tokens = [
+                        RT(varname),
+                        AT(),
+                        RHRT(token.value_register),
+                    ]
                     continue
                 varname = '_closure%d_slot%d' % (
                     function_body.local_items[
@@ -152,6 +165,9 @@ def pass4_name_closure_vars(
                     warning(
                         'pass4: LoadFromEnvironment references unknown register %d'
                         % token.register
+                    )
+                    line.tokens[2] = RT(
+                        '_env_r%d_slot%d' % (token.register, token.slot_index)
                     )
                     continue
                 var_name = '_closure%d_slot%d' % (

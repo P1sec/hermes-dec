@@ -61,6 +61,7 @@ def decompile_function(state: HermesDecompiler, function_id: int, **kwargs):
             function_id
         ]
 
+    _saved_indent = state.indent_level
     try:
         pass_no = 1
         pass1_set_metadata(state, dehydrated)
@@ -77,7 +78,12 @@ def decompile_function(state: HermesDecompiler, function_id: int, **kwargs):
         pass_no = 'output'
         dehydrated.output_code(state)
     except Exception:
+        state.indent_level = _saved_indent  # Prevent indent leaking on failure
         sys.stdout.flush()
+        try:
+            exc_text = format_exc()
+        except Exception:
+            exc_text = '(traceback unavailable)'
         error(
             'Error while decompiling function "%s" (pass %s): %s'
             % (
@@ -85,10 +91,10 @@ def decompile_function(state: HermesDecompiler, function_id: int, **kwargs):
                     dehydrated.function_object.functionName
                 ],
                 pass_no,
-                format_exc(),
+                exc_text,
             )
         )
-        print('==== Falling back to Disassembly ====')
+        sys.stdout.write('\n==== Falling back to Disassembly ====\n')
         disassemble_function(
             state.hbc_reader, function_id, dehydrated.function_object
         )
@@ -115,6 +121,7 @@ def do_decompilation(state: HermesDecompiler, file_handle):
 
 
 def main():
+    sys.setrecursionlimit(50000)
 
     args = ArgumentParser()
 
