@@ -14,6 +14,7 @@ from ctypes import (
 from typing import Sequence, Union, Dict, List, Set
 from enum import IntEnum, Enum, IntFlag
 from io import BytesIO, BufferedReader
+from importlib.metadata import version
 from os.path import dirname, realpath
 from argparse import ArgumentParser
 from hashlib import sha1
@@ -1040,6 +1041,17 @@ class HBCReader:
 def main():
 
     args = ArgumentParser()
+
+    try:
+        pkg_version = version('hermes_dec')
+    except Exception:
+        pkg_version = None
+
+    if pkg_version:
+        args.add_argument('-V', '--version', action='store_true')
+        if '-V' in sys.argv or '--version' in sys.argv:
+            print('hermes-dec v%s' % pkg_version)
+            exit(0)
 
     args.add_argument('input_file')
 
