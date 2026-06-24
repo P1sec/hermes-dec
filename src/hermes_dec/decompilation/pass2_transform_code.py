@@ -50,13 +50,13 @@ invalid_js_property = re.compile('^[^_a-zA-Z]')
 
 # Hermes internal TypeOfResult bitmask (JmpTypeOfIs / TypeOfIs operand)
 _HERMES_TYPEOF_BITS = [
-    (1,   'undefined'),
-    (2,   'null'),
-    (4,   'boolean'),
-    (8,   'number'),
-    (16,  'string'),
-    (32,  'bigint'),
-    (64,  'symbol'),
+    (1, 'undefined'),
+    (2, 'null'),
+    (4, 'boolean'),
+    (8, 'number'),
+    (16, 'string'),
+    (32, 'bigint'),
+    (64, 'symbol'),
     (128, 'object'),
     (256, 'function'),
 ]
@@ -68,8 +68,12 @@ def _typeof_bitmask_info(bitmask):
     Returns ('===', name) for single-type masks, ('!==', excluded) for
     all-except-one masks, or None for complex multi-type masks.
     """
-    matched = [(bit, name) for bit, name in _HERMES_TYPEOF_BITS if bitmask & bit]
-    unmatched = [(bit, name) for bit, name in _HERMES_TYPEOF_BITS if not (bitmask & bit)]
+    matched = [
+        (bit, name) for bit, name in _HERMES_TYPEOF_BITS if bitmask & bit
+    ]
+    unmatched = [
+        (bit, name) for bit, name in _HERMES_TYPEOF_BITS if not (bitmask & bit)
+    ]
     if len(matched) == 1:
         return ('===', matched[0][1])
     if len(unmatched) == 1:
@@ -86,7 +90,11 @@ def _typeof_cond_tokens(bitmask, reg_op):
     """
     info = _typeof_bitmask_info(bitmask)
     if info:
-        return [RawToken('typeof '), RightHandRegToken(reg_op), RawToken(" %s '%s'" % info)]
+        return [
+            RawToken('typeof '),
+            RightHandRegToken(reg_op),
+            RawToken(" %s '%s'" % info),
+        ]
 
     # null (bit 1) is special in Hermes: internally distinct from non-null objects,
     # but typeof null === 'object' in JS so we express it as === null.
@@ -95,9 +103,15 @@ def _typeof_cond_tokens(bitmask, reg_op):
     non_null = [n for n in matched_names if n != 'null']
     if len(non_null) == 1 and has_null:
         # e.g. 258 (null|function) → (typeof r === 'function' || r === null)
-        return [LeftParenthesisToken(), RawToken('typeof '), RightHandRegToken(reg_op),
-                RawToken(" === '%s' || " % non_null[0]),
-                RightHandRegToken(reg_op), RawToken(' === null'), RightParenthesisToken()]
+        return [
+            LeftParenthesisToken(),
+            RawToken('typeof '),
+            RightHandRegToken(reg_op),
+            RawToken(" === '%s' || " % non_null[0]),
+            RightHandRegToken(reg_op),
+            RawToken(' === null'),
+            RightParenthesisToken(),
+        ]
 
     # Check if the complement reduces to a null|single case (De Morgan)
     complement = 511 ^ bitmask
@@ -106,11 +120,17 @@ def _typeof_cond_tokens(bitmask, reg_op):
     comp_non_null = [n for n in comp_matched if n != 'null']
     if len(comp_non_null) == 1 and comp_has_null:
         # e.g. 253 = NOT(null|function) → (typeof r !== 'function' && r !== null)
-        return [LeftParenthesisToken(), RawToken('typeof '), RightHandRegToken(reg_op),
-                RawToken(" !== '%s' && " % comp_non_null[0]),
-                RightHandRegToken(reg_op), RawToken(' !== null'), RightParenthesisToken()]
+        return [
+            LeftParenthesisToken(),
+            RawToken('typeof '),
+            RightHandRegToken(reg_op),
+            RawToken(" !== '%s' && " % comp_non_null[0]),
+            RightHandRegToken(reg_op),
+            RawToken(' !== null'),
+            RightParenthesisToken(),
+        ]
 
-    return [RawToken("/* typeof mask=0x%x */ true" % bitmask)]
+    return [RawToken('/* typeof mask=0x%x */ true' % bitmask)]
 
 
 def pass2_transform_code(
@@ -171,10 +191,17 @@ def pass2_transform_code(
     # (no captured env) rather than a real env register.  We must only link
     # FunctionTableIndex to an environment_id when the register was genuinely
     # populated by an env-creating instruction.
-    _ENV_CREATORS = frozenset((
-        'CreateEnvironment', 'CreateFunctionEnvironment', 'CreateTopLevelEnvironment',
-        'CreateInnerEnvironment', 'GetClosureEnvironment', 'GetEnvironment', 'GetParentEnvironment',
-    ))
+    _ENV_CREATORS = frozenset(
+        (
+            'CreateEnvironment',
+            'CreateFunctionEnvironment',
+            'CreateTopLevelEnvironment',
+            'CreateInnerEnvironment',
+            'GetClosureEnvironment',
+            'GetEnvironment',
+            'GetParentEnvironment',
+        )
+    )
     _env_registers: set = set()
     for _pre in parse_hbc_bytecode(function_header, state.hbc_reader):
         if _pre.inst.name in _ENV_CREATORS:
@@ -349,7 +376,14 @@ def pass2_transform_code(
             # CallRequire dest, env, module_id — cached require() call
             lines.append(
                 TS(
-                    [LHRT(op1), AT(), RT('require'), LPT(), RT(str(op3)), RPT()],
+                    [
+                        LHRT(op1),
+                        AT(),
+                        RT('require'),
+                        LPT(),
+                        RT(str(op3)),
+                        RPT(),
+                    ],
                     assembly=[instruction],
                 )
             )
@@ -400,7 +434,13 @@ def pass2_transform_code(
                     [
                         LHRT(op1),
                         AT(),
-                        FTI(op3, state, op2 if op2 in _env_registers else None, is_async=True, is_closure=True),
+                        FTI(
+                            op3,
+                            state,
+                            op2 if op2 in _env_registers else None,
+                            is_async=True,
+                            is_closure=True,
+                        ),
                     ],
                     assembly=[instruction],
                 )
@@ -411,7 +451,16 @@ def pass2_transform_code(
         ):
             lines.append(
                 TS(
-                    [LHRT(op1), AT(), FTI(op3, state, op2 if op2 in _env_registers else None, is_closure=True)],
+                    [
+                        LHRT(op1),
+                        AT(),
+                        FTI(
+                            op3,
+                            state,
+                            op2 if op2 in _env_registers else None,
+                            is_closure=True,
+                        ),
+                    ],
                     assembly=[instruction],
                 )
             )
@@ -435,7 +484,16 @@ def pass2_transform_code(
         ):
             lines.append(
                 TS(
-                    [LHRT(op1), AT(), FTI(op3, state, op2 if op2 in _env_registers else None, is_generator=True)],
+                    [
+                        LHRT(op1),
+                        AT(),
+                        FTI(
+                            op3,
+                            state,
+                            op2 if op2 in _env_registers else None,
+                            is_generator=True,
+                        ),
+                    ],
                     assembly=[instruction],
                 )
             )
@@ -459,7 +517,14 @@ def pass2_transform_code(
             private_name = state.hbc_reader.strings[op2]
             lines.append(
                 TS(
-                    [LHRT(op1), AT(), RT('Symbol'), LPT(), RT(repr(private_name)), RPT()],
+                    [
+                        LHRT(op1),
+                        AT(),
+                        RT('Symbol'),
+                        LPT(),
+                        RT(repr(private_name)),
+                        RPT(),
+                    ],
                     assembly=[instruction],
                 )
             )
@@ -497,7 +562,10 @@ def pass2_transform_code(
                     assembly=[instruction],
                 )
             )
-        elif instruction.inst.name in ('CreateThisForNew', 'CreateThisForSuper'):
+        elif instruction.inst.name in (
+            'CreateThisForNew',
+            'CreateThisForSuper',
+        ):
             lines.append(
                 TS(
                     [
@@ -905,7 +973,11 @@ def pass2_transform_code(
             if op1 > 0:
                 lines.append(
                     TS(
-                        [JNC(instruction.original_pos + op1), RT('!'), RHRT(op3)],
+                        [
+                            JNC(instruction.original_pos + op1),
+                            RT('!'),
+                            RHRT(op3),
+                        ],
                         assembly=[instruction],
                     )
                 )
@@ -916,7 +988,10 @@ def pass2_transform_code(
                         assembly=[instruction],
                     )
                 )
-        elif instruction.inst.name in ('JmpBuiltinIsNot', 'JmpBuiltinIsNotLong'):
+        elif instruction.inst.name in (
+            'JmpBuiltinIsNot',
+            'JmpBuiltinIsNotLong',
+        ):
             if op1 > 0:
                 lines.append(
                     TS(
@@ -927,7 +1002,11 @@ def pass2_transform_code(
             else:
                 lines.append(
                     TS(
-                        [JC(instruction.original_pos + op1), RT('!'), RHRT(op3)],
+                        [
+                            JC(instruction.original_pos + op1),
+                            RT('!'),
+                            RHRT(op3),
+                        ],
                         assembly=[instruction],
                     )
                 )
@@ -2007,9 +2086,7 @@ def pass2_transform_code(
                     assembly=[instruction],
                 )
             )
-            lines.append(
-                TS([LHRT(op1), AT(), RHRT(op2)], assembly=[])
-            )
+            lines.append(TS([LHRT(op1), AT(), RHRT(op2)], assembly=[]))
         elif instruction.inst.name == 'ThrowIfHasRestrictedGlobalProperty':
             global_var = state.hbc_reader.strings[op1]
 
