@@ -88,7 +88,10 @@ def pass1_set_metadata(
     )
 
     basic_block_boundaries = (
-        {0, _last_next_pos}  # _last_next_pos ensures the final block after last jump target is created
+        {
+            0,
+            _last_next_pos,
+        }  # _last_next_pos ensures the final block after last jump target is created
         | function_body.try_starts.keys()
         | function_body.try_ends.keys()
         | function_body.catch_targets.keys()

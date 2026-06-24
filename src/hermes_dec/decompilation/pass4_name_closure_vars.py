@@ -121,8 +121,15 @@ def pass4_name_closure_vars(
                         'pass4: StoreToEnvironment references unknown register %d'
                         % token.env_register
                     )
-                    varname = '_env_r%d_slot%d' % (token.env_register, token.slot_index)
-                    line.tokens = [RT(varname), AT(), RHRT(token.value_register)]
+                    varname = '_env_r%d_slot%d' % (
+                        token.env_register,
+                        token.slot_index,
+                    )
+                    line.tokens = [
+                        RT(varname),
+                        AT(),
+                        RHRT(token.value_register),
+                    ]
                     continue
                 varname = '_closure%d_slot%d' % (
                     function_body.local_items[
@@ -159,7 +166,9 @@ def pass4_name_closure_vars(
                         'pass4: LoadFromEnvironment references unknown register %d'
                         % token.register
                     )
-                    line.tokens[2] = RT('_env_r%d_slot%d' % (token.register, token.slot_index))
+                    line.tokens[2] = RT(
+                        '_env_r%d_slot%d' % (token.register, token.slot_index)
+                    )
                     continue
                 var_name = '_closure%d_slot%d' % (
                     function_body.local_items[token.register].nesting_quantity,
