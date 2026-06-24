@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- encoding: Utf-8 -*-
 from typing import List, Dict, Set, Optional, Any, Sequence
+from importlib.metadata import version
 from os.path import dirname, realpath
 from argparse import ArgumentParser
 from json import dumps
@@ -127,6 +128,17 @@ def main():
     # TODO : Make an actual CLI with extra options here ..
 
     args = ArgumentParser()
+
+    try:
+        pkg_version = version('hermes_dec')
+    except Exception:
+        pkg_version = None
+
+    if pkg_version:
+        args.add_argument('-V', '--version', action='store_true')
+        if '-V' in sys.argv or '--version' in sys.argv:
+            print('hermes-dec v%s' % pkg_version)
+            exit(0)
 
     args.add_argument('input_file')
     args.add_argument('output_file', nargs='?')  # , default = '/dev/stdout'

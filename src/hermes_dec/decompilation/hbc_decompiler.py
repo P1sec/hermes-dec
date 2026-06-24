@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- encoding: Utf-8 -*-
+from importlib.metadata import version
 from os.path import realpath, dirname
 from argparse import ArgumentParser
 from traceback import format_exc
@@ -124,6 +125,17 @@ def main():
     sys.setrecursionlimit(50000)
 
     args = ArgumentParser()
+
+    try:
+        pkg_version = version('hermes_dec')
+    except Exception:
+        pkg_version = None
+
+    if pkg_version:
+        args.add_argument('-V', '--version', action='store_true')
+        if '-V' in sys.argv or '--version' in sys.argv:
+            print('hermes-dec v%s' % pkg_version)
+            exit(0)
 
     args.add_argument('input_file')
     args.add_argument('output_file', nargs='?')
