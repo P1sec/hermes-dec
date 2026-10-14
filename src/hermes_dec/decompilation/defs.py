@@ -535,6 +535,22 @@ class FunctionTableIndex(Token):
                 sys.stdout.write('/* fn#%d recursive */' % self.function_id)
                 return
 
+            # Emission memoization: a closure body is emitted inline at its
+            # first reference. Re-emitting it at every subsequent reference
+            # makes the output grow exponentially on dense mutually-recursive
+            # closure graphs (e.g. a 49-byte helper was emitted 79,237 times
+            # in a real-world bundle, producing multi-GB output that never
+            # completes). Emit each closure body once and print a placeholder
+            # for later references instead.
+            if not hasattr(self.state, '_emitted_closures'):
+                self.state._emitted_closures = set()
+
+            if self.function_id in self.state._emitted_closures:
+                sys.stdout.write('/* fn#%d already emitted */' % self.function_id)
+                return
+
+            self.state._emitted_closures.add(self.function_id)
+
             self.state._active_decompilations.add(self.function_id)
             try:
                 hermes_dec.decompilation.hbc_decompiler.decompile_function(
