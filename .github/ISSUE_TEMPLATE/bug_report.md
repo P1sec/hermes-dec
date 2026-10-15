@@ -26,7 +26,7 @@ If applicable, add program output to help explain your problem.
 **Environment (please complete the following information):**
  - Distribution: [e.g. Debian 12]
  - Python version: [e.g. Python 3.14]
- - Version: [e.g. git master, git commit `abefc5`, hermes-dec 0.1.7]
+ - Version: [e.g. git master, git commit `abefc5`, hermes-dec 0.1.8]
 
 **Additional context**
 Add any other context about the problem here.
